@@ -1,0 +1,153 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ─────────────────────────────────────────────
+// Enums
+// ─────────────────────────────────────────────
+
+enum RegistrationStatus {
+  pending
+  approved
+  rejected
+  waitlisted
+}
+
+enum PaymentStatus {
+  pending
+  captured
+  failed
+  refunded
+}
+
+enum ExperienceLevel {
+  beginner
+  intermediate
+  advanced
+  professional
+}
+
+enum Gender {
+  male
+  female
+  other
+  prefer_not_to_say
+}
+
+// ─────────────────────────────────────────────
+// Registrations
+// ─────────────────────────────────────────────
+
+model Registration {
+  id              String             @id @default(uuid()) @db.Uuid
+  registrationId  String             @unique @map("registration_id") @db.VarChar(20)
+  fullName        String             @map("full_name") @db.VarChar(255)
+  email           String             @unique @db.VarChar(255)
+  phone           String             @db.VarChar(20)
+  city            String             @db.VarChar(100)
+  state           String             @db.VarChar(100)
+  age             Int?
+  gender          Gender?
+  profession      String?            @db.VarChar(255)
+  socialInstagram String?            @map("social_instagram") @db.VarChar(255)
+  socialYoutube   String?            @map("social_youtube") @db.VarChar(255)
+  experienceLevel ExperienceLevel?   @map("experience_level")
+  whyJoin         String             @map("why_join") @db.Text
+  expectations    String?            @db.Text
+  profilePhotoUrl String?            @map("profile_photo_url") @db.Text
+  status          RegistrationStatus @default(pending)
+  createdAt       DateTime           @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime           @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  payments  Payment[]
+  uploads   Upload[]
+  adminLogs AdminLog[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+  @@index([phone])
+  @@map("registrations")
+}
+
+// ─────────────────────────────────────────────
+// Payments
+// ─────────────────────────────────────────────
+
+model Payment {
+  id                String        @id @default(uuid()) @db.Uuid
+  registrationId    String        @map("registration_id") @db.Uuid
+  razorpayOrderId   String?       @unique @map("razorpay_order_id") @db.VarChar(100)
+  razorpayPaymentId String?       @unique @map("razorpay_payment_id") @db.VarChar(100)
+  razorpaySignature String?       @map("razorpay_signature") @db.Text
+  amount            Int
+  currency          String        @default("INR") @db.VarChar(3)
+  paymentStatus     PaymentStatus @default(pending) @map("payment_status")
+  paymentDate       DateTime?     @map("payment_date") @db.Timestamptz(6)
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@index([registrationId])
+  @@index([paymentStatus])
+  @@index([razorpayOrderId])
+  @@map("payments")
+}
+
+// ─────────────────────────────────────────────
+// Contact Form Submissions
+// ─────────────────────────────────────────────
+
+model ContactSubmission {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(255)
+  email     String   @db.VarChar(255)
+  phone     String?  @db.VarChar(20)
+  subject   String?  @db.VarChar(255)
+  message   String   @db.Text
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([email])
+  @@index([createdAt])
+  @@map("contact_submissions")
+}
+
+// ─────────────────────────────────────────────
+// Admin Activity Logs
+// ─────────────────────────────────────────────
+
+model AdminLog {
+  id                   String        @id @default(uuid()) @db.Uuid
+  adminAction          String        @map("admin_action") @db.VarChar(255)
+  targetRegistrationId String?       @map("target_registration_id") @db.Uuid
+  notes                String?       @db.Text
+  createdAt            DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  targetRegistration Registration? @relation(fields: [targetRegistrationId], references: [id], onDelete: SetNull)
+
+  @@index([targetRegistrationId])
+  @@index([createdAt])
+  @@map("admin_logs")
+}
+
+// ─────────────────────────────────────────────
+// File Uploads
+// ─────────────────────────────────────────────
+
+model Upload {
+  id             String       @id @default(uuid()) @db.Uuid
+  registrationId String       @map("registration_id") @db.Uuid
+  fileType       String       @map("file_type") @db.VarChar(50)
+  fileUrl        String       @map("file_url") @db.Text
+  uploadedAt     DateTime     @default(now()) @map("uploaded_at") @db.Timestamptz(6)
+
+  registration Registration @relation(fields: [registrationId], references: [id], onDelete: Cascade)
+
+  @@index([registrationId])
+  @@map("uploads")
+}
