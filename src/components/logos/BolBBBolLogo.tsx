@@ -16,6 +16,7 @@ export default function BolBBBolLogo({
       width={900}
       height={265}
       priority={priority}
+      unoptimized
       className={`h-auto ${className}`}
       style={{ objectFit: 'contain' }}
     />

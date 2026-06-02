@@ -20,6 +20,7 @@ export default function MicSymbol({
       width={size}
       height={size}
       priority={priority}
+      unoptimized
       className={className}
       style={{ objectFit: 'contain' }}
     />

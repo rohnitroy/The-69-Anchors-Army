@@ -16,6 +16,7 @@ export default function AnchorsArmyLogo({
       width={900}
       height={700}
       priority={priority}
+      unoptimized
       className={`h-auto ${className}`}
       style={{ objectFit: 'contain' }}
     />
