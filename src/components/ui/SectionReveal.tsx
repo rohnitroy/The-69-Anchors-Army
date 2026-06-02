@@ -1,6 +1,15 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { motion } from 'framer-motion'
+
+const VARIANTS = {
+  up:    { hidden: { opacity: 0, y: 36 },        visible: { opacity: 1, y: 0 } },
+  left:  { hidden: { opacity: 0, x: -40 },       visible: { opacity: 1, x: 0 } },
+  right: { hidden: { opacity: 0, x: 40 },        visible: { opacity: 1, x: 0 } },
+  scale: { hidden: { opacity: 0, scale: 0.92 },  visible: { opacity: 1, scale: 1 } },
+}
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
 
 interface Props {
   children: React.ReactNode
@@ -10,13 +19,6 @@ interface Props {
   threshold?: number
 }
 
-const directionClass = {
-  up:    'reveal',
-  left:  'reveal-left',
-  right: 'reveal-right',
-  scale: 'reveal-scale',
-}
-
 export default function SectionReveal({
   children,
   className = '',
@@ -24,30 +26,16 @@ export default function SectionReveal({
   delay = 0,
   threshold = 0.12,
 }: Props) {
-  const ref = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    const el = ref.current
-    if (!el) return
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => el.classList.add('visible'), delay)
-          observer.disconnect()
-        }
-      },
-      { threshold }
-    )
-    observer.observe(el)
-    return () => observer.disconnect()
-  }, [delay, threshold])
-
   return (
-    <div
-      ref={ref}
-      className={`${directionClass[direction]} ${className}`}
+    <motion.div
+      className={className}
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: threshold }}
+      variants={VARIANTS[direction]}
+      transition={{ duration: 0.7, ease: EASE, delay: delay / 1000 }}
     >
       {children}
-    </div>
+    </motion.div>
   )
 }

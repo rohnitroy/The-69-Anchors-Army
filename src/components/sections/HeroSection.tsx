@@ -1,19 +1,57 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
+import { motion } from 'framer-motion'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import Button from '@/components/ui/Button'
 import GoldDivider from '@/components/ui/GoldDivider'
 import { BRAND, HERO } from '@/lib/content'
 
+gsap.registerPlugin(ScrollTrigger)
+
+const container = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.3 } },
+}
+
+const EASE: [number, number, number, number] = [0.22, 1, 0.36, 1]
+
+const item = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
+}
+
 export default function HeroSection() {
+  const bgRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = bgRef.current
+    if (!el) return
+    const tween = gsap.to(el, {
+      yPercent: 22,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: el.parentElement,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true,
+      },
+    })
+    return () => { tween.scrollTrigger?.kill(); tween.kill() }
+  }, [])
+
   return (
     <section
       id="hero"
       className="relative flex items-center overflow-hidden bg-black"
       style={{ minHeight: '100svh' }}
     >
-      {/* ── Background image (Ken Burns) ─────────────────────────────── */}
+      {/* ── Background (GSAP parallax) ──────────────────────────────── */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="w-full h-full animate-ken-burns">
+        <div ref={bgRef} className="absolute inset-[-22%_0_0] w-full h-full animate-ken-burns">
           <Image
             src="/images/mentor-stage.jpg"
             alt="Anchor BB performing on stage"
@@ -24,7 +62,7 @@ export default function HeroSection() {
             sizes="100vw"
           />
         </div>
-        {/* Vignette: strong left fade + bottom fade */}
+        {/* Vignette */}
         <div
           className="absolute inset-0"
           style={{
@@ -34,63 +72,46 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content ───────────────────────────────────────────────────── */}
+      {/* ── Content (FM stagger) ─────────────────────────────────────── */}
       <div
         className="relative z-10 mx-auto w-full px-6 md:px-12 py-32 md:py-0"
         style={{ maxWidth: 1200 }}
       >
-        <div className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6">
-
-          {/* Micro label */}
-          <div
-            className="micro-label"
-            style={{ animation: 'fade-up 0.5s ease-out 0.3s both' }}
-          >
+        <motion.div
+          className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
+          variants={container}
+          initial="hidden"
+          animate="visible"
+        >
+          <motion.div variants={item} className="micro-label">
             {HERO.micro}
-          </div>
+          </motion.div>
 
-          {/* Main logo — screen blend removes the PNG black background */}
-          <div
-            style={{
-              animation: 'fade-up 0.7s ease-out 0.5s both',
-              mixBlendMode: 'screen',
-            }}
-          >
-            <AnchorsArmyLogo className="w-[260px] md:w-[380px] lg:w-[440px]" priority />
-          </div>
+          <motion.div variants={item} style={{ mixBlendMode: 'screen' }}>
+            <AnchorsArmyLogo className="w-65 md:w-95 lg:w-110" priority />
+          </motion.div>
 
-          {/* Quote */}
-          <p
+          <motion.p
+            variants={item}
             className="font-display italic text-text-secondary leading-snug"
-            style={{
-              fontSize: 'clamp(18px, 2vw, 24px)',
-              animation: 'fade-up 0.6s ease-out 1.0s both',
-            }}
+            style={{ fontSize: 'clamp(18px, 2vw, 24px)' }}
           >
             {HERO.quote}
-          </p>
+          </motion.p>
 
-          {/* Divider */}
-          <div style={{ animation: 'fade-up 0.5s ease-out 1.2s both', width: '100%', maxWidth: 200 }}>
+          <motion.div variants={item} style={{ width: '100%', maxWidth: 200 }}>
             <GoldDivider />
-          </div>
+          </motion.div>
 
-          {/* Sub heading */}
-          <p
+          <motion.p
+            variants={item}
             className="font-label font-semibold text-text-primary tracking-wide"
-            style={{
-              fontSize: 'clamp(13px, 1.2vw, 15px)',
-              animation: 'fade-up 0.6s ease-out 1.3s both',
-            }}
+            style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
           >
             {HERO.sub}
-          </p>
+          </motion.p>
 
-          {/* Badges */}
-          <div
-            className="flex flex-wrap gap-3"
-            style={{ animation: 'fade-up 0.6s ease-out 1.4s both' }}
-          >
+          <motion.div variants={item} className="flex flex-wrap gap-3">
             {[BRAND.batch, BRAND.dates, BRAND.investment].map(text => (
               <span
                 key={text}
@@ -99,29 +120,23 @@ export default function HeroSection() {
                 {text}
               </span>
             ))}
-          </div>
+          </motion.div>
 
-          {/* CTAs */}
-          <div
-            className="flex flex-col sm:flex-row gap-4 mt-2"
-            style={{ animation: 'fade-up 0.6s ease-out 1.6s both' }}
-          >
+          <motion.div variants={item} className="flex flex-col sm:flex-row gap-4 mt-2">
             <Button href="#register" variant="primary" size="lg">
               {HERO.cta} →
             </Button>
             <Button href="#program" variant="ghost" size="lg">
               {HERO.ctaSecondary} ↓
             </Button>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
 
-      {/* Bottom fade to next section */}
+      {/* Bottom fade */}
       <div
         className="absolute bottom-0 left-0 right-0 h-24 pointer-events-none"
-        style={{
-          background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,1))',
-        }}
+        style={{ background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,1))' }}
       />
     </section>
   )

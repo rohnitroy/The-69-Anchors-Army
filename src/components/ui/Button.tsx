@@ -1,4 +1,7 @@
+'use client'
+
 import { type AnchorHTMLAttributes, type ButtonHTMLAttributes } from 'react'
+import { motion } from 'framer-motion'
 
 type BaseProps = {
   variant?: 'primary' | 'ghost' | 'outline'
@@ -7,18 +10,27 @@ type BaseProps = {
   children: React.ReactNode
 }
 
-type ButtonProps = BaseProps & ButtonHTMLAttributes<HTMLButtonElement> & { href?: undefined }
-type AnchorProps = BaseProps & AnchorHTMLAttributes<HTMLAnchorElement> & { href: string }
+// Omit drag event handlers that conflict with Framer Motion's own drag types
+type SafeAnchorRest = Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  'onDrag' | 'onDragStart' | 'onDragEnd' | 'onDragEnter' | 'onDragExit' | 'onDragLeave' | 'onDragOver'
+>
+type SafeButtonRest = Omit<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'onDrag' | 'onDragStart' | 'onDragEnd'
+>
+
+type ButtonProps = BaseProps & SafeButtonRest & { href?: undefined }
+type AnchorProps = BaseProps & SafeAnchorRest & { href: string }
 
 type Props = ButtonProps | AnchorProps
 
-const variants = {
+const variantStyles = {
   primary: [
     'relative overflow-hidden',
     'bg-gold-primary text-black',
     'border border-gold-primary',
     'hover:bg-gold-bright hover:border-gold-bright',
-    'active:scale-[0.97]',
     'btn-shimmer',
   ].join(' '),
   ghost: [
@@ -26,14 +38,12 @@ const variants = {
     'bg-transparent text-gold-primary',
     'border border-gold-primary',
     'hover:bg-gold-primary hover:text-black',
-    'active:scale-[0.97]',
     'btn-shimmer',
   ].join(' '),
   outline: [
     'bg-transparent text-text-primary',
     'border border-border-subtle',
     'hover:border-gold-primary hover:text-gold-primary',
-    'active:scale-[0.97]',
   ].join(' '),
 }
 
@@ -42,6 +52,10 @@ const sizes = {
   md: 'px-7 py-3.5 text-xs tracking-[0.2em]',
   lg: 'px-10 py-4 text-sm tracking-[0.2em]',
 }
+
+const tap = { scale: 0.96 }
+const hover = { scale: 1.03 }
+const spring = { duration: 0.12 }
 
 export default function Button({
   variant = 'primary',
@@ -54,24 +68,39 @@ export default function Button({
   const base = [
     'inline-flex items-center justify-center gap-3',
     'font-label font-semibold uppercase',
-    'transition-all duration-300',
+    'transition-colors duration-300',
     'cursor-pointer select-none',
-    variants[variant],
+    variantStyles[variant],
     sizes[size],
     className,
   ].join(' ')
 
   if (href !== undefined) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (
-      <a href={href} className={base} {...(rest as AnchorHTMLAttributes<HTMLAnchorElement>)}>
+      <motion.a
+        href={href}
+        className={base}
+        whileHover={hover}
+        whileTap={tap}
+        transition={spring}
+        {...(rest as any)}
+      >
         {children}
-      </a>
+      </motion.a>
     )
   }
 
   return (
-    <button className={base} {...(rest as ButtonHTMLAttributes<HTMLButtonElement>)}>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    <motion.button
+      className={base}
+      whileHover={hover}
+      whileTap={tap}
+      transition={spring}
+      {...(rest as any)}
+    >
       {children}
-    </button>
+    </motion.button>
   )
 }

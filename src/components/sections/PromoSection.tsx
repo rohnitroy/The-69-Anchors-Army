@@ -1,22 +1,52 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
+import gsap from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SectionReveal from '@/components/ui/SectionReveal'
 import GoldDivider from '@/components/ui/GoldDivider'
 import Button from '@/components/ui/Button'
 
+gsap.registerPlugin(ScrollTrigger)
+
 export default function PromoSection() {
+  const bgRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const el = bgRef.current
+    if (!el) return
+    const tween = gsap.fromTo(el,
+      { yPercent: -10 },
+      {
+        yPercent: 10,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: el.closest('section'),
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+        },
+      }
+    )
+    return () => { tween.scrollTrigger?.kill(); tween.kill() }
+  }, [])
+
   return (
     <section className="relative overflow-hidden" style={{ minHeight: 520 }}>
 
-      {/* Full-bleed background — event-promo-01 (BB in purple jacket) */}
-      <div className="absolute inset-0">
-        <Image
-          src="/images/event-promo-01.jpg"
-          alt=""
-          fill
-          quality={80}
-          className="object-cover object-[center_20%]"
-          sizes="100vw"
-        />
+      {/* Full-bleed background (GSAP parallax) */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div ref={bgRef} className="absolute inset-[-12%_0] w-full h-[124%]">
+          <Image
+            src="/images/event-promo-01.jpg"
+            alt=""
+            fill
+            quality={80}
+            className="object-cover object-[center_20%]"
+            sizes="100vw"
+          />
+        </div>
         {/* Deep purple-black cinematic overlay */}
         <div
           className="absolute inset-0"
@@ -25,7 +55,7 @@ export default function PromoSection() {
               'linear-gradient(135deg, rgba(61,26,110,0.82) 0%, rgba(0,0,0,0.88) 60%, rgba(0,0,0,0.95) 100%)',
           }}
         />
-        {/* Subtle gold radial from centre */}
+        {/* Gold radial */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
@@ -59,8 +89,10 @@ export default function PromoSection() {
 
         <SectionReveal delay={160}>
           <GoldDivider className="w-20 mb-8" />
-          <p className="font-display italic text-gold-primary mb-10"
-             style={{ fontSize: 'clamp(16px, 1.6vw, 20px)' }}>
+          <p
+            className="font-display italic text-gold-primary mb-10"
+            style={{ fontSize: 'clamp(16px, 1.6vw, 20px)' }}
+          >
             — Anchor BB
           </p>
         </SectionReveal>
