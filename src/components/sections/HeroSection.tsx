@@ -89,18 +89,18 @@ export default function HeroSection() {
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0.1) 65%, rgba(0,0,0,0.0) 100%), linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 35%)',
+              'linear-gradient(to right, rgba(0,0,0,0.99) 0%, rgba(0,0,0,0.92) 40%, rgba(0,0,0,0.5) 65%, rgba(0,0,0,0.0) 100%), linear-gradient(to top, rgba(0,0,0,0.85) 0%, transparent 35%)',
           }}
         />
       </div>
 
       {/* ── Content ──────────────────────────────────────────────────── */}
       <div
-        className="relative z-10 mx-auto w-full px-6 md:px-12 py-32 md:py-0"
+        className="relative z-10 mx-auto w-full px-6 md:px-12 py-32 md:py-0 flex items-center justify-center"
         style={{ maxWidth: 1200 }}
       >
         <motion.div
-          className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
+          className="max-w-xl md:max-w-2xl flex flex-col items-center gap-6"
           variants={container}
           initial="hidden"
           animate="visible"

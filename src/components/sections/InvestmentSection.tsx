@@ -18,12 +18,12 @@ export default function InvestmentSection() {
           quality={90}
           className="object-cover object-center"
           sizes="100vw"
-          style={{ opacity: 0.65 }}
+          style={{ opacity: 0.35 }}
         />
         {/* Radial vignette — keeps centre visible, darkens edges for text readability */}
         <div
           className="absolute inset-0"
-          style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, rgba(0,0,0,0.75) 100%)' }}
+          style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, rgba(0,0,0,0.88) 100%)' }}
         />
       </div>
 

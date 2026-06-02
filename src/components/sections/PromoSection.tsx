@@ -45,12 +45,12 @@ export default function PromoSection() {
         {/* Light cinematic overlay — keeps banner visible while text stays readable */}
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.3) 100%)' }}
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.8) 50%, rgba(0,0,0,0.65) 100%)' }}
         />
         {/* Subtle top/bottom fades */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.5) 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.75) 100%)' }}
         />
       </div>
 
