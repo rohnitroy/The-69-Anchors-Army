@@ -25,43 +25,65 @@ const item = {
 }
 
 export default function HeroSection() {
-  const bgRef = useRef<HTMLDivElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
+  const imgRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const el = bgRef.current
-    if (!el) return
-    const tween = gsap.to(el, {
-      yPercent: 22,
-      ease: 'none',
-      scrollTrigger: {
-        trigger: el.parentElement,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: true,
-      },
-    })
+    const section = sectionRef.current
+    const img = imgRef.current
+    if (!section || !img) return
+
+    // Subtle parallax — translate only, no scale, single transform layer
+    const tween = gsap.fromTo(img,
+      { y: 0 },
+      {
+        y: '12%',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1,
+        },
+      }
+    )
     return () => { tween.scrollTrigger?.kill(); tween.kill() }
   }, [])
 
   return (
     <section
+      ref={sectionRef}
       id="hero"
       className="relative flex items-center overflow-hidden bg-black"
       style={{ minHeight: '100svh' }}
     >
-      {/* ── Background (GSAP parallax) ──────────────────────────────── */}
+      {/* ── Background image ─────────────────────────────────────────── */}
       <div className="absolute inset-0 overflow-hidden">
-        <div ref={bgRef} className="absolute inset-[-22%_0_0] w-full h-full animate-ken-burns">
+        {/*
+          Single transform layer — no nested scale+translate stacking.
+          GPU-composited via willChange, sharp at all scroll positions.
+          Extended height so parallax never shows gap at bottom.
+        */}
+        <div
+          ref={imgRef}
+          className="absolute inset-0"
+          style={{
+            willChange: 'transform',
+            height: '115%',
+            top: '-7.5%',
+          }}
+        >
           <Image
             src="/images/mentor-stage.webp"
             alt="Anchor BB performing on stage"
             fill
             priority
-            quality={90}
+            unoptimized
             className="object-cover object-[75%_center] md:object-[65%_20%]"
             sizes="100vw"
           />
         </div>
+
         {/* Vignette */}
         <div
           className="absolute inset-0"
@@ -72,7 +94,7 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content (FM stagger) ─────────────────────────────────────── */}
+      {/* ── Content ──────────────────────────────────────────────────── */}
       <div
         className="relative z-10 mx-auto w-full px-6 md:px-12 py-32 md:py-0"
         style={{ maxWidth: 1200 }}
