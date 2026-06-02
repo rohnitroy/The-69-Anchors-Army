@@ -16,10 +16,10 @@ export default function ProgramSection() {
         {/* Image pinned to the far right — shows BB without brochure text area */}
         <div className="absolute right-0 top-0 bottom-0 w-1/2">
           <Image
-            src="/images/mentor-modules.jpg"
+            src="/images/mentor-modules.webp"
             alt=""
             fill
-            quality={60}
+            quality={90}
             className="object-cover object-[30%_20%]"
             sizes="50vw"
             style={{ opacity: 0.18 }}

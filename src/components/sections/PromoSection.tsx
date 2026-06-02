@@ -39,10 +39,10 @@ export default function PromoSection() {
       <div className="absolute inset-0 overflow-hidden">
         <div ref={bgRef} className="absolute inset-[-12%_0] w-full h-[124%]">
           <Image
-            src="/images/event-promo-01.jpg"
+            src="/images/event-promo-01.webp"
             alt=""
             fill
-            quality={80}
+            quality={90}
             className="object-cover object-[center_20%]"
             sizes="100vw"
           />

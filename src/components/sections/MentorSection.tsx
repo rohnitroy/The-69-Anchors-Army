@@ -59,10 +59,10 @@ export default function MentorSection() {
             />
             <div ref={imgRef} className="absolute inset-[-10%_0] w-full h-[120%]">
               <Image
-                src="/images/mentor-deliverables.jpg"
+                src="/images/mentor-deliverables.webp"
                 alt="Anchor BB — mentor"
                 fill
-                quality={85}
+                quality={90}
                 className="object-cover object-[center_18%]"
                 sizes="480px"
               />
@@ -93,10 +93,10 @@ export default function MentorSection() {
                   style={{ background: 'rgba(0,0,0,0.3)' }}
                 />
                 <Image
-                  src="/images/mentor-deliverables.jpg"
+                  src="/images/mentor-deliverables.webp"
                   alt="Anchor BB"
                   fill
-                  quality={75}
+                  quality={90}
                   className="object-cover object-[center_18%]"
                   sizes="100vw"
                 />

@@ -50,7 +50,7 @@ export default function DeliverablesSection() {
             ))}
           </div>
 
-          {/* Side portrait — mentor-modules.jpg (BB in gold sherwani) */}
+          {/* Side portrait — mentor-modules.webp (BB in gold sherwani) */}
           <SectionReveal direction="right" className="relative hidden lg:block bg-surface-2">
             {/* Text suppressor */}
             <div
@@ -73,10 +73,10 @@ export default function DeliverablesSection() {
               }}
             />
             <Image
-              src="/images/mentor-modules.jpg"
+              src="/images/mentor-modules.webp"
               alt="Anchor BB — gold sherwani"
               fill
-              quality={75}
+              quality={90}
               className="object-cover object-[35%_15%]"
               sizes="280px"
             />

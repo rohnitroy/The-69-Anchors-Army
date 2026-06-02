@@ -13,10 +13,10 @@ export default function InclusionsSection() {
           <div className="relative hidden md:block">
             <div className="sticky top-0 h-screen max-h-195 overflow-hidden">
               <Image
-                src="/images/mentor-inclusions.jpg"
+                src="/images/mentor-inclusions.webp"
                 alt="Luxury venue — included in your investment"
                 fill
-                quality={85}
+                quality={90}
                 className="object-cover object-[center_25%]"
                 sizes="50vw"
               />
@@ -57,10 +57,10 @@ export default function InclusionsSection() {
             {/* Mobile image */}
             <div className="relative md:hidden w-full h-64 mb-10 overflow-hidden">
               <Image
-                src="/images/mentor-inclusions.jpg"
+                src="/images/mentor-inclusions.webp"
                 alt="Luxury venue"
                 fill
-                quality={75}
+                quality={90}
                 className="object-cover object-center"
                 sizes="100vw"
               />

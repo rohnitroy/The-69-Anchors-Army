@@ -64,10 +64,10 @@ export default function PositioningSection() {
               }}
             />
             <Image
-              src="/images/mentor-blueprint.jpg"
+              src="/images/mentor-blueprint.webp"
               alt="Anchor BB — the blueprint"
               fill
-              quality={85}
+              quality={90}
               className="object-cover object-center"
               sizes="420px"
             />

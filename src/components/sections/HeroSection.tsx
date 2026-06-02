@@ -53,7 +53,7 @@ export default function HeroSection() {
       <div className="absolute inset-0 overflow-hidden">
         <div ref={bgRef} className="absolute inset-[-22%_0_0] w-full h-full animate-ken-burns">
           <Image
-            src="/images/mentor-stage.jpg"
+            src="/images/mentor-stage.webp"
             alt="Anchor BB performing on stage"
             fill
             priority

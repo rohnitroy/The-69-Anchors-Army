@@ -12,10 +12,10 @@ export default function InvestmentSection() {
       {/* Full-bleed background image */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <Image
-          src="/images/event-promo-02.jpg"
+          src="/images/event-promo-02.webp"
           alt=""
           fill
-          quality={70}
+          quality={90}
           className="object-cover object-[center_15%]"
           sizes="100vw"
           style={{ opacity: 0.38 }}
