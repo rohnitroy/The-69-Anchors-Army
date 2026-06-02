@@ -9,59 +9,40 @@ export default function InclusionsSection() {
       <div className="mx-auto" style={{ maxWidth: 1200 }}>
         <div className="grid md:grid-cols-2 items-stretch" style={{ minHeight: 700 }}>
 
-          {/* ── Left: sticky image ───────────────────────────────────── */}
+          {/* ── Left: sticky image (mentor-entrycontent — program document) */}
           <div className="relative hidden md:block">
-            <div className="sticky top-0 h-screen max-h-195 overflow-hidden">
+            <div className="sticky top-0 h-screen max-h-195 overflow-hidden flex items-center justify-center bg-surface-2">
               <Image
-                src="/images/mentor-inclusions.webp"
-                alt="Luxury venue — included in your investment"
+                src="/images/mentor-entrycontent.webp"
+                alt="The 69 Anchors Army — program details"
                 fill
                 quality={90}
-                className="object-cover object-[center_25%]"
+                className="object-contain object-center"
                 sizes="50vw"
               />
-              {/* Suppress brochure-page text while keeping BB visible */}
+              {/* Subtle edge fades to blend with section */}
               <div
-                className="absolute inset-0 z-5 pointer-events-none"
-                style={{ background: 'rgba(0,0,0,0.42)' }}
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.6) 0%, transparent 15%, transparent 85%, rgba(0,0,0,0.6) 100%)' }}
               />
-              {/* Top fade — removes any header text */}
               <div
-                className="absolute inset-0 z-10 pointer-events-none"
-                style={{
-                  background:
-                    'linear-gradient(to bottom, rgba(0,0,0,0.85) 0%, transparent 22%)',
-                }}
-              />
-              {/* Right-edge fade into content */}
-              <div
-                className="absolute inset-0 z-10 pointer-events-none"
-                style={{
-                  background: 'linear-gradient(to left, rgba(0,0,0,1) 0%, transparent 28%)',
-                }}
-              />
-              {/* Bottom fade */}
-              <div
-                className="absolute inset-0 z-10 pointer-events-none"
-                style={{
-                  background:
-                    'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 20%)',
-                }}
+                className="absolute inset-0 pointer-events-none"
+                style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 10%, transparent 90%, rgba(0,0,0,0.5) 100%)' }}
               />
             </div>
           </div>
 
-          {/* ── Right: content ────────────────────────────────────────── */}
+          {/* ── Right: content ──────────────────────────────────────────── */}
           <div className="flex flex-col justify-center py-24 md:py-32 px-6 md:pl-16 md:pr-12">
 
             {/* Mobile image */}
-            <div className="relative md:hidden w-full h-64 mb-10 overflow-hidden">
+            <div className="relative md:hidden w-full h-64 mb-10 overflow-hidden bg-surface-2">
               <Image
-                src="/images/mentor-inclusions.webp"
-                alt="Luxury venue"
+                src="/images/mentor-entrycontent.webp"
+                alt="Program details"
                 fill
                 quality={90}
-                className="object-cover object-center"
+                className="object-contain object-center"
                 sizes="100vw"
               />
             </div>
@@ -79,7 +60,6 @@ export default function InclusionsSection() {
               </h2>
             </SectionReveal>
 
-            {/* Inclusion list */}
             <div>
               {INCLUSIONS.items.map((item, i) => (
                 <SectionReveal key={item.title} delay={160 + i * 80}>

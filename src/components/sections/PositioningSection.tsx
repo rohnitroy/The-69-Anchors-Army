@@ -6,12 +6,8 @@ import { POSITIONING } from '@/lib/content'
 export default function PositioningSection() {
   return (
     <section id="positioning" className="relative bg-black overflow-hidden">
-      <div
-        className="mx-auto px-6 md:px-12"
-        style={{ maxWidth: 1200 }}
-      >
-        <div className="grid md:grid-cols-[1fr_420px] gap-0 items-stretch"
-             style={{ minHeight: 680 }}>
+      <div className="mx-auto px-6 md:px-12" style={{ maxWidth: 1200 }}>
+        <div className="grid md:grid-cols-[1fr_420px] gap-0 items-stretch" style={{ minHeight: 680 }}>
 
           {/* ── Left: copy ───────────────────────────────────────────── */}
           <div className="flex flex-col justify-center py-24 md:py-32 pr-0 md:pr-20">
@@ -36,39 +32,28 @@ export default function PositioningSection() {
               </p>
             </SectionReveal>
 
-            {/* Stats */}
             <SectionReveal delay={240}>
               <div className="grid grid-cols-3 gap-0 mt-16 pt-12 border-t border-border-subtle">
                 {POSITIONING.stats.map(stat => (
-                  <StatCounter
-                    key={stat.label}
-                    value={stat.value}
-                    label={stat.label}
-                    suffix={stat.suffix}
-                  />
+                  <StatCounter key={stat.label} value={stat.value} label={stat.label} suffix={stat.suffix} />
                 ))}
               </div>
             </SectionReveal>
           </div>
 
-          {/* ── Right: image ─────────────────────────────────────────── */}
-          <SectionReveal
-            direction="right"
-            className="relative hidden md:block"
-          >
-            {/* Fade mask on left edge */}
+          {/* ── Right: BB cut-out portrait (transparent PNG) ─────────── */}
+          <SectionReveal direction="right" className="relative hidden md:block">
+            {/* Subtle left-edge blend into section bg */}
             <div
               className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background: 'linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 30%)',
-              }}
+              style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 20%)' }}
             />
             <Image
               src="/images/mentor-blueprint.webp"
-              alt="Anchor BB — the blueprint"
+              alt="Anchor BB"
               fill
               quality={90}
-              className="object-cover object-center"
+              className="object-contain object-center"
               sizes="420px"
             />
           </SectionReveal>

@@ -21,12 +21,7 @@ export default function PromoSection() {
       {
         yPercent: 10,
         ease: 'none',
-        scrollTrigger: {
-          trigger: el.closest('section'),
-          start: 'top bottom',
-          end: 'bottom top',
-          scrub: true,
-        },
+        scrollTrigger: { trigger: el.closest('section'), start: 'top bottom', end: 'bottom top', scrub: true },
       }
     )
     return () => { tween.scrollTrigger?.kill(); tween.kill() }
@@ -35,33 +30,27 @@ export default function PromoSection() {
   return (
     <section className="relative overflow-hidden" style={{ minHeight: 520 }}>
 
-      {/* Full-bleed background (GSAP parallax) */}
+      {/* Full-bleed banner — event-promo-01 visible and readable */}
       <div className="absolute inset-0 overflow-hidden">
         <div ref={bgRef} className="absolute inset-[-12%_0] w-full h-[124%]">
           <Image
             src="/images/event-promo-01.webp"
-            alt=""
+            alt="The 69 Anchors Army — event banner"
             fill
             quality={90}
-            className="object-cover object-[center_20%]"
+            className="object-cover object-center"
             sizes="100vw"
           />
         </div>
-        {/* Deep purple-black cinematic overlay */}
+        {/* Light cinematic overlay — keeps banner visible while text stays readable */}
         <div
           className="absolute inset-0"
-          style={{
-            background:
-              'linear-gradient(135deg, rgba(61,26,110,0.82) 0%, rgba(0,0,0,0.88) 60%, rgba(0,0,0,0.95) 100%)',
-          }}
+          style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.3) 100%)' }}
         />
-        {/* Gold radial */}
+        {/* Subtle top/bottom fades */}
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{
-            background:
-              'radial-gradient(ellipse 60% 70% at 50% 50%, rgba(200,150,12,0.08) 0%, transparent 70%)',
-          }}
+          style={{ background: 'linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.5) 100%)' }}
         />
       </div>
 
@@ -89,10 +78,8 @@ export default function PromoSection() {
 
         <SectionReveal delay={160}>
           <GoldDivider className="w-20 mb-8" />
-          <p
-            className="font-display italic text-gold-primary mb-10"
-            style={{ fontSize: 'clamp(16px, 1.6vw, 20px)' }}
-          >
+          <p className="font-display italic text-gold-primary mb-10"
+             style={{ fontSize: 'clamp(16px, 1.6vw, 20px)' }}>
             — Anchor BB
           </p>
         </SectionReveal>

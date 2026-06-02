@@ -9,27 +9,21 @@ export default function InvestmentSection() {
   return (
     <section id="investment" className="relative bg-black overflow-hidden py-28 md:py-40">
 
-      {/* Full-bleed background image */}
+      {/* Full-bleed event banner background — readable */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden>
         <Image
-          src="/images/event-promo-02.webp"
-          alt=""
+          src="/images/event-promo-02.jpg"
+          alt="The 69 Anchors Army — event details"
           fill
           quality={90}
-          className="object-cover object-[center_15%]"
+          className="object-cover object-center"
           sizes="100vw"
-          style={{ opacity: 0.38 }}
+          style={{ opacity: 0.65 }}
         />
+        {/* Radial vignette — keeps centre visible, darkens edges for text readability */}
         <div
           className="absolute inset-0"
-          style={{
-            background: 'radial-gradient(ellipse 70% 80% at 50% 50%, transparent 20%, rgba(0,0,0,0.92) 80%)',
-          }}
-        />
-        {/* Desaturate via blend-mode overlay */}
-        <div
-          className="absolute inset-0"
-          style={{ background: 'rgba(0,0,0,0.4)', mixBlendMode: 'color' }}
+          style={{ background: 'radial-gradient(ellipse 80% 70% at 50% 50%, transparent 30%, rgba(0,0,0,0.75) 100%)' }}
         />
       </div>
 
@@ -43,7 +37,6 @@ export default function InvestmentSection() {
           <GoldDivider className="w-24 mx-auto mb-10" />
         </SectionReveal>
 
-        {/* Price */}
         <SectionReveal delay={160}>
           <div
             className="font-display font-semibold leading-none mb-4 gold-shimmer-text-slow"
@@ -60,7 +53,6 @@ export default function InvestmentSection() {
           </p>
         </SectionReveal>
 
-        {/* Spot progress */}
         <SectionReveal delay={320}>
           <div className="mb-14">
             <SpotProgress />
@@ -71,14 +63,12 @@ export default function InvestmentSection() {
           <GoldDivider className="w-24 mx-auto mb-12" />
         </SectionReveal>
 
-        {/* Disclaimer */}
         <SectionReveal delay={400}>
           <p className="font-sans text-text-secondary text-sm leading-relaxed mb-12 max-w-md mx-auto">
             {INVESTMENT.disclaimer}
           </p>
         </SectionReveal>
 
-        {/* CTA */}
         <SectionReveal delay={480}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button href="#register" variant="primary" size="lg">

@@ -9,25 +9,26 @@ import Button from '@/components/ui/Button'
 import { REGISTRATION, BRAND } from '@/lib/content'
 
 type FormState = {
-  fullName: string
-  phone: string
-  city: string
+  fullName:   string
+  email:      string
+  phone:      string
+  city:       string
   experience: string
-  specialty: string
-  whyJoin: string
-  ack: boolean
+  specialty:  string
+  whyJoin:    string
+  ack:        boolean
 }
 
 const EMPTY: FormState = {
-  fullName: '', phone: '', city: '', experience: '',
-  specialty: '', whyJoin: '', ack: false,
+  fullName: '', email: '', phone: '', city: '',
+  experience: '', specialty: '', whyJoin: '', ack: false,
 }
 
 export default function RegistrationSection() {
   const router = useRouter()
-  const [form, setForm] = useState<FormState>(EMPTY)
+  const [form, setForm]           = useState<FormState>(EMPTY)
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [error, setError]         = useState('')
 
   const set = (k: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -38,7 +39,7 @@ export default function RegistrationSection() {
     setForm(prev => ({ ...prev, [k]: val }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: { preventDefault(): void }) => {
     e.preventDefault()
     if (!form.ack) { setError('Please acknowledge the investment amount to continue.'); return }
     setSubmitting(true)
@@ -49,7 +50,12 @@ export default function RegistrationSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
       })
-      if (!res.ok) throw new Error('failed')
+      const data = await res.json()
+      if (!res.ok) {
+        setError(data.error || 'Something went wrong. Please try again.')
+        setSubmitting(false)
+        return
+      }
       router.push('/thank-you')
     } catch {
       setError('Something went wrong. Please try again or contact us directly.')
@@ -64,10 +70,7 @@ export default function RegistrationSection() {
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
-        style={{
-          background:
-            'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,150,12,0.05) 0%, transparent 70%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,150,12,0.05) 0%, transparent 70%)' }}
       />
 
       <div className="relative z-10 mx-auto px-6 md:px-12" style={{ maxWidth: 720 }}>
@@ -103,48 +106,34 @@ export default function RegistrationSection() {
         <SectionReveal delay={120}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
+            {/* Row 1: Name + Phone */}
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="Full Name *">
-                <input
-                  type="text"
-                  placeholder="Your full name"
-                  value={form.fullName}
-                  onChange={set('fullName')}
-                  required
-                  className={input}
-                />
+                <input type="text" placeholder="Your full name"
+                  value={form.fullName} onChange={set('fullName')} required className={input} />
               </Field>
               <Field label="Phone Number *">
-                <input
-                  type="tel"
-                  placeholder="+91 98765 43210"
-                  value={form.phone}
-                  onChange={set('phone')}
-                  required
-                  className={input}
-                />
+                <input type="tel" placeholder="+91 98765 43210"
+                  value={form.phone} onChange={set('phone')} required className={input} />
               </Field>
             </div>
 
+            {/* Row 2: Email (full width) */}
+            <Field label="Email Address *">
+              <input type="email" placeholder="you@example.com"
+                value={form.email} onChange={set('email')} required className={input} />
+            </Field>
+
+            {/* Row 3: City + Experience */}
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="City *">
-                <input
-                  type="text"
-                  placeholder="Your city"
-                  value={form.city}
-                  onChange={set('city')}
-                  required
-                  className={input}
-                />
+                <input type="text" placeholder="Your city"
+                  value={form.city} onChange={set('city')} required className={input} />
               </Field>
               <Field label="Years of Experience *">
                 <div className="relative">
-                  <select
-                    value={form.experience}
-                    onChange={set('experience')}
-                    required
-                    className={`${input} appearance-none pr-10 cursor-pointer`}
-                  >
+                  <select value={form.experience} onChange={set('experience')} required
+                    className={`${input} appearance-none pr-10 cursor-pointer`}>
                     <option value="">Select experience</option>
                     {REGISTRATION.experienceOptions.map(o => (
                       <option key={o} value={o}>{o}</option>
@@ -155,14 +144,11 @@ export default function RegistrationSection() {
               </Field>
             </div>
 
+            {/* Row 4: Specialty */}
             <Field label="Current Specialty *">
               <div className="relative">
-                <select
-                  value={form.specialty}
-                  onChange={set('specialty')}
-                  required
-                  className={`${input} appearance-none pr-10 cursor-pointer`}
-                >
+                <select value={form.specialty} onChange={set('specialty')} required
+                  className={`${input} appearance-none pr-10 cursor-pointer`}>
                   <option value="">Select your specialty</option>
                   {REGISTRATION.specialties.map(o => (
                     <option key={o} value={o}>{o}</option>
@@ -172,13 +158,11 @@ export default function RegistrationSection() {
               </div>
             </Field>
 
+            {/* Row 5: Why join */}
             <Field label={`Why do you want to join the ${BRAND.name}? *`}>
               <textarea
-                placeholder="Tell us about your anchoring journey and what you hope to gain from the 69 Anchors Army..."
-                value={form.whyJoin}
-                onChange={set('whyJoin')}
-                required
-                rows={5}
+                placeholder="Tell us about your anchoring journey and what you hope to gain..."
+                value={form.whyJoin} onChange={set('whyJoin')} required rows={5}
                 className={`${input} resize-none`}
               />
             </Field>
@@ -186,15 +170,13 @@ export default function RegistrationSection() {
             {/* Acknowledgement */}
             <label className="flex items-start gap-4 cursor-pointer group py-2">
               <button
-                type="button"
-                role="checkbox"
-                aria-checked={form.ack}
+                type="button" role="checkbox" aria-checked={form.ack}
                 onClick={() => setForm(p => ({ ...p, ack: !p.ack }))}
                 className="flex-none mt-0.5 w-5 h-5 border transition-all duration-200 flex items-center justify-center"
                 style={{
                   borderColor: form.ack ? '#C8960C' : '#3A3A3A',
-                  background: form.ack ? 'rgba(200,150,12,0.12)' : 'transparent',
-                  boxShadow: form.ack ? '0 0 0 1px rgba(200,150,12,0.3)' : 'none',
+                  background:  form.ack ? 'rgba(200,150,12,0.12)' : 'transparent',
+                  boxShadow:   form.ack ? '0 0 0 1px rgba(200,150,12,0.3)' : 'none',
                 }}
               >
                 {form.ack && (
@@ -218,17 +200,12 @@ export default function RegistrationSection() {
 
             {/* Submit */}
             <div className="flex flex-col gap-3 pt-2">
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full sm:w-auto sm:self-start"
-                disabled={submitting}
-              >
+              <Button type="submit" variant="primary" size="lg"
+                className="w-full sm:w-auto sm:self-start" disabled={submitting}>
                 {submitting ? 'Submitting Application...' : 'Submit Application →'}
               </Button>
               <p className="micro-label text-text-secondary">
-                Applications reviewed within 24 hours · Confirmation sent to your phone.
+                Applications reviewed within 24 hours · Confirmation sent to your email.
               </p>
             </div>
 

@@ -8,14 +8,10 @@ export default function DeliverablesSection() {
   return (
     <section id="deliverables" className="relative bg-surface overflow-hidden">
 
-      {/* Subtle ambient gold glow — top-left */}
+      {/* Ambient gold glow */}
       <div
         className="absolute top-0 left-0 w-96 h-96 pointer-events-none"
-        aria-hidden
-        style={{
-          background:
-            'radial-gradient(ellipse at top left, rgba(200,150,12,0.07) 0%, transparent 70%)',
-        }}
+        style={{ background: 'radial-gradient(ellipse at top left, rgba(200,150,12,0.07) 0%, transparent 70%)' }}
       />
 
       <div className="mx-auto px-6 md:px-12 py-28 md:py-36" style={{ maxWidth: 1200 }}>
@@ -26,10 +22,8 @@ export default function DeliverablesSection() {
             <div className="micro-label mb-6">{DELIVERABLES.micro}</div>
           </SectionReveal>
           <SectionReveal delay={80}>
-            <h2
-              className="font-display font-semibold text-text-primary leading-tight mb-5"
-              style={{ fontSize: 'clamp(32px, 4.5vw, 64px)' }}
-            >
+            <h2 className="font-display font-semibold text-text-primary leading-tight mb-5"
+                style={{ fontSize: 'clamp(32px, 4.5vw, 64px)' }}>
               {DELIVERABLES.heading}
             </h2>
           </SectionReveal>
@@ -50,34 +44,19 @@ export default function DeliverablesSection() {
             ))}
           </div>
 
-          {/* Side portrait — mentor-modules.webp (BB in gold sherwani) */}
-          <SectionReveal direction="right" className="relative hidden lg:block bg-surface-2">
-            {/* Text suppressor */}
-            <div
-              className="absolute inset-0 z-5 pointer-events-none"
-              style={{ background: 'rgba(10,10,10,0.45)' }}
-            />
+          {/* Side portrait — mentor-entry.webp (clean transparent cut-out) */}
+          <SectionReveal direction="right" className="relative hidden lg:block bg-surface-2 overflow-hidden">
             {/* Left-edge blend */}
             <div
               className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background: 'linear-gradient(to right, rgba(10,10,10,1) 0%, transparent 35%)',
-              }}
-            />
-            {/* Top fade */}
-            <div
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{
-                background:
-                  'linear-gradient(to bottom, rgba(10,10,10,0.8) 0%, transparent 25%)',
-              }}
+              style={{ background: 'linear-gradient(to right, rgba(10,10,10,1) 0%, transparent 30%)' }}
             />
             <Image
-              src="/images/mentor-modules.webp"
-              alt="Anchor BB — gold sherwani"
+              src="/images/mentor-entry.webp"
+              alt="Anchor BB"
               fill
               quality={90}
-              className="object-cover object-[35%_15%]"
+              className="object-contain object-center"
               sizes="280px"
             />
           </SectionReveal>
