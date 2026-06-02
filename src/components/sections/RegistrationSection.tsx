@@ -75,7 +75,7 @@ export default function RegistrationSection() {
         {/* Header */}
         <SectionReveal>
           <div className="flex flex-col items-center text-center mb-14 gap-5">
-            <div style={{ mixBlendMode: 'screen' }}>
+            <div>
               <AnchorsArmyLogo className="w-35 md:w-45" />
             </div>
             <GoldDivider className="w-20" />

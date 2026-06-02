@@ -109,7 +109,7 @@ export default function HeroSection() {
             {HERO.micro}
           </motion.div>
 
-          <motion.div variants={item} style={{ mixBlendMode: 'screen' }}>
+          <motion.div variants={item}>
             <AnchorsArmyLogo className="w-65 md:w-95 lg:w-110" priority />
           </motion.div>
 
