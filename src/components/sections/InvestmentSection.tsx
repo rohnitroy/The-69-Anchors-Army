@@ -3,7 +3,6 @@
 import Image from 'next/image'
 import SectionReveal from '@/components/ui/SectionReveal'
 import GoldDivider from '@/components/ui/GoldDivider'
-import SpotProgress from '@/components/ui/SpotProgress'
 import Button from '@/components/ui/Button'
 import { INVESTMENT } from '@/lib/content'
 import { useModal } from '@/context/ModalContext'
@@ -58,12 +57,6 @@ export default function InvestmentSection() {
         </SectionReveal>
 
         <SectionReveal delay={320}>
-          <div className="mb-14">
-            <SpotProgress />
-          </div>
-        </SectionReveal>
-
-        <SectionReveal delay={400}>
           <GoldDivider className="w-24 mx-auto mb-12" />
         </SectionReveal>
 

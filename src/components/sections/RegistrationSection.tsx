@@ -197,7 +197,7 @@ export default function RegistrationSection() {
                           {sub}
                         </span>
                       </div>
-                      {isFull && (
+                      {isFull ? (
                         <span
                           className="font-label font-bold whitespace-nowrap"
                           style={{
@@ -211,6 +211,8 @@ export default function RegistrationSection() {
                         >
                           ⊘ HOUSE FULL
                         </span>
+                      ) : (
+                        <SeatBadge filled={count} total={SEAT_LIMIT} />
                       )}
                     </label>
                   )
@@ -265,6 +267,27 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
       <label className="micro-label text-text-secondary">{label}</label>
       {children}
     </div>
+  )
+}
+
+function SeatBadge({ filled, total }: { filled: number; total: number }) {
+  const left = total - filled
+  const color     = left <= 5 ? '#b45309' : left <= 10 ? '#6b5a2a' : '#3a3a3a'
+  const textColor = left <= 5 ? '#f59e0b' : left <= 10 ? '#C8960C' : '#555'
+  return (
+    <span
+      className="font-label font-semibold whitespace-nowrap tabular-nums"
+      style={{
+        fontSize: '10px',
+        letterSpacing: '0.1em',
+        color: textColor,
+        border: `1px solid ${color}`,
+        background: 'transparent',
+        padding: '3px 9px',
+      }}
+    >
+      {filled}&thinsp;/&thinsp;{total}
+    </span>
   )
 }
 
