@@ -39,6 +39,13 @@ enum Gender {
   prefer_not_to_say
 }
 
+enum SquadSlot {
+  squad1
+  squad2
+  squad3
+  squad4
+}
+
 // ─────────────────────────────────────────────
 // Registrations
 // ─────────────────────────────────────────────
@@ -150,4 +157,22 @@ model Upload {
 
   @@index([registrationId])
   @@map("uploads")
+}
+
+// ─────────────────────────────────────────────
+// Slot Registrations (Step 2 — Squad Selection)
+// ─────────────────────────────────────────────
+
+model SlotRegistration {
+  id        String    @id @default(uuid()) @db.Uuid
+  fullName  String    @map("full_name") @db.VarChar(255)
+  email     String    @unique @db.VarChar(255)
+  phone     String    @unique @db.VarChar(20)
+  slot      SquadSlot
+  comments  String?   @db.Text
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([slot])
+  @@index([createdAt])
+  @@map("slot_registrations")
 }

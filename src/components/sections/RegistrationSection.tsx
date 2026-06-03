@@ -1,51 +1,54 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
 import SectionReveal from '@/components/ui/SectionReveal'
 import Button from '@/components/ui/Button'
-import { REGISTRATION, BRAND } from '@/lib/content'
+
+const SLOTS = [
+  { id: 'squad1', label: 'Squad 1: Aug 8th & 9th',  sub: 'Checkout Aug 10th' },
+  { id: 'squad2', label: 'Squad 2: Aug 10th & 11th', sub: 'Checkout Aug 12th' },
+  { id: 'squad3', label: 'Squad 3: Aug 17th & 18th', sub: 'Checkout Aug 19th' },
+  { id: 'squad4', label: 'Squad 4: Aug 19th & 20th', sub: 'Checkout Aug 21st' },
+]
+const SEAT_LIMIT = 24
 
 type FormState = {
-  fullName:   string
-  email:      string
-  phone:      string
-  city:       string
-  experience: string
-  specialty:  string
-  whyJoin:    string
-  ack:        boolean
+  fullName: string
+  phone:    string
+  email:    string
+  slot:     string
+  comments: string
 }
 
-const EMPTY: FormState = {
-  fullName: '', email: '', phone: '', city: '',
-  experience: '', specialty: '', whyJoin: '', ack: false,
-}
+const EMPTY: FormState = { fullName: '', phone: '', email: '', slot: '', comments: '' }
 
 export default function RegistrationSection() {
   const router = useRouter()
-  const [form, setForm]           = useState<FormState>(EMPTY)
+  const [form, setForm]         = useState<FormState>(EMPTY)
   const [submitting, setSubmitting] = useState(false)
-  const [error, setError]         = useState('')
+  const [error, setError]       = useState('')
+  const [slotCounts, setSlotCounts] = useState<Record<string, number>>({})
 
-  const set = (k: keyof FormState) => (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
-  ) => {
-    const val = e.target.type === 'checkbox'
-      ? (e.target as HTMLInputElement).checked
-      : e.target.value
-    setForm(prev => ({ ...prev, [k]: val }))
-  }
+  useEffect(() => {
+    fetch('/api/slots')
+      .then(r => r.json())
+      .then(data => setSlotCounts(data))
+      .catch(() => {})
+  }, [])
 
-  const handleSubmit = async (e: { preventDefault(): void }) => {
+  const set = (k: keyof FormState) =>
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+      setForm(prev => ({ ...prev, [k]: e.target.value }))
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!form.ack) { setError('Please acknowledge the investment amount to continue.'); return }
     setSubmitting(true)
     setError('')
     try {
-      const res = await fetch('/api/apply', {
+      const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
@@ -66,7 +69,6 @@ export default function RegistrationSection() {
   return (
     <section id="register" className="relative bg-surface py-28 md:py-36 overflow-hidden">
 
-      {/* Ambient glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         aria-hidden
@@ -78,25 +80,23 @@ export default function RegistrationSection() {
         {/* Header */}
         <SectionReveal>
           <div className="flex flex-col items-center text-center mb-14 gap-5">
-            <div>
-              <AnchorsArmyLogo className="w-35 md:w-45" />
-            </div>
+            <AnchorsArmyLogo className="w-35 md:w-45" />
             <GoldDivider className="w-20" />
             <h2
               className="font-display font-semibold text-text-primary leading-tight"
               style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
             >
-              {REGISTRATION.heading}
+              Secure Your Slot
             </h2>
             <p className="font-sans text-text-secondary text-sm leading-relaxed max-w-md">
-              {REGISTRATION.sub}
+              Choose your squad dates and lock in your place in the 69 Anchors Army.
             </p>
             <div className="flex gap-3 flex-wrap justify-center">
               <span className="micro-label px-4 py-2 border border-gold-muted text-gold-primary">
-                {BRAND.batch}
+                Batch 1
               </span>
               <span className="micro-label px-4 py-2 border border-gold-muted text-gold-primary">
-                {BRAND.totalSeats} Seats Only
+                24 Seats Per Squad
               </span>
             </div>
           </div>
@@ -106,93 +106,100 @@ export default function RegistrationSection() {
         <SectionReveal delay={120}>
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
 
-            {/* Row 1: Name + Phone */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="Full Name *">
-                <input type="text" placeholder="Your full name"
-                  value={form.fullName} onChange={set('fullName')} required className={input} />
-              </Field>
-              <Field label="Phone Number *">
-                <input type="tel" placeholder="+91 98765 43210"
-                  value={form.phone} onChange={set('phone')} required className={input} />
-              </Field>
-            </div>
-
-            {/* Row 2: Email (full width) */}
-            <Field label="Email Address *">
-              <input type="email" placeholder="you@example.com"
-                value={form.email} onChange={set('email')} required className={input} />
-            </Field>
-
-            {/* Row 3: City + Experience */}
-            <div className="grid sm:grid-cols-2 gap-5">
-              <Field label="City *">
-                <input type="text" placeholder="Your city"
-                  value={form.city} onChange={set('city')} required className={input} />
-              </Field>
-              <Field label="Years of Experience *">
-                <div className="relative">
-                  <select value={form.experience} onChange={set('experience')} required
-                    className={`${input} appearance-none pr-10 cursor-pointer`}>
-                    <option value="">Select experience</option>
-                    {REGISTRATION.experienceOptions.map(o => (
-                      <option key={o} value={o}>{o}</option>
-                    ))}
-                  </select>
-                  <ChevronIcon />
-                </div>
-              </Field>
-            </div>
-
-            {/* Row 4: Specialty */}
-            <Field label="Current Specialty *">
-              <div className="relative">
-                <select value={form.specialty} onChange={set('specialty')} required
-                  className={`${input} appearance-none pr-10 cursor-pointer`}>
-                  <option value="">Select your specialty</option>
-                  {REGISTRATION.specialties.map(o => (
-                    <option key={o} value={o}>{o}</option>
-                  ))}
-                </select>
-                <ChevronIcon />
-              </div>
-            </Field>
-
-            {/* Row 5: Why join */}
-            <Field label={`Why do you want to join the ${BRAND.name}? *`}>
-              <textarea
-                placeholder="Tell us about your anchoring journey and what you hope to gain..."
-                value={form.whyJoin} onChange={set('whyJoin')} required rows={5}
-                className={`${input} resize-none`}
+            {/* Full Name */}
+            <Field label="Full Name *">
+              <input
+                type="text" placeholder="Your full name"
+                value={form.fullName} onChange={set('fullName')} required
+                className={input}
               />
             </Field>
 
-            {/* Acknowledgement */}
-            <label className="flex items-start gap-4 cursor-pointer group py-2">
-              <button
-                type="button" role="checkbox" aria-checked={form.ack}
-                onClick={() => setForm(p => ({ ...p, ack: !p.ack }))}
-                className="flex-none mt-0.5 w-5 h-5 border transition-all duration-200 flex items-center justify-center"
-                style={{
-                  borderColor: form.ack ? '#C8960C' : '#3A3A3A',
-                  background:  form.ack ? 'rgba(200,150,12,0.12)' : 'transparent',
-                  boxShadow:   form.ack ? '0 0 0 1px rgba(200,150,12,0.3)' : 'none',
-                }}
-              >
-                {form.ack && (
-                  <svg viewBox="0 0 10 10" fill="none" className="w-3 h-3">
-                    <path d="M1.5 5l2.5 2.5 4.5-4.5" stroke="#C8960C" strokeWidth="1.5"
-                          strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                )}
-              </button>
-              <span className="font-sans text-sm text-text-secondary leading-relaxed">
-                I understand this is a{' '}
-                <span className="text-gold-primary font-semibold">{BRAND.investment}</span>
-                {' '}investment and I am applying to join the{' '}
-                <span className="text-text-primary">{BRAND.name}</span>.
-              </span>
-            </label>
+            {/* Note banner — shown prominently before email/phone */}
+            <div
+              className="border-l-2 px-5 py-4 rounded-sm"
+              style={{
+                borderColor: '#C8960C',
+                background: 'rgba(200,150,12,0.06)',
+              }}
+            >
+              <p className="font-sans text-sm leading-relaxed" style={{ color: '#C8960C' }}>
+                <span className="font-semibold">Note:</span> Please use the exact same Email ID
+                and Mobile Number that you used when filling out the first registration form.
+              </p>
+            </div>
+
+            {/* Mobile + Email */}
+            <div className="grid sm:grid-cols-2 gap-5">
+              <Field label="Mobile Number *">
+                <input
+                  type="tel" placeholder="+91 98765 43210"
+                  value={form.phone} onChange={set('phone')} required
+                  className={input}
+                />
+              </Field>
+              <Field label="Email ID *">
+                <input
+                  type="email" placeholder="you@example.com"
+                  value={form.email} onChange={set('email')} required
+                  className={input}
+                />
+              </Field>
+            </div>
+
+            {/* Slot Selection */}
+            <Field label="Select Your Slot *">
+              <div className="flex flex-col gap-3 mt-1">
+                {SLOTS.map(({ id, label, sub }) => {
+                  const count  = slotCounts[id] ?? 0
+                  const isFull = count >= SEAT_LIMIT
+                  return (
+                    <label
+                      key={id}
+                      className={[
+                        'flex items-center gap-4 px-5 py-4 border transition-all duration-200',
+                        isFull
+                          ? 'border-[#242424] opacity-50 cursor-not-allowed'
+                          : form.slot === id
+                          ? 'border-gold-primary bg-[rgba(200,150,12,0.05)] cursor-pointer'
+                          : 'border-[#242424] hover:border-[#383838] cursor-pointer',
+                      ].join(' ')}
+                    >
+                      <input
+                        type="radio" name="slot" value={id}
+                        checked={form.slot === id}
+                        onChange={set('slot')}
+                        disabled={isFull}
+                        required
+                        className="accent-[#C8960C] w-4 h-4 flex-none"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <span className="font-sans text-sm font-medium text-text-primary">
+                          {label}
+                        </span>
+                        <span className="font-sans text-xs text-text-secondary block mt-0.5">
+                          {sub}
+                        </span>
+                      </div>
+                      {isFull && (
+                        <span className="font-sans text-xs font-semibold text-red-400 whitespace-nowrap">
+                          Filled — Please select another date.
+                        </span>
+                      )}
+                    </label>
+                  )
+                })}
+              </div>
+            </Field>
+
+            {/* Comments */}
+            <Field label="Any notes or special requests?">
+              <textarea
+                placeholder="Optional — share anything you'd like us to know"
+                value={form.comments} onChange={set('comments')} rows={3}
+                className={`${input} resize-none`}
+              />
+            </Field>
 
             {error && (
               <p className="font-sans text-sm text-red-400 -mt-2">{error}</p>
@@ -200,12 +207,22 @@ export default function RegistrationSection() {
 
             {/* Submit */}
             <div className="flex flex-col gap-3 pt-2">
-              <Button type="submit" variant="primary" size="lg"
-                className="w-full sm:w-auto sm:self-start" disabled={submitting}>
-                {submitting ? 'Submitting Application...' : 'Submit Application →'}
+              <Button
+                type="submit" variant="primary" size="lg"
+                className="w-full sm:w-auto sm:self-start"
+                disabled={submitting}
+              >
+                {submitting ? (
+                  <span className="flex items-center gap-2">
+                    <Spinner />
+                    Registering...
+                  </span>
+                ) : (
+                  'Confirm Registration →'
+                )}
               </Button>
               <p className="micro-label text-text-secondary">
-                Applications reviewed within 24 hours · Confirmation sent to your email.
+                24 seats per squad · First-come, first-served.
               </p>
             </div>
 
@@ -225,14 +242,15 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
   )
 }
 
-function ChevronIcon() {
+function Spinner() {
   return (
-    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
-      <svg width="12" height="8" viewBox="0 0 12 8" fill="none">
-        <path d="M1 1l5 5 5-5" stroke="#C8960C" strokeWidth="1.5"
-              strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    </div>
+    <svg className="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+      <path
+        className="opacity-75" fill="currentColor"
+        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+      />
+    </svg>
   )
 }
 

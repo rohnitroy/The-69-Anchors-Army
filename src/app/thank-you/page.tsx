@@ -6,7 +6,7 @@ import Button from '@/components/ui/Button'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Application Received — 69 Anchors Army',
+  title: 'Slot Confirmed — 69 Anchors Army',
 }
 
 export default function ThankYouPage() {
@@ -29,15 +29,15 @@ export default function ThankYouPage() {
             className="font-display font-semibold text-text-primary leading-tight"
             style={{ fontSize: 'clamp(32px, 5vw, 56px)' }}
           >
-            Application Received
+            Your Slot is Confirmed
           </h1>
 
           <p className="font-sans text-text-secondary leading-relaxed"
              style={{ fontSize: 'clamp(15px, 1.5vw, 17px)' }}>
-            Welcome to the waiting room of the 69 Anchors Army.
-            We have received your application and will review it within{' '}
-            <span className="text-gold-primary font-semibold">24 hours</span>.
-            You will be contacted on the phone number you provided.
+            Welcome to the{' '}
+            <span className="text-gold-primary font-semibold">69 Anchors Army</span>.
+            Your squad slot has been locked in. You will receive confirmation details
+            on the phone number and email you provided.
           </p>
 
           <GoldDivider className="w-16" />

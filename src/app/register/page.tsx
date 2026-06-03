@@ -4,8 +4,8 @@ import RegistrationSection from '@/components/sections/RegistrationSection'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Apply for Admission — 69 Anchors Army',
-  description: 'Apply to join the 69 Anchors Army. Batch 1 · Only 69 seats available.',
+  title: 'Select Your Squad — 69 Anchors Army',
+  description: 'Secure your slot in the 69 Anchors Army. Batch 1 · 24 seats per squad.',
 }
 
 export default function RegisterPage() {
