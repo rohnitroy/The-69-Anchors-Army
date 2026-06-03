@@ -127,8 +127,11 @@ export default function RegistrationModal() {
 
           {/* Scroll container — click outside panel closes */}
           <div
-            className="fixed inset-0 z-[102] overflow-y-auto flex items-start justify-center px-4 py-8 md:items-center md:py-12"
+            className="fixed inset-0 z-[102] overflow-y-auto"
+            onClick={closeModal}
           >
+            {/* Inner centering wrapper — min-h-full keeps items-center correct even when panel overflows */}
+            <div className="flex min-h-full items-center justify-center px-4 py-12">
             {/* Panel */}
             <motion.div
               key="panel"
@@ -168,6 +171,7 @@ export default function RegistrationModal() {
                 <ModalForm onSuccess={closeModal} />
               </div>
             </motion.div>
+            </div>
           </div>
         </>
       )}
