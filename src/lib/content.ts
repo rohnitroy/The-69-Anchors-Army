@@ -189,7 +189,6 @@ export const FOOTER = {
     { label: 'Contact', href: 'mailto:info@bolbbbol.com' },
   ],
   socials: [
-    { label: 'Instagram', href: 'https://instagram.com/bolbbbol' },
-    { label: 'YouTube', href: 'https://youtube.com/@bolbbbol' },
+    { label: 'Instagram', href: 'https://www.instagram.com/anchorbolbbbol?igsh=MXdndzlodG5lNDNqNg==' },
   ],
 }

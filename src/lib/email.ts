@@ -3,7 +3,7 @@ import { Resend } from 'resend'
 export const resend = new Resend(process.env.RESEND_API_KEY)
 
 export const FROM_EMAIL  = process.env.FROM_EMAIL  || 'noreply@bolbbbol.com'
-export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'dynamicentertainment.tech@gmail.com'
+export const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'vinodsharma@dynamicentertainment.co'
 export const APP_URL     = process.env.APP_URL     || 'https://www.bolbbbol.com'
 
 export const SLOT_LABELS: Record<string, { label: string; dates: string; checkout: string }> = {
