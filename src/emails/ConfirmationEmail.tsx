@@ -132,7 +132,7 @@ export default function ConfirmationEmail({ fullName, slot, dates, checkout, app
               </a>
             </Text>
             <Text style={footerMuted}>
-              © 2025 Anchor Bol BB Bol · {appUrl}
+              © 2026 Anchor Bol BB Bol · {appUrl}
             </Text>
           </Section>
 
