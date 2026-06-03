@@ -1,5 +1,6 @@
 'use client'
 
+// SpotProgress removed — seat count no longer displayed here
 import Image from 'next/image'
 import SectionReveal from '@/components/ui/SectionReveal'
 import GoldDivider from '@/components/ui/GoldDivider'
