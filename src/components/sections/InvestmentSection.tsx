@@ -1,11 +1,15 @@
+'use client'
+
 import Image from 'next/image'
 import SectionReveal from '@/components/ui/SectionReveal'
 import GoldDivider from '@/components/ui/GoldDivider'
 import SpotProgress from '@/components/ui/SpotProgress'
 import Button from '@/components/ui/Button'
 import { INVESTMENT } from '@/lib/content'
+import { useModal } from '@/context/ModalContext'
 
 export default function InvestmentSection() {
+  const { openModal } = useModal()
   return (
     <section id="investment" className="relative bg-black overflow-hidden py-28 md:py-40">
 
@@ -71,7 +75,7 @@ export default function InvestmentSection() {
 
         <SectionReveal delay={480}>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button href="#register" variant="primary" size="lg">
+            <Button onClick={openModal} variant="primary" size="lg">
               {INVESTMENT.cta} →
             </Button>
           </div>

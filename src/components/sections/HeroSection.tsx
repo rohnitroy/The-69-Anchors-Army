@@ -9,6 +9,7 @@ import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import Button from '@/components/ui/Button'
 import GoldDivider from '@/components/ui/GoldDivider'
 import { BRAND, HERO } from '@/lib/content'
+import { useModal } from '@/context/ModalContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -27,6 +28,7 @@ const item = {
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const imgRef = useRef<HTMLDivElement>(null)
+  const { openModal } = useModal()
 
   useEffect(() => {
     const section = sectionRef.current
@@ -145,7 +147,7 @@ export default function HeroSection() {
           </motion.div>
 
           <motion.div variants={item} className="flex flex-col sm:flex-row gap-4 mt-2">
-            <Button href="#register" variant="primary" size="lg">
+            <Button onClick={openModal} variant="primary" size="lg">
               {HERO.cta} →
             </Button>
             <Button href="#program" variant="ghost" size="lg">

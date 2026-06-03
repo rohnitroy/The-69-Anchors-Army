@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Cormorant_Garamond, Inter, Space_Grotesk } from 'next/font/google'
 import './globals.css'
 import Loader from '@/components/ui/Loader'
+import { ModalProvider } from '@/context/ModalContext'
+import RegistrationModal from '@/components/ui/RegistrationModal'
 
 const cormorant = Cormorant_Garamond({
   variable: '--font-cormorant',
@@ -40,8 +42,11 @@ export default function RootLayout({
       className={`${cormorant.variable} ${inter.variable} ${spaceGrotesk.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-black text-text-primary">
-        <Loader />
-        {children}
+        <ModalProvider>
+          <Loader />
+          {children}
+          <RegistrationModal />
+        </ModalProvider>
       </body>
     </html>
   )
