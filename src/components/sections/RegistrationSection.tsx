@@ -159,31 +159,57 @@ export default function RegistrationSection() {
                       className={[
                         'flex items-center gap-4 px-5 py-4 border transition-all duration-200',
                         isFull
-                          ? 'border-[#242424] opacity-50 cursor-not-allowed'
+                          ? 'cursor-not-allowed'
                           : form.slot === id
                           ? 'border-gold-primary bg-[rgba(200,150,12,0.05)] cursor-pointer'
                           : 'border-[#242424] hover:border-[#383838] cursor-pointer',
                       ].join(' ')}
+                      style={isFull ? {
+                        borderColor: 'rgba(220,38,38,0.22)',
+                        background:  'rgba(220,38,38,0.03)',
+                      } : undefined}
                     >
-                      <input
-                        type="radio" name="slot" value={id}
-                        checked={form.slot === id}
-                        onChange={set('slot')}
-                        disabled={isFull}
-                        required
-                        className="accent-[#C8960C] w-4 h-4 flex-none"
-                      />
+                      {isFull ? (
+                        <span className="w-4 h-4 flex-none flex items-center justify-center"
+                          style={{ color: 'rgba(220,38,38,0.5)', fontSize: 16, lineHeight: 1 }}>
+                          ⊘
+                        </span>
+                      ) : (
+                        <input
+                          type="radio" name="slot" value={id}
+                          checked={form.slot === id}
+                          onChange={set('slot')}
+                          required
+                          className="accent-[#C8960C] w-4 h-4 flex-none"
+                        />
+                      )}
                       <div className="flex-1 min-w-0">
-                        <span className="font-sans text-sm font-medium text-text-primary">
+                        <span
+                          className={`font-sans text-sm font-medium block ${isFull ? 'line-through' : 'text-text-primary'}`}
+                          style={isFull ? { color: '#3a3a3a' } : undefined}
+                        >
                           {label}
                         </span>
-                        <span className="font-sans text-xs text-text-secondary block mt-0.5">
+                        <span
+                          className="font-sans text-xs block mt-0.5"
+                          style={{ color: isFull ? '#2a2a2a' : 'var(--color-text-secondary, #888)' }}
+                        >
                           {sub}
                         </span>
                       </div>
                       {isFull && (
-                        <span className="font-sans text-xs font-semibold text-red-400 whitespace-nowrap">
-                          Filled — Please select another date.
+                        <span
+                          className="font-label font-bold whitespace-nowrap"
+                          style={{
+                            fontSize: '9px',
+                            letterSpacing: '0.18em',
+                            color: '#dc2626',
+                            border: '1px solid rgba(220,38,38,0.3)',
+                            background: 'rgba(220,38,38,0.08)',
+                            padding: '4px 10px',
+                          }}
+                        >
+                          ⊘ HOUSE FULL
                         </span>
                       )}
                     </label>
