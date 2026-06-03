@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
+import { render } from '@react-email/components'
 import prisma from '@/lib/db'
+import { resend, FROM_EMAIL, ADMIN_EMAIL, APP_URL, SLOT_LABELS } from '@/lib/email'
+import ConfirmationEmail from '@/emails/ConfirmationEmail'
+import AdminNotificationEmail from '@/emails/AdminNotificationEmail'
 
 const VALID_SLOTS = ['squad1', 'squad2', 'squad3', 'squad4'] as const
 type SquadSlot = (typeof VALID_SLOTS)[number]
@@ -26,7 +30,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid slot selection.' }, { status: 400 })
     }
 
-    // Check capacity before inserting (race-safe: DB unique + count check)
     const seatCount = await prisma.slotRegistration.count({
       where: { slot: slot as SquadSlot },
     })
@@ -38,7 +41,7 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    await prisma.slotRegistration.create({
+    const registration = await prisma.slotRegistration.create({
       data: {
         fullName: body.fullName.trim(),
         email:    body.email.trim().toLowerCase(),
@@ -47,6 +50,43 @@ export async function POST(req: NextRequest) {
         comments: body.comments?.trim() || null,
       },
     })
+
+    // Fire both emails in parallel — non-blocking (don't fail the response if email errors)
+    const slotInfo  = SLOT_LABELS[slot]
+    const timestamp = new Date(registration.createdAt).toLocaleString('en-IN', {
+      timeZone: 'Asia/Kolkata', dateStyle: 'medium', timeStyle: 'short',
+    })
+
+    Promise.all([
+      resend.emails.send({
+        from:    `69 Anchors Army <${FROM_EMAIL}>`,
+        to:      registration.email,
+        subject: `Your ${slotInfo.label} slot is confirmed — ${slotInfo.dates}`,
+        html:    await render(ConfirmationEmail({
+          fullName: registration.fullName,
+          slot:     slotInfo.label,
+          dates:    slotInfo.dates,
+          checkout: slotInfo.checkout,
+          appUrl:   APP_URL,
+        })),
+      }),
+      resend.emails.send({
+        from:    `69 Anchors Army <${FROM_EMAIL}>`,
+        to:      ADMIN_EMAIL,
+        subject: `New Registration — ${registration.fullName} · ${slotInfo.label}`,
+        html:    await render(AdminNotificationEmail({
+          fullName:  registration.fullName,
+          email:     registration.email,
+          phone:     registration.phone,
+          slot:      slotInfo.label,
+          dates:     slotInfo.dates,
+          checkout:  slotInfo.checkout,
+          comments:  registration.comments,
+          appUrl:    APP_URL,
+          timestamp,
+        })),
+      }),
+    ]).catch(err => console.error('[Email Error]', err))
 
     return NextResponse.json({ success: true })
   } catch (err: unknown) {
