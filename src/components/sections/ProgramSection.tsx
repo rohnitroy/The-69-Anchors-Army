@@ -6,7 +6,6 @@ import { PROGRAM } from '@/lib/content'
 
 export default function ProgramSection() {
   const visibleModules = PROGRAM.modules.slice(0, 4)
-  const hiddenCount = PROGRAM.modules.length - visibleModules.length
 
   return (
     <section id="program" className="relative bg-black overflow-hidden py-28 md:py-36">
@@ -69,16 +68,6 @@ export default function ProgramSection() {
           ))}
         </div>
 
-        {/* "Plus more" row */}
-        {hiddenCount > 0 && (
-          <SectionReveal delay={400}>
-            <div className="mt-8 text-center">
-              <span className="micro-label text-text-secondary">
-                + {hiddenCount} more exclusive sessions revealed at the event
-              </span>
-            </div>
-          </SectionReveal>
-        )}
       </div>
     </section>
   )

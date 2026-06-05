@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import SectionReveal from '@/components/ui/SectionReveal'
-import StatCounter from '@/components/ui/StatCounter'
 import { POSITIONING } from '@/lib/content'
 
 export default function PositioningSection() {
@@ -32,13 +31,6 @@ export default function PositioningSection() {
               </p>
             </SectionReveal>
 
-            <SectionReveal delay={240}>
-              <div className="grid grid-cols-3 gap-0 mt-16 pt-12 border-t border-border-subtle">
-                {POSITIONING.stats.map(stat => (
-                  <StatCounter key={stat.label} value={stat.value} label={stat.label} suffix={stat.suffix} />
-                ))}
-              </div>
-            </SectionReveal>
           </div>
 
           {/* ── Right: BB cut-out portrait (transparent PNG) ─────────── */}
