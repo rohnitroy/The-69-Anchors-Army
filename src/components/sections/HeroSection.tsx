@@ -8,7 +8,7 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import Button from '@/components/ui/Button'
 import GoldDivider from '@/components/ui/GoldDivider'
-import { BRAND, HERO } from '@/lib/content'
+import { HERO } from '@/lib/content'
 import { useModal } from '@/context/ModalContext'
 
 gsap.registerPlugin(ScrollTrigger)
@@ -24,13 +24,6 @@ const item = {
   hidden: { opacity: 0, y: 28 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.75, ease: EASE } },
 }
-
-const SQUAD_DATES = [
-  { label: 'Squad 1', date: 'Aug 8th & 9th · Checkout Aug 10th' },
-  { label: 'Squad 2', date: 'Aug 10th & 11th · Checkout Aug 12th' },
-  { label: 'Squad 3', date: 'Aug 17th & 18th · Checkout Aug 19th' },
-  { label: 'Squad 4', date: 'Aug 19th & 20th · Checkout Aug 21st' },
-]
 
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
@@ -70,37 +63,33 @@ export default function HeroSection() {
         <div
           ref={imgRef}
           className="absolute inset-0"
-          style={{
-            willChange: 'transform',
-            height: '115%',
-            top: '-7.5%',
-          }}
+          style={{ willChange: 'transform', height: '115%', top: '-7.5%' }}
         >
           <Image
-            src="/images/bb-palace.jpg"
-            alt="Anchor BB at venue"
+            src="/images/mentor-stage.webp"
+            alt="Anchor BB performing on stage"
             fill
             priority
             unoptimized
-            className="object-cover object-[70%_15%]"
+            className="object-cover object-[75%_center] md:object-[65%_20%]"
             sizes="100vw"
           />
         </div>
 
-        {/* Vignette — darkens left (text area) while letting image show on right */}
+        {/* Vignette — dark left for text, image visible on right */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.72) 38%, rgba(0,0,0,0.28) 62%, rgba(0,0,0,0.05) 100%), linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 30%)',
+              'linear-gradient(to right, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0.28) 62%, rgba(0,0,0,0.05) 100%), linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 30%)',
           }}
         />
       </div>
 
-      {/* ── Content ──────────────────────────────────────────────────── */}
+      {/* ── Content — pt-[72px] clears the fixed navbar ──────────────── */}
       <div
-        className="relative z-10 mx-auto w-full px-6 md:px-12 py-32 md:py-0 flex items-center justify-start"
-        style={{ maxWidth: 1200 }}
+        className="relative z-10 mx-auto w-full px-6 md:px-12 flex items-center justify-start"
+        style={{ maxWidth: 1200, paddingTop: 72, paddingBottom: 48 }}
       >
         <motion.div
           className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
@@ -135,26 +124,6 @@ export default function HeroSection() {
           >
             {HERO.sub}
           </motion.p>
-
-          {/* Batch + Squad date chips */}
-          <motion.div variants={item} className="flex flex-col gap-3">
-            <span className="micro-label px-4 py-2 border border-gold-muted text-gold-primary bg-black/40 self-start">
-              {BRAND.batch}
-            </span>
-            <div className="flex flex-col gap-1.5">
-              {SQUAD_DATES.map(({ label, date }) => (
-                <span
-                  key={label}
-                  className="group micro-label px-4 py-2 border border-[rgba(200,150,12,0.25)] text-[rgba(200,150,12,0.5)] hover:border-gold-muted hover:text-gold-primary bg-black/40 inline-flex items-center overflow-hidden cursor-default transition-colors duration-200 self-start"
-                >
-                  {label}
-                  <span className="max-w-0 group-hover:max-w-75 overflow-hidden whitespace-nowrap opacity-0 group-hover:opacity-100 transition-all duration-300 ease-out">
-                    &ensp;·&ensp;{date}
-                  </span>
-                </span>
-              ))}
-            </div>
-          </motion.div>
 
           <motion.div variants={item} className="flex flex-col sm:flex-row gap-4 mt-2">
             <Button onClick={openModal} variant="primary" size="lg">
