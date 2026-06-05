@@ -12,10 +12,10 @@ import { useModal } from '@/context/ModalContext'
 // ─── Slot config ────────────────────────────────────────────────────────────
 
 const SLOTS = [
-  { id: 'squad1', label: 'Squad 1: Aug 8th & 9th',  sub: 'Checkout Aug 10th' },
-  { id: 'squad2', label: 'Squad 2: Aug 10th & 11th', sub: 'Checkout Aug 12th' },
-  { id: 'squad3', label: 'Squad 3: Aug 17th & 18th', sub: 'Checkout Aug 19th' },
-  { id: 'squad4', label: 'Squad 4: Aug 19th & 20th', sub: 'Checkout Aug 21st' },
+  { id: 'squad1', name: 'Squad 1', date: 'Aug 8th & 9th',   checkout: 'Checkout Aug 10th'  },
+  { id: 'squad2', name: 'Squad 2', date: 'Aug 10th & 11th', checkout: 'Checkout Aug 12th'  },
+  { id: 'squad3', name: 'Squad 3', date: 'Aug 17th & 18th', checkout: 'Checkout Aug 19th'  },
+  { id: 'squad4', name: 'Squad 4', date: 'Aug 19th & 20th', checkout: 'Checkout Aug 21st'  },
 ]
 const SEAT_LIMIT = 24
 
@@ -288,14 +288,14 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
         {/* Slot Selection */}
         <Field label="Select Your Slot *">
           <div className="flex flex-col gap-2.5 mt-1">
-            {SLOTS.map(({ id, label, sub }) => {
+            {SLOTS.map(({ id, name, date, checkout }) => {
               const count  = slotCounts[id] ?? 0
               const isFull = count >= SEAT_LIMIT
               return (
                 <label
                   key={id}
                   className={[
-                    'flex items-center gap-4 px-4 py-3.5 border transition-all duration-200',
+                    'group flex items-center gap-4 px-4 py-3.5 border transition-all duration-200',
                     isFull
                       ? 'cursor-not-allowed'
                       : form.slot === id
@@ -326,14 +326,23 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
                       className={`font-sans text-sm font-medium block ${isFull ? 'line-through' : 'text-text-primary'}`}
                       style={isFull ? { color: '#3a3a3a' } : undefined}
                     >
-                      {label}
+                      {name}
                     </span>
-                    <span
-                      className="font-sans text-xs block mt-0.5"
-                      style={{ color: isFull ? '#2a2a2a' : 'var(--color-text-secondary, #888)' }}
-                    >
-                      {sub}
-                    </span>
+                    {/* Dates hidden by default — reveal on row hover */}
+                    <div className="overflow-hidden max-h-0 opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-200 ease-in-out">
+                      <span
+                        className="font-sans text-xs block mt-0.5"
+                        style={{ color: isFull ? '#2a2a2a' : '#C8960C' }}
+                      >
+                        {date}
+                      </span>
+                      <span
+                        className="font-sans text-xs block"
+                        style={{ color: isFull ? '#2a2a2a' : 'var(--color-text-secondary, #888)' }}
+                      >
+                        {checkout}
+                      </span>
+                    </div>
                   </div>
                   {isFull ? (
                     <span
