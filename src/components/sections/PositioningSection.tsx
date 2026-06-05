@@ -34,21 +34,25 @@ export default function PositioningSection() {
           </div>
 
           {/* ── Right: BB cut-out portrait (transparent PNG) ─────────── */}
-          <SectionReveal direction="right" className="relative hidden md:block">
-            {/* Subtle left-edge blend into section bg */}
-            <div
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 20%)' }}
-            />
-            <Image
-              src="/images/bb-palace-03.jpg"
-              alt="Anchor BB"
-              fill
-              quality={90}
-              className="object-cover object-[55%_15%]"
-              sizes="420px"
-            />
-          </SectionReveal>
+          <div className="relative hidden md:block" style={{ minHeight: '100%' }}>
+            <SectionReveal direction="right" className="w-full h-full">
+              {/* Subtle left-edge blend into section bg */}
+              <div
+                className="absolute inset-0 z-10 pointer-events-none"
+                style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 20%)' }}
+              />
+              <div className="relative w-full h-full">
+                <Image
+                  src="/images/bb-palace-03.jpg"
+                  alt="Anchor BB"
+                  fill
+                  quality={90}
+                  className="object-cover object-[55%_15%]"
+                  sizes="420px"
+                />
+              </div>
+            </SectionReveal>
+          </div>
 
         </div>
       </div>

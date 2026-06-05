@@ -8,7 +8,7 @@ export default function DeliverablesSection() {
   return (
     <section id="deliverables" className="relative bg-black overflow-hidden">
 
-      <div className="mx-auto px-6 md:px-12 pb-28 md:pb-36 pt-0" style={{ maxWidth: 1200 }}>
+      <div className="mx-auto px-6 md:px-12 pb-16 md:pb-24 pt-0" style={{ maxWidth: 1200 }}>
 
         {/* Thin gold separator from ProgramSection */}
         <div className="mb-16 md:mb-20">
@@ -41,20 +41,24 @@ export default function DeliverablesSection() {
           </div>
 
           {/* Side portrait */}
-          <SectionReveal direction="right" className="relative hidden lg:block bg-[#080808] overflow-hidden">
-            <div
-              className="absolute inset-0 z-10 pointer-events-none"
-              style={{ background: 'linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 30%)' }}
-            />
-            <Image
-              src="/images/bb-yellow-01.jpg"
-              alt="Anchor BB"
-              fill
-              quality={90}
-              className="object-cover object-[55%_10%]"
-              sizes="280px"
-            />
-          </SectionReveal>
+          <div className="relative hidden lg:block bg-[#080808] overflow-hidden" style={{ minHeight: '100%' }}>
+            <SectionReveal direction="right" className="w-full h-full">
+              <div
+                className="absolute inset-0 z-10 pointer-events-none"
+                style={{ background: 'linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 30%)' }}
+              />
+              <div className="relative w-full h-full">
+                <Image
+                  src="/images/bb-yellow-01.jpg"
+                  alt="Anchor BB"
+                  fill
+                  quality={90}
+                  className="object-cover object-[55%_10%]"
+                  sizes="280px"
+                />
+              </div>
+            </SectionReveal>
+          </div>
 
         </div>
       </div>
