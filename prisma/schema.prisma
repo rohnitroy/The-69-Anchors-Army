@@ -170,11 +170,15 @@ model SlotRegistration {
   phone     String    @unique @db.VarChar(20)
   slot      SquadSlot
   comments  String?   @db.Text
+  status    String    @default("pending") @db.VarChar(50)
+  adminNotes String?  @map("admin_notes") @db.Text
   ip        String?   @db.VarChar(45)
   createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([slot])
-  @@index([ip])
+  @@index([status])
+  @@index([email])
   @@index([createdAt])
   @@map("slot_registrations")
 }
