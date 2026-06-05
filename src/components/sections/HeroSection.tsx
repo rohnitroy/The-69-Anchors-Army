@@ -76,20 +76,20 @@ export default function HeroSection() {
           />
         </div>
 
-        {/* Vignette — dark left for text, image visible on right */}
+        {/* Vignette — darker left for text, image visible on right */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              'linear-gradient(to right, rgba(0,0,0,0.90) 0%, rgba(0,0,0,0.75) 38%, rgba(0,0,0,0.28) 62%, rgba(0,0,0,0.05) 100%), linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 30%)',
+              'linear-gradient(to right, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.88) 30%, rgba(0,0,0,0.45) 50%, rgba(0,0,0,0.08) 80%, rgba(0,0,0,0.02) 100%), linear-gradient(to top, rgba(0,0,0,0.70) 0%, transparent 35%)',
           }}
         />
       </div>
 
-      {/* ── Content — centered vertically, left-aligned ──────────────────── */}
+      {/* ── Content — centered vertically in viewport, left-aligned ───────── */}
       <div
         className="relative z-10 mx-auto w-full px-6 md:px-12 flex items-center justify-start"
-        style={{ maxWidth: 1200, height: '100svh', paddingTop: 72 }}
+        style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
           className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
