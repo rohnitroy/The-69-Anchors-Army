@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
-import Button from '@/components/ui/Button'
 
 export default function AdminLogin() {
   const router = useRouter()
@@ -41,30 +40,30 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-black flex items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-6">
       <div className="w-full max-w-md">
         {/* Header */}
         <div className="flex flex-col items-center text-center mb-12 gap-6">
           <AnchorsArmyLogo className="w-32" />
           <div>
             <h1
-              className="font-display font-semibold text-text-primary mb-3 leading-tight"
+              className="font-display font-semibold text-gray-900 mb-3 leading-tight"
               style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}
             >
               Admin Access
             </h1>
             <GoldDivider className="w-20 mx-auto" />
           </div>
-          <p className="font-sans text-text-secondary text-sm leading-relaxed">
+          <p className="font-sans text-gray-600 text-sm leading-relaxed">
             Manage 69 Anchors Army registrations and approvals
           </p>
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-8 rounded-lg shadow-lg border border-gray-200">
           {/* Username */}
           <div className="flex flex-col gap-2">
-            <label className="micro-label text-text-secondary">Username</label>
+            <label className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">Username</label>
             <input
               type="text"
               value={username}
@@ -72,13 +71,13 @@ export default function AdminLogin() {
               placeholder="Enter username"
               required
               disabled={loading}
-              className="w-full px-4 py-3.5 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-[15px] outline-none transition-all duration-200 placeholder:text-[#444] focus:border-gold-primary focus:shadow-[0_0_0_1px_rgba(200,150,12,0.2)] hover:border-[#2e2e2e] disabled:opacity-50"
+              className="w-full px-4 py-3.5 bg-white text-gray-900 border border-gray-300 font-sans text-[15px] outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 hover:border-gray-400 disabled:opacity-50 rounded"
             />
           </div>
 
           {/* Password */}
           <div className="flex flex-col gap-2">
-            <label className="micro-label text-text-secondary">Password</label>
+            <label className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">Password</label>
             <input
               type="password"
               value={password}
@@ -86,39 +85,29 @@ export default function AdminLogin() {
               placeholder="Enter password"
               required
               disabled={loading}
-              className="w-full px-4 py-3.5 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-[15px] outline-none transition-all duration-200 placeholder:text-[#444] focus:border-gold-primary focus:shadow-[0_0_0_1px_rgba(200,150,12,0.2)] hover:border-[#2e2e2e] disabled:opacity-50"
+              className="w-full px-4 py-3.5 bg-white text-gray-900 border border-gray-300 font-sans text-[15px] outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 hover:border-gray-400 disabled:opacity-50 rounded"
             />
           </div>
 
           {/* Error */}
           {error && (
-            <div
-              className="px-4 py-3.5 rounded-sm border-l-2"
-              style={{
-                borderColor: '#dc2626',
-                background: 'rgba(220, 38, 38, 0.06)',
-              }}
-            >
-              <p className="font-sans text-sm" style={{ color: '#dc2626' }}>
-                {error}
-              </p>
+            <div className="px-4 py-3.5 rounded border-l-4 bg-red-50 border-red-500">
+              <p className="font-sans text-sm text-red-700">{error}</p>
             </div>
           )}
 
           {/* Submit */}
-          <Button
+          <button
             type="submit"
-            variant="primary"
-            size="lg"
-            className="w-full mt-6"
             disabled={loading}
+            className="w-full mt-6 px-6 py-3.5 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
           >
             {loading ? 'Signing In...' : 'Sign In →'}
-          </Button>
+          </button>
         </form>
 
         {/* Footer */}
-        <p className="text-center text-text-secondary text-xs mt-8">
+        <p className="text-center text-gray-600 text-xs mt-8">
           For admin access only · Unauthorized access is prohibited
         </p>
       </div>

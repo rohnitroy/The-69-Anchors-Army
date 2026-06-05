@@ -3,8 +3,8 @@ import { isAdminAuthenticated } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
 
 export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  { params }: any
 ) {
   try {
     const authenticated = await isAdminAuthenticated()
@@ -12,8 +12,9 @@ export async function GET(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const id = (await params).id
     const registration = await prisma.slotRegistration.findUnique({
-      where: { id: params.id },
+      where: { id },
     })
 
     if (!registration) {
@@ -35,7 +36,7 @@ export async function GET(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: any
 ) {
   try {
     const authenticated = await isAdminAuthenticated()
@@ -43,10 +44,11 @@ export async function PATCH(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const id = (await params).id
     const { status, adminNotes } = await req.json()
 
     const updated = await prisma.slotRegistration.update({
-      where: { id: params.id },
+      where: { id },
       data: {
         ...(status && { status }),
         ...(adminNotes !== undefined && { adminNotes }),
@@ -64,8 +66,8 @@ export async function PATCH(
 }
 
 export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
+  _req: NextRequest,
+  { params }: any
 ) {
   try {
     const authenticated = await isAdminAuthenticated()
@@ -73,8 +75,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
+    const id = (await params).id
     await prisma.slotRegistration.delete({
-      where: { id: params.id },
+      where: { id },
     })
 
     return NextResponse.json({ success: true })

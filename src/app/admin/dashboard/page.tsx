@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
-import Button from '@/components/ui/Button'
 
 type Registration = {
   id: string
@@ -26,6 +25,9 @@ export default function AdminDashboard() {
   const [slotFilter, setSlotFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [counts, setCounts] = useState<Record<string, number>>({})
+  const [selected, setSelected] = useState<Set<string>>(new Set())
+  const [bulkStatus, setBulkStatus] = useState('')
+  const [bulkLoading, setBulkLoading] = useState(false)
 
   useEffect(() => {
     fetchRegistrations()
@@ -61,6 +63,75 @@ export default function AdminDashboard() {
     router.push('/admin/login')
   }
 
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selected)
+    if (newSelected.has(id)) {
+      newSelected.delete(id)
+    } else {
+      newSelected.add(id)
+    }
+    setSelected(newSelected)
+  }
+
+  const toggleSelectAll = () => {
+    if (selected.size === registrations.length) {
+      setSelected(new Set())
+    } else {
+      setSelected(new Set(registrations.map(r => r.id)))
+    }
+  }
+
+  const handleBulkStatusUpdate = async () => {
+    if (selected.size === 0 || !bulkStatus) return
+    if (!confirm(`Update ${selected.size} registration(s) to ${bulkStatus}?`)) return
+
+    setBulkLoading(true)
+    try {
+      await Promise.all(
+        Array.from(selected).map(id =>
+          fetch(`/api/admin/registration/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: bulkStatus }),
+          })
+        )
+      )
+      setSelected(new Set())
+      setBulkStatus('')
+      fetchRegistrations()
+    } catch (error) {
+      console.error('Bulk update error:', error)
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
+  const handleExportCSV = () => {
+    const headers = ['Name', 'Email', 'Phone', 'Squad', 'Status', 'Comments', 'Date Registered']
+    const rows = registrations.map(r => [
+      r.fullName,
+      r.email,
+      r.phone,
+      r.slot.toUpperCase(),
+      r.status,
+      r.comments || '',
+      new Date(r.createdAt).toLocaleString(),
+    ])
+
+    const csv = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')),
+    ].join('\n')
+
+    const blob = new Blob([csv], { type: 'text/csv' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `registrations-${new Date().toISOString().split('T')[0]}.csv`
+    a.click()
+    window.URL.revokeObjectURL(url)
+  }
+
   const handleDelete = async (id: string) => {
     if (!confirm('Are you sure you want to delete this registration?')) return
 
@@ -71,6 +142,9 @@ export default function AdminDashboard() {
 
       if (res.ok) {
         setRegistrations(registrations.filter(r => r.id !== id))
+        const newSelected = new Set(selected)
+        newSelected.delete(id)
+        setSelected(newSelected)
       }
     } catch (error) {
       console.error('Delete error:', error)
@@ -92,27 +166,24 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <div
-        className="sticky top-0 z-40 border-b border-[#1e1e1e] bg-black/95 backdrop-blur"
-        style={{ background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(10px)' }}
-      >
+      <div className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <AnchorsArmyLogo className="w-20" />
             <div>
-              <h1 className="font-display font-semibold text-text-primary text-lg">
+              <h1 className="font-display font-semibold text-gray-900 text-lg">
                 Registration Manager
               </h1>
-              <p className="micro-label text-text-secondary">
+              <p className="font-sans text-gray-600 text-sm">
                 {registrations.length} registrations
               </p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-text-secondary hover:text-gold-primary transition-colors text-sm"
+            className="px-4 py-2 text-gray-600 hover:text-[#C8960C] transition-colors text-sm font-semibold"
           >
             Logout →
           </button>
@@ -130,14 +201,14 @@ export default function AdminDashboard() {
               placeholder="Search by name, email, or phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-4 py-3 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-sm outline-none focus:border-gold-primary placeholder:text-[#444]"
+              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 placeholder:text-gray-400 rounded"
             />
 
             {/* Slot Filter */}
             <select
               value={slotFilter}
               onChange={(e) => setSlotFilter(e.target.value)}
-              className="px-4 py-3 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-sm outline-none focus:border-gold-primary"
+              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
             >
               <option value="">All Squads</option>
               <option value="squad1">Squad 1 (Aug 8-9)</option>
@@ -150,7 +221,7 @@ export default function AdminDashboard() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-sm outline-none focus:border-gold-primary"
+              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
             >
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
@@ -164,14 +235,11 @@ export default function AdminDashboard() {
         {/* Stats */}
         <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
           {['squad1', 'squad2', 'squad3', 'squad4'].map(squad => (
-            <div
-              key={squad}
-              className="p-4 bg-[#0a0a0a] border border-[#1e1e1e]"
-            >
-              <p className="micro-label text-text-secondary mb-2">
+            <div key={squad} className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
                 {squad.charAt(0).toUpperCase() + squad.slice(1)}
               </p>
-              <p className="font-display text-xl font-semibold text-gold-primary">
+              <p className="font-display text-2xl font-semibold text-[#C8960C]">
                 {counts[squad] || 0}
               </p>
             </div>
@@ -180,39 +248,93 @@ export default function AdminDashboard() {
 
         <GoldDivider className="w-16 mb-8" />
 
+        {/* Bulk Actions */}
+        {selected.size > 0 && (
+          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="font-sans text-sm font-semibold text-gray-900">
+                {selected.size} selected
+              </span>
+              <select
+                value={bulkStatus}
+                onChange={(e) => setBulkStatus(e.target.value)}
+                className="px-3 py-2 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] rounded"
+              >
+                <option value="">Change status to...</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+                <option value="pending">Pending</option>
+                <option value="waitlisted">Waitlisted</option>
+              </select>
+              <button
+                onClick={handleBulkStatusUpdate}
+                disabled={!bulkStatus || bulkLoading}
+                className="px-4 py-2 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+              >
+                {bulkLoading ? 'Updating...' : 'Update'}
+              </button>
+            </div>
+            <button
+              onClick={() => setSelected(new Set())}
+              className="px-3 py-2 text-gray-600 hover:text-gray-900 text-sm font-semibold"
+            >
+              Clear
+            </button>
+          </div>
+        )}
+
+        {/* Export & Actions Bar */}
+        <div className="mb-6 flex gap-3">
+          <button
+            onClick={handleExportCSV}
+            disabled={registrations.length === 0}
+            className="px-4 py-2.5 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+          >
+            📥 Export to CSV
+          </button>
+        </div>
+
         {/* Registrations Table */}
         {loading ? (
           <div className="text-center py-12">
-            <p className="text-text-secondary">Loading registrations...</p>
+            <p className="text-gray-600">Loading registrations...</p>
           </div>
         ) : registrations.length === 0 ? (
           <div className="text-center py-12">
-            <p className="text-text-secondary">No registrations found</p>
+            <p className="text-gray-600">No registrations found</p>
           </div>
         ) : (
-          <div className="overflow-x-auto border border-[#1e1e1e]">
+          <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-[#1e1e1e] bg-[#0a0a0a]">
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                <tr className="border-b border-gray-200 bg-gray-50">
+                  <th className="px-6 py-4 text-left">
+                    <input
+                      type="checkbox"
+                      checked={selected.size === registrations.length && registrations.length > 0}
+                      onChange={toggleSelectAll}
+                      className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
+                    />
+                  </th>
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Name
                   </th>
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Email
                   </th>
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Phone
                   </th>
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Squad
                   </th>
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-right micro-label text-text-secondary">
+                  <th className="px-6 py-4 text-right font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Actions
                   </th>
                 </tr>
@@ -221,45 +343,53 @@ export default function AdminDashboard() {
                 {registrations.map((reg) => (
                   <tr
                     key={reg.id}
-                    className="border-b border-[#1e1e1e] hover:bg-[#0a0a0a] transition-colors"
+                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-sans text-sm text-text-primary">
+                    <td className="px-6 py-4">
+                      <input
+                        type="checkbox"
+                        checked={selected.has(reg.id)}
+                        onChange={() => toggleSelect(reg.id)}
+                        className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
+                      />
+                    </td>
+                    <td className="px-6 py-4 font-sans text-sm text-gray-900 font-medium">
                       {reg.fullName}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-text-secondary">
+                    <td className="px-6 py-4 font-sans text-sm text-gray-600">
                       {reg.email}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-text-secondary">
+                    <td className="px-6 py-4 font-sans text-sm text-gray-600">
                       {reg.phone}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-text-primary">
+                    <td className="px-6 py-4 font-sans text-sm text-gray-900">
                       {squadDates[reg.slot] || reg.slot}
                     </td>
                     <td className="px-6 py-4">
                       <span
                         className="px-3 py-1 rounded text-xs font-semibold"
                         style={{
-                          color: statusColor[reg.status] || '#888',
-                          border: `1px solid ${statusColor[reg.status] || '#444'}`,
-                          background: `${statusColor[reg.status]}20` || 'transparent',
+                          color: statusColor[reg.status] || '#666',
+                          border: `1px solid ${statusColor[reg.status] || '#ddd'}`,
+                          background: `${statusColor[reg.status]}15` || '#f5f5f5',
                         }}
                       >
                         {reg.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-sans text-xs text-text-secondary">
+                    <td className="px-6 py-4 font-sans text-xs text-gray-600">
                       {new Date(reg.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
                       <div className="flex gap-2 justify-end">
                         <Link href={`/admin/registration/${reg.id}`}>
-                          <button className="px-3 py-1.5 text-xs font-semibold text-gold-primary border border-gold-muted hover:bg-[rgba(200,150,12,0.06)] transition-colors">
+                          <button className="px-3 py-1.5 text-xs font-semibold text-[#C8960C] border border-[#C8960C] hover:bg-[#C8960C]/10 transition-colors rounded">
                             View
                           </button>
                         </Link>
                         <button
                           onClick={() => handleDelete(reg.id)}
-                          className="px-3 py-1.5 text-xs font-semibold text-red-400 border border-red-400 hover:bg-[rgba(220,38,38,0.06)] transition-colors"
+                          className="px-3 py-1.5 text-xs font-semibold text-red-600 border border-red-300 hover:bg-red-50 transition-colors rounded"
                         >
                           Delete
                         </button>

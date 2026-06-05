@@ -5,7 +5,6 @@ import { useRouter, useParams } from 'next/navigation'
 import Link from 'next/link'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
-import Button from '@/components/ui/Button'
 
 type Registration = {
   id: string
@@ -115,16 +114,13 @@ export default function RegistrationDetail() {
   }
 
   return (
-    <div className="min-h-screen bg-black">
+    <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
-      <div
-        className="sticky top-0 z-40 border-b border-[#1e1e1e]"
-        style={{ background: 'rgba(0,0,0,0.95)', backdropFilter: 'blur(10px)' }}
-      >
-        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
-          <Link href="/admin/dashboard" className="flex items-center gap-3 hover:opacity-70">
+      <div className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
+        <div className="max-w-4xl mx-auto px-6 py-4">
+          <Link href="/admin/dashboard" className="flex items-center gap-3 hover:text-[#C8960C] text-gray-900">
             <AnchorsArmyLogo className="w-16" />
-            <span className="text-text-secondary text-sm">← Back to Dashboard</span>
+            <span className="text-sm font-semibold">← Back to Dashboard</span>
           </Link>
         </div>
       </div>
@@ -134,7 +130,7 @@ export default function RegistrationDetail() {
         {/* Header */}
         <div className="mb-10">
           <h1
-            className="font-display font-semibold text-text-primary leading-tight mb-4"
+            className="font-display font-semibold text-gray-900 leading-tight mb-4"
             style={{ fontSize: 'clamp(32px, 4vw, 48px)' }}
           >
             {registration.fullName}
@@ -147,45 +143,45 @@ export default function RegistrationDetail() {
           {/* Left Column */}
           <div className="space-y-6">
             <div>
-              <p className="micro-label text-text-secondary mb-2">Email</p>
-              <p className="font-sans text-text-primary">{registration.email}</p>
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Email</p>
+              <p className="font-sans text-gray-900">{registration.email}</p>
             </div>
 
             <div>
-              <p className="micro-label text-text-secondary mb-2">Phone</p>
-              <p className="font-sans text-text-primary">{registration.phone}</p>
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Phone</p>
+              <p className="font-sans text-gray-900">{registration.phone}</p>
             </div>
 
             <div>
-              <p className="micro-label text-text-secondary mb-2">Squad Selection</p>
-              <p className="font-sans text-text-primary font-semibold">
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Squad Selection</p>
+              <p className="font-sans text-gray-900 font-semibold">
                 {registration.slot.toUpperCase()}
               </p>
-              <p className="font-sans text-text-secondary text-sm mt-1">
+              <p className="font-sans text-gray-600 text-sm mt-1">
                 {squadDates[registration.slot]}
               </p>
             </div>
 
             <div>
-              <p className="micro-label text-text-secondary mb-2">Comments</p>
-              <p className="font-sans text-text-secondary leading-relaxed">
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Comments</p>
+              <p className="font-sans text-gray-600 leading-relaxed">
                 {registration.comments || '—'}
               </p>
             </div>
 
             <div>
-              <p className="micro-label text-text-secondary mb-2">Registered</p>
-              <p className="font-sans text-text-secondary text-sm">
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2">Registered</p>
+              <p className="font-sans text-gray-600 text-sm">
                 {new Date(registration.createdAt).toLocaleString()}
               </p>
             </div>
           </div>
 
           {/* Right Column — Status & Notes */}
-          <div className="space-y-6 p-6 border border-[#1e1e1e] bg-[#0a0a0a]">
+          <div className="space-y-6 p-6 border border-gray-200 bg-white rounded-lg shadow-sm">
             {/* Current Status */}
             <div>
-              <p className="micro-label text-text-secondary mb-3">Current Status</p>
+              <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">Current Status</p>
               <span
                 className="px-4 py-2 rounded text-sm font-semibold"
                 style={{
@@ -204,7 +200,7 @@ export default function RegistrationDetail() {
             {!editing ? (
               <button
                 onClick={() => setEditing(true)}
-                className="w-full px-4 py-2.5 border border-gold-primary text-gold-primary hover:bg-[rgba(200,150,12,0.06)] transition-colors text-sm font-semibold"
+                className="w-full px-4 py-2.5 border border-[#C8960C] text-[#C8960C] hover:bg-[#C8960C]/10 transition-colors text-sm font-semibold rounded"
               >
                 Edit Status & Notes
               </button>
@@ -212,13 +208,13 @@ export default function RegistrationDetail() {
               <div className="space-y-4">
                 {/* Status Dropdown */}
                 <div>
-                  <label className="micro-label text-text-secondary mb-2 block">
+                  <label className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2 block">
                     Change Status
                   </label>
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full px-4 py-3 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-sm outline-none focus:border-gold-primary"
+                    className="w-full px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
                   >
                     <option value="pending">Pending</option>
                     <option value="approved">Approved</option>
@@ -229,15 +225,15 @@ export default function RegistrationDetail() {
 
                 {/* Notes */}
                 <div>
-                  <label className="micro-label text-text-secondary mb-2 block">
-                    Admin Notes
+                  <label className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-2 block">
+                    Admin Notes — Why was this registration rejected/approved?
                   </label>
                   <textarea
                     value={adminNotes}
                     onChange={(e) => setAdminNotes(e.target.value)}
-                    placeholder="Add internal notes..."
+                    placeholder="Add internal notes to track decisions..."
                     rows={4}
-                    className="w-full px-4 py-3 bg-[#060606] text-text-primary border border-[#1e1e1e] font-sans text-sm outline-none focus:border-gold-primary placeholder:text-[#444] resize-none"
+                    className="w-full px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 placeholder:text-gray-400 rounded resize-none"
                   />
                 </div>
 
@@ -246,7 +242,7 @@ export default function RegistrationDetail() {
                   <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex-1 px-4 py-2.5 bg-gold-primary text-black font-semibold text-sm hover:opacity-90 transition-opacity disabled:opacity-50"
+                    className="flex-1 px-4 py-2.5 bg-[#C8960C] text-black font-semibold text-sm hover:bg-[#B08608] transition-colors disabled:opacity-50 rounded"
                   >
                     {saving ? 'Saving...' : 'Save Changes'}
                   </button>
@@ -256,7 +252,7 @@ export default function RegistrationDetail() {
                       setStatus(registration.status)
                       setAdminNotes(registration.adminNotes || '')
                     }}
-                    className="flex-1 px-4 py-2.5 border border-[#1e1e1e] text-text-secondary hover:border-[#333] transition-colors text-sm"
+                    className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 hover:border-gray-400 transition-colors text-sm rounded"
                   >
                     Cancel
                   </button>
@@ -266,9 +262,9 @@ export default function RegistrationDetail() {
 
             {/* Display Notes if exists */}
             {!editing && registration.adminNotes && (
-              <div className="pt-4 border-t border-[#1e1e1e]">
-                <p className="micro-label text-text-secondary mb-3">Notes</p>
-                <p className="font-sans text-text-secondary text-sm leading-relaxed">
+              <div className="pt-4 border-t border-gray-200">
+                <p className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide mb-3">Notes</p>
+                <p className="font-sans text-gray-600 text-sm leading-relaxed bg-gray-50 p-3 rounded">
                   {registration.adminNotes}
                 </p>
               </div>
@@ -278,7 +274,7 @@ export default function RegistrationDetail() {
 
         {/* Back Button */}
         <Link href="/admin/dashboard">
-          <button className="px-6 py-3 border border-gold-primary text-gold-primary hover:bg-[rgba(200,150,12,0.06)] transition-colors font-semibold">
+          <button className="px-6 py-3 border border-[#C8960C] text-[#C8960C] hover:bg-[#C8960C]/10 transition-colors font-semibold rounded">
             ← Back to Dashboard
           </button>
         </Link>
