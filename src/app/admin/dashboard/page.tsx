@@ -169,21 +169,21 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <div className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <AnchorsArmyLogo className="w-20" />
-            <div>
-              <h1 className="font-display font-semibold text-gray-900 text-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <AnchorsArmyLogo className="w-16 sm:w-20 flex-shrink-0" />
+            <div className="min-w-0">
+              <h1 className="font-display font-semibold text-gray-900 text-sm sm:text-lg line-clamp-1">
                 Registration Manager
               </h1>
-              <p className="font-sans text-gray-600 text-sm">
+              <p className="font-sans text-gray-600 text-xs sm:text-sm">
                 {registrations.length} registrations
               </p>
             </div>
           </div>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 text-gray-600 hover:text-[#C8960C] transition-colors text-sm font-semibold"
+            className="px-3 sm:px-4 py-1.5 sm:py-2 text-gray-600 hover:text-[#C8960C] transition-colors text-xs sm:text-sm font-semibold whitespace-nowrap"
           >
             Logout →
           </button>
@@ -191,24 +191,24 @@ export default function AdminDashboard() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
         {/* Filters */}
-        <div className="mb-8 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             {/* Search */}
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 placeholder:text-gray-400 rounded"
+              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 placeholder:text-gray-400 rounded"
             />
 
             {/* Slot Filter */}
             <select
               value={slotFilter}
               onChange={(e) => setSlotFilter(e.target.value)}
-              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
+              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
             >
               <option value="">All Squads</option>
               <option value="squad1">Squad 1 (Aug 8-9)</option>
@@ -221,7 +221,7 @@ export default function AdminDashboard() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-4 py-3 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
+              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
             >
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
@@ -233,13 +233,13 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="mb-6 sm:mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
           {['squad1', 'squad2', 'squad3', 'squad4'].map(squad => (
-            <div key={squad} className="p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-wide mb-2">
+            <div key={squad} className="p-3 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+              <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-tight mb-2">
                 {squad.charAt(0).toUpperCase() + squad.slice(1)}
               </p>
-              <p className="font-display text-2xl font-semibold text-[#C8960C]">
+              <p className="font-display text-xl sm:text-2xl font-semibold text-[#C8960C]">
                 {counts[squad] || 0}
               </p>
             </div>
@@ -250,15 +250,15 @@ export default function AdminDashboard() {
 
         {/* Bulk Actions */}
         {selected.size > 0 && (
-          <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <span className="font-sans text-sm font-semibold text-gray-900">
+          <div className="mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
                 {selected.size} selected
               </span>
               <select
                 value={bulkStatus}
                 onChange={(e) => setBulkStatus(e.target.value)}
-                className="px-3 py-2 bg-white text-gray-900 border border-gray-300 font-sans text-sm outline-none focus:border-[#C8960C] rounded"
+                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] rounded"
               >
                 <option value="">Change status to...</option>
                 <option value="approved">Approved</option>
@@ -269,14 +269,14 @@ export default function AdminDashboard() {
               <button
                 onClick={handleBulkStatusUpdate}
                 disabled={!bulkStatus || bulkLoading}
-                className="px-4 py-2 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
               >
                 {bulkLoading ? 'Updating...' : 'Update'}
               </button>
             </div>
             <button
               onClick={() => setSelected(new Set())}
-              className="px-3 py-2 text-gray-600 hover:text-gray-900 text-sm font-semibold"
+              className="px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-semibold"
             >
               Clear
             </button>
@@ -284,13 +284,13 @@ export default function AdminDashboard() {
         )}
 
         {/* Export & Actions Bar */}
-        <div className="mb-6 flex gap-3">
+        <div className="mb-6 flex gap-2">
           <button
             onClick={handleExportCSV}
             disabled={registrations.length === 0}
-            className="px-4 py-2.5 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+            className="px-3 sm:px-4 py-2 sm:py-2.5 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
           >
-            📥 Export to CSV
+            📥 Export CSV
           </button>
         </div>
 
@@ -305,10 +305,10 @@ export default function AdminDashboard() {
           </div>
         ) : (
           <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
-            <table className="w-full">
+            <table className="w-full text-sm sm:text-base">
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-6 py-4 text-left">
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
                     <input
                       type="checkbox"
                       checked={selected.size === registrations.length && registrations.length > 0}
@@ -316,25 +316,25 @@ export default function AdminDashboard() {
                       className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
                     />
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Name
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="hidden sm:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Email
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="hidden lg:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Phone
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Squad
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Status
                   </th>
-                  <th className="px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="hidden sm:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Date
                   </th>
-                  <th className="px-6 py-4 text-right font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-right font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Actions
                   </th>
                 </tr>
@@ -345,7 +345,7 @@ export default function AdminDashboard() {
                     key={reg.id}
                     className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
                   >
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <input
                         type="checkbox"
                         checked={selected.has(reg.id)}
@@ -353,21 +353,21 @@ export default function AdminDashboard() {
                         className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
                       />
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-gray-900 font-medium">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-xs sm:text-sm text-gray-900 font-medium">
                       {reg.fullName}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-gray-600">
+                    <td className="hidden sm:table-cell px-6 py-4 font-sans text-sm text-gray-600">
                       {reg.email}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-gray-600">
+                    <td className="hidden lg:table-cell px-6 py-4 font-sans text-sm text-gray-600">
                       {reg.phone}
                     </td>
-                    <td className="px-6 py-4 font-sans text-sm text-gray-900">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-xs sm:text-sm text-gray-900">
                       {squadDates[reg.slot] || reg.slot}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <span
-                        className="px-3 py-1 rounded text-xs font-semibold"
+                        className="px-2 sm:px-3 py-1 rounded text-xs font-semibold"
                         style={{
                           color: statusColor[reg.status] || '#666',
                           border: `1px solid ${statusColor[reg.status] || '#ddd'}`,
@@ -377,21 +377,21 @@ export default function AdminDashboard() {
                         {reg.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-sans text-xs text-gray-600">
+                    <td className="hidden sm:table-cell px-6 py-4 font-sans text-xs text-gray-600">
                       {new Date(reg.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 text-right">
-                      <div className="flex gap-2 justify-end">
+                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                      <div className="flex gap-1 sm:gap-2 justify-end">
                         <Link href={`/admin/registration/${reg.id}`}>
-                          <button className="px-3 py-1.5 text-xs font-semibold text-[#C8960C] border border-[#C8960C] hover:bg-[#C8960C]/10 transition-colors rounded">
+                          <button className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold text-[#C8960C] border border-[#C8960C] hover:bg-[#C8960C]/10 transition-colors rounded">
                             View
                           </button>
                         </Link>
                         <button
                           onClick={() => handleDelete(reg.id)}
-                          className="px-3 py-1.5 text-xs font-semibold text-red-600 border border-red-300 hover:bg-red-50 transition-colors rounded"
+                          className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold text-red-600 border border-red-300 hover:bg-red-50 transition-colors rounded"
                         >
-                          Delete
+                          Del
                         </button>
                       </div>
                     </td>

@@ -71,7 +71,7 @@ export default function HeroSection() {
             fill
             priority
             unoptimized
-            className="object-cover object-[82%_center] md:object-[72%_20%]"
+            className="object-cover object-[45%_center] sm:object-[60%_center] md:object-[72%_20%]"
             sizes="100vw"
           />
         </div>
@@ -88,11 +88,11 @@ export default function HeroSection() {
 
       {/* ── Content — centered vertically in viewport, left-aligned ───────── */}
       <div
-        className="relative z-10 mx-auto w-full px-6 md:px-12 flex items-center justify-start"
+        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex items-center justify-start"
         style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
-          className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
+          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6"
           variants={container}
           initial="hidden"
           animate="visible"
@@ -108,24 +108,24 @@ export default function HeroSection() {
           <motion.p
             variants={item}
             className="font-display italic text-text-secondary leading-snug"
-            style={{ fontSize: 'clamp(18px, 2vw, 24px)' }}
+            style={{ fontSize: 'clamp(14px, 2vw, 24px)' }}
           >
             {HERO.quote}
           </motion.p>
 
-          <motion.div variants={item} style={{ width: '100%', maxWidth: 200 }}>
+          <motion.div variants={item} style={{ width: '100%', maxWidth: 180 }}>
             <GoldDivider />
           </motion.div>
 
           <motion.p
             variants={item}
             className="font-label font-semibold text-text-primary tracking-wide"
-            style={{ fontSize: 'clamp(13px, 1.2vw, 15px)' }}
+            style={{ fontSize: 'clamp(12px, 1.2vw, 15px)' }}
           >
             {HERO.sub}
           </motion.p>
 
-          <motion.div variants={item} className="flex flex-col sm:flex-row gap-4 mt-2">
+          <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 mt-1 sm:mt-2">
             <Button onClick={openModal} variant="primary" size="lg">
               {HERO.cta} →
             </Button>

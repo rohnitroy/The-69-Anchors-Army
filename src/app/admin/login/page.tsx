@@ -40,27 +40,27 @@ export default function AdminLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center px-4 sm:px-6 py-8">
       <div className="w-full max-w-md">
         {/* Header */}
-        <div className="flex flex-col items-center text-center mb-12 gap-6">
-          <AnchorsArmyLogo className="w-32" />
+        <div className="flex flex-col items-center text-center mb-8 sm:mb-12 gap-4 sm:gap-6">
+          <AnchorsArmyLogo className="w-24 sm:w-32" />
           <div>
             <h1
-              className="font-display font-semibold text-gray-900 mb-3 leading-tight"
-              style={{ fontSize: 'clamp(28px, 4vw, 42px)' }}
+              className="font-display font-semibold text-gray-900 mb-2 sm:mb-3 leading-tight"
+              style={{ fontSize: 'clamp(24px, 5vw, 42px)' }}
             >
               Admin Access
             </h1>
-            <GoldDivider className="w-20 mx-auto" />
+            <GoldDivider className="w-16 sm:w-20 mx-auto" />
           </div>
-          <p className="font-sans text-gray-600 text-sm leading-relaxed">
-            Manage 69 Anchors Army registrations and approvals
+          <p className="font-sans text-gray-600 text-xs sm:text-sm leading-relaxed">
+            Manage 69 Anchors Army registrations
           </p>
         </div>
 
         {/* Login Form */}
-        <form onSubmit={handleSubmit} className="space-y-5 bg-white p-8 rounded-lg shadow-lg border border-gray-200">
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 bg-white p-6 sm:p-8 rounded-lg shadow-lg border border-gray-200">
           {/* Username */}
           <div className="flex flex-col gap-2">
             <label className="font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">Username</label>
