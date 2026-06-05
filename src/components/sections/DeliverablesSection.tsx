@@ -47,11 +47,11 @@ export default function DeliverablesSection() {
               style={{ background: 'linear-gradient(to right, rgba(0,0,0,1) 0%, transparent 30%)' }}
             />
             <Image
-              src="/images/mentor-entry.webp"
+              src="/images/bb-yellow-01.jpg"
               alt="Anchor BB"
               fill
               quality={90}
-              className="object-contain object-center"
+              className="object-cover object-[55%_10%]"
               sizes="280px"
             />
           </SectionReveal>

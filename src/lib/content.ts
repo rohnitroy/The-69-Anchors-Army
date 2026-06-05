@@ -34,13 +34,24 @@ export const POSITIONING = {
 }
 
 export const MENTOR = {
-  micro: '— The Mind Behind It —',
-  heading: 'Who Is BB?',
-  bio: 'Anchor BB is one of India\'s most sought-after premium wedding anchors, having commanded stages across 500+ luxury events in 40+ cities. He built the Bol BB Bol brand from a single mic into a movement — and now he\'s inducting 69 professionals into his inner circle.',
+  micro: '— About The Artist —',
+  heading: 'Anchor Bol-BB-Bol',
+  name: 'Bhavaish R. Bhatijaa',
+  bio: 'Professionally known as Anchor Bol-BB-Bol, Bhavaish R. Bhatijaa is a premier, high-energy wedding emcee, anchor, and entertainer based in Mumbai, India. Known for his exceptional crowd interaction and spontaneous stand-up comedy, he brings vibrant energy to every grand celebration.',
   stats: [
-    { value: '500+', label: 'Events Anchored' },
+    { value: '9+', label: 'Years in the Industry' },
+    { value: '3,600+', label: 'Events Hosted' },
     { value: '40+', label: 'Cities Served' },
-    { value: '12+', label: 'Years on Stage' },
+  ],
+  highlights: [
+    { label: 'Creator of the viral series "69 Days 69 Wedding Ideas"' },
+    { label: 'Shared stages with Amitabh Bachchan, Sonu Nigam, DJ Snake & Malaika Arora' },
+  ],
+  services: [
+    'Sangeet & Mehendi Hosting',
+    'Grand Wedding Receptions',
+    'Corporate Events & Gala Dinners',
+    'Next Generation Wedding Anchors Academy',
   ],
   signature: 'Anchor BB',
 }

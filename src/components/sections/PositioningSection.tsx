@@ -41,11 +41,11 @@ export default function PositioningSection() {
               style={{ background: 'linear-gradient(to right, rgba(0,0,0,0.8) 0%, transparent 20%)' }}
             />
             <Image
-              src="/images/mentor-blueprint.webp"
+              src="/images/bb-palace-03.jpg"
               alt="Anchor BB"
               fill
               quality={90}
-              className="object-contain object-center"
+              className="object-cover object-[55%_15%]"
               sizes="420px"
             />
           </SectionReveal>
