@@ -55,7 +55,7 @@ export default function HeroSection() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative flex items-center overflow-hidden bg-black"
+      className="relative overflow-hidden bg-black"
       style={{ minHeight: '100svh' }}
     >
       {/* ── Background image ─────────────────────────────────────────── */}
@@ -86,10 +86,10 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content — pt-[72px] clears the fixed navbar ──────────────── */}
+      {/* ── Content — centered vertically, left-aligned ──────────────────── */}
       <div
         className="relative z-10 mx-auto w-full px-6 md:px-12 flex items-center justify-start"
-        style={{ maxWidth: 1200, paddingTop: 72, paddingBottom: 48 }}
+        style={{ maxWidth: 1200, height: '100svh', paddingTop: 72 }}
       >
         <motion.div
           className="max-w-xl md:max-w-2xl flex flex-col items-start gap-6"
