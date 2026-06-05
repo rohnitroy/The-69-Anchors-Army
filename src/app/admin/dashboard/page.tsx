@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
+import CustomSelect from '@/components/ui/CustomSelect'
 
 type Registration = {
   id: string
@@ -205,30 +206,32 @@ export default function AdminDashboard() {
             />
 
             {/* Slot Filter */}
-            <select
+            <CustomSelect
               value={slotFilter}
-              onChange={(e) => setSlotFilter(e.target.value)}
-              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
-            >
-              <option value="">All Squads</option>
-              <option value="squad1">Squad 1 (Aug 8-9)</option>
-              <option value="squad2">Squad 2 (Aug 10-11)</option>
-              <option value="squad3">Squad 3 (Aug 17-18)</option>
-              <option value="squad4">Squad 4 (Aug 19-20)</option>
-            </select>
+              onChange={setSlotFilter}
+              placeholder="All Squads"
+              options={[
+                { value: '', label: 'All Squads' },
+                { value: 'squad1', label: 'Squad 1 (Aug 8-9)' },
+                { value: 'squad2', label: 'Squad 2 (Aug 10-11)' },
+                { value: 'squad3', label: 'Squad 3 (Aug 17-18)' },
+                { value: 'squad4', label: 'Squad 4 (Aug 19-20)' },
+              ]}
+            />
 
             {/* Status Filter */}
-            <select
+            <CustomSelect
               value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded"
-            >
-              <option value="">All Statuses</option>
-              <option value="pending">Pending</option>
-              <option value="approved">Approved</option>
-              <option value="rejected">Rejected</option>
-              <option value="waitlisted">Waitlisted</option>
-            </select>
+              onChange={setStatusFilter}
+              placeholder="All Statuses"
+              options={[
+                { value: '', label: 'All Statuses' },
+                { value: 'pending', label: 'Pending' },
+                { value: 'approved', label: 'Approved' },
+                { value: 'rejected', label: 'Rejected' },
+                { value: 'waitlisted', label: 'Waitlisted' },
+              ]}
+            />
           </div>
         </div>
 
@@ -255,17 +258,18 @@ export default function AdminDashboard() {
               <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
                 {selected.size} selected
               </span>
-              <select
+              <CustomSelect
                 value={bulkStatus}
-                onChange={(e) => setBulkStatus(e.target.value)}
-                className="px-2 sm:px-3 py-1.5 sm:py-2 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] rounded"
-              >
-                <option value="">Change status to...</option>
-                <option value="approved">Approved</option>
-                <option value="rejected">Rejected</option>
-                <option value="pending">Pending</option>
-                <option value="waitlisted">Waitlisted</option>
-              </select>
+                onChange={setBulkStatus}
+                placeholder="Change status to..."
+                options={[
+                  { value: '', label: 'Change status to...' },
+                  { value: 'approved', label: 'Approved' },
+                  { value: 'rejected', label: 'Rejected' },
+                  { value: 'pending', label: 'Pending' },
+                  { value: 'waitlisted', label: 'Waitlisted' },
+                ]}
+              />
               <button
                 onClick={handleBulkStatusUpdate}
                 disabled={!bulkStatus || bulkLoading}

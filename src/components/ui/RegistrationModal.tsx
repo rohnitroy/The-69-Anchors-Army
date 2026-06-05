@@ -61,6 +61,10 @@ type FormState = {
 
 const EMPTY: FormState = { fullName: '', phone: '', email: '', slot: '', comments: '' }
 
+type ExpandedSlot = {
+  [key: string]: boolean
+}
+
 // ─── Modal ──────────────────────────────────────────────────────────────────
 
 export default function RegistrationModal() {
@@ -188,6 +192,7 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]           = useState('')
   const [slotCounts, setSlotCounts] = useState<Record<string, number>>({})
+  const [expandedSlots, setExpandedSlots] = useState<ExpandedSlot>({})
 
   useEffect(() => {
     fetch('/api/slots')
@@ -199,6 +204,10 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
   const set = (k: keyof FormState) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
       setForm(prev => ({ ...prev, [k]: e.target.value }))
+
+  const toggleSlotExpand = (slotId: string) => {
+    setExpandedSlots(prev => ({ ...prev, [slotId]: !prev[slotId] }))
+  }
 
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
@@ -291,77 +300,93 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
             {SLOTS.map(({ id, name, date, checkout }) => {
               const count  = slotCounts[id] ?? 0
               const isFull = count >= SEAT_LIMIT
+              const isExpanded = expandedSlots[id] || false
               return (
-                <label
-                  key={id}
-                  className={[
-                    'group flex items-center gap-4 px-4 py-3.5 border transition-all duration-200',
-                    isFull
-                      ? 'cursor-not-allowed'
-                      : form.slot === id
-                      ? 'border-gold-primary bg-[rgba(200,150,12,0.06)] cursor-pointer'
-                      : 'border-[#1e1e1e] hover:border-[#333] cursor-pointer',
-                  ].join(' ')}
-                  style={isFull ? {
-                    borderColor: 'rgba(220,38,38,0.22)',
-                    background:  'rgba(220,38,38,0.03)',
-                  } : undefined}
-                >
-                  {isFull ? (
-                    <span className="w-4 h-4 flex-none flex items-center justify-center"
-                      style={{ color: 'rgba(220,38,38,0.5)', fontSize: 16, lineHeight: 1 }}>
-                      ⊘
-                    </span>
-                  ) : (
-                    <input
-                      type="radio" name="slot" value={id}
-                      checked={form.slot === id}
-                      onChange={set('slot')}
-                      required
-                      className="accent-[#C8960C] w-4 h-4 flex-none"
-                    />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <span
-                      className={`font-sans text-sm font-medium block ${isFull ? 'line-through' : 'text-text-primary'}`}
-                      style={isFull ? { color: '#3a3a3a' } : undefined}
-                    >
-                      {name}
-                    </span>
-                    {/* Dates hidden by default — reveal on row hover */}
-                    <div className="overflow-hidden max-h-0 opacity-0 group-hover:max-h-10 group-hover:opacity-100 transition-all duration-200 ease-in-out">
-                      <span
-                        className="font-sans text-xs block mt-0.5"
-                        style={{ color: isFull ? '#2a2a2a' : '#C8960C' }}
-                      >
-                        {date}
+                <div key={id}>
+                  <label
+                    className={[
+                      'group flex items-center gap-4 px-4 py-3.5 border transition-all duration-200',
+                      isFull
+                        ? 'cursor-not-allowed'
+                        : form.slot === id
+                        ? 'border-gold-primary bg-[rgba(200,150,12,0.06)] cursor-pointer'
+                        : 'border-[#1e1e1e] hover:border-[#333] cursor-pointer',
+                    ].join(' ')}
+                    style={isFull ? {
+                      borderColor: 'rgba(220,38,38,0.22)',
+                      background:  'rgba(220,38,38,0.03)',
+                    } : undefined}
+                  >
+                    {isFull ? (
+                      <span className="w-4 h-4 flex-none flex items-center justify-center"
+                        style={{ color: 'rgba(220,38,38,0.5)', fontSize: 16, lineHeight: 1 }}>
+                        ⊘
                       </span>
+                    ) : (
+                      <input
+                        type="radio" name="slot" value={id}
+                        checked={form.slot === id}
+                        onChange={set('slot')}
+                        required
+                        className="accent-[#C8960C] w-4 h-4 flex-none"
+                      />
+                    )}
+                    <div className="flex-1 min-w-0">
                       <span
-                        className="font-sans text-xs block"
-                        style={{ color: isFull ? '#2a2a2a' : 'var(--color-text-secondary, #888)' }}
+                        className={`font-sans text-sm font-medium block ${isFull ? 'line-through' : 'text-text-primary'}`}
+                        style={isFull ? { color: '#3a3a3a' } : undefined}
                       >
-                        {checkout}
+                        {name}
                       </span>
+                      {/* Desktop: hover to reveal, Mobile: always show if expanded */}
+                      <div className={`overflow-hidden transition-all duration-200 ease-in-out ${
+                        isExpanded || window.matchMedia('(hover: hover)').matches
+                          ? 'max-h-10 opacity-100 group-hover:max-h-10 group-hover:opacity-100'
+                          : 'max-h-0 opacity-0 group-hover:max-h-10 group-hover:opacity-100'
+                      }`}>
+                        <span
+                          className="font-sans text-xs block mt-0.5"
+                          style={{ color: isFull ? '#2a2a2a' : '#C8960C' }}
+                        >
+                          {date}
+                        </span>
+                        <span
+                          className="font-sans text-xs block"
+                          style={{ color: isFull ? '#2a2a2a' : 'var(--color-text-secondary, #888)' }}
+                        >
+                          {checkout}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  {isFull ? (
-                    <span
-                      className="font-label font-bold whitespace-nowrap"
-                      style={{
-                        fontSize: '9px',
-                        letterSpacing: '0.18em',
-                        color: '#dc2626',
-                        border: '1px solid rgba(220,38,38,0.3)',
-                        background: 'rgba(220,38,38,0.08)',
-                        padding: '4px 10px',
-                      }}
+                    {isFull ? (
+                      <span
+                        className="font-label font-bold whitespace-nowrap"
+                        style={{
+                          fontSize: '9px',
+                          letterSpacing: '0.18em',
+                          color: '#dc2626',
+                          border: '1px solid rgba(220,38,38,0.3)',
+                          background: 'rgba(220,38,38,0.08)',
+                          padding: '4px 10px',
+                        }}
+                      >
+                        ⊘ HOUSE FULL
+                      </span>
+                    ) : (
+                      <SeatBadge filled={count} total={SEAT_LIMIT} />
+                    )}
+                  </label>
+                  {/* Mobile expand button */}
+                  {!isFull && (
+                    <button
+                      type="button"
+                      onClick={() => toggleSlotExpand(id)}
+                      className="w-full text-center px-4 py-2 text-xs text-[#C8960C] hover:text-[#B08608] transition-colors sm:hidden"
                     >
-                      ⊘ HOUSE FULL
-                    </span>
-                  ) : (
-                    <SeatBadge filled={count} total={SEAT_LIMIT} />
+                      {isExpanded ? '▲ Hide dates' : '▼ Show dates'}
+                    </button>
                   )}
-                </label>
+                </div>
               )
             })}
           </div>

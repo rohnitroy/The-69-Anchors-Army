@@ -86,9 +86,9 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content — centered vertically in viewport, left-aligned ───────── */}
+      {/* ── Content — positioned upper-left to avoid speaker face ──────────── */}
       <div
-        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex items-center justify-start"
+        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex items-start justify-start pt-16 sm:pt-20 md:pt-0 md:items-center"
         style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
