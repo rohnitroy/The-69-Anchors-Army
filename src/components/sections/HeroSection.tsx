@@ -71,7 +71,7 @@ export default function HeroSection() {
             fill
             priority
             unoptimized
-            className="object-cover object-[75%_center] md:object-[65%_20%]"
+            className="object-cover object-[82%_center] md:object-[72%_20%]"
             sizes="100vw"
           />
         </div>
