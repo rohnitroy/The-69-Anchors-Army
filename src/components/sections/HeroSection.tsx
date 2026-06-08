@@ -82,14 +82,13 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content — positioned upper-left on desktop, lower on mobile ──────────── */}
+      {/* ── Content — optimized for desktop & mobile ──────────── */}
       <div
-        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex justify-start"
+        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex flex-col items-start justify-center md:justify-start md:pt-32"
         style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
-          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6 absolute md:relative md:pt-0 bottom-0 pb-20 md:pb-0"
-          style={{ top: 0 }}
+          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6"
           variants={container}
           initial="hidden"
           animate="visible"
