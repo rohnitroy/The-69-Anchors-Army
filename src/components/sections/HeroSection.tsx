@@ -5,9 +5,7 @@ import Image from 'next/image'
 import { motion } from 'framer-motion'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import Button from '@/components/ui/Button'
-import GoldDivider from '@/components/ui/GoldDivider'
 import SlotChips from '@/components/ui/SlotChips'
 import { HERO } from '@/lib/content'
 gsap.registerPlugin(ScrollTrigger)
@@ -95,35 +93,7 @@ export default function HeroSection() {
           initial="hidden"
           animate="visible"
         >
-          <motion.div variants={item} className="micro-label">
-            {HERO.micro}
-          </motion.div>
-
-          <motion.div variants={item}>
-            <AnchorsArmyLogo className="w-65 md:w-95 lg:w-110" priority />
-          </motion.div>
-
-          <motion.p
-            variants={item}
-            className="font-display italic text-text-secondary leading-snug"
-            style={{ fontSize: 'clamp(14px, 2vw, 24px)' }}
-          >
-            {HERO.quote}
-          </motion.p>
-
-          <motion.div variants={item} style={{ width: '100%', maxWidth: 180 }}>
-            <GoldDivider />
-          </motion.div>
-
-          <motion.p
-            variants={item}
-            className="font-label font-semibold text-text-primary tracking-wide"
-            style={{ fontSize: 'clamp(12px, 1.2vw, 15px)' }}
-          >
-            {HERO.sub}
-          </motion.p>
-
-          <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 mt-1 sm:mt-2">
+          <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
             <Button href="/secure-your-slot" variant="primary" size="lg">
               {HERO.cta} →
             </Button>
@@ -132,8 +102,8 @@ export default function HeroSection() {
             </Button>
           </motion.div>
 
-          <motion.div variants={item} className="mt-8 sm:mt-10">
-            <p className="font-label text-text-secondary text-xs uppercase tracking-widest mb-4">Available Slots</p>
+          <motion.div variants={item} className="mt-4 sm:mt-6">
+            <p className="font-label text-text-secondary text-xs uppercase tracking-widest mb-3">Available Slots</p>
             <SlotChips />
           </motion.div>
         </motion.div>
