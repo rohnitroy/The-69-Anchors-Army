@@ -16,7 +16,7 @@ export const HERO = {
   micro: '— Anchor Bol BB Bol Presents —',
   quote: '"baat karne se baat banti hai"',
   sub: 'The Next Generation Wedding Anchors',
-  cta: 'Request Admission',
+  cta: 'Secure Your Slot',
   ctaSecondary: 'Scroll to Explore',
 }
 

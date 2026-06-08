@@ -40,10 +40,17 @@ enum Gender {
 }
 
 enum SquadSlot {
-  squad1
-  squad2
-  squad3
-  squad4
+  squadA
+  squadB
+  squadC
+  squadD
+  squadE
+}
+
+enum PaymentMode {
+  cash
+  upi
+  neft
 }
 
 // ─────────────────────────────────────────────
@@ -164,17 +171,19 @@ model Upload {
 // ─────────────────────────────────────────────
 
 model SlotRegistration {
-  id        String    @id @default(uuid()) @db.Uuid
-  fullName  String    @map("full_name") @db.VarChar(255)
-  email     String    @unique @db.VarChar(255)
-  phone     String    @unique @db.VarChar(20)
-  slot      SquadSlot
-  comments  String?   @db.Text
-  status    String    @default("pending") @db.VarChar(50)
-  adminNotes String?  @map("admin_notes") @db.Text
-  ip        String?   @db.VarChar(45)
-  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
-  updatedAt DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+  id          String       @id @default(uuid()) @db.Uuid
+  fullName    String       @map("full_name") @db.VarChar(255)
+  email       String       @unique @db.VarChar(255)
+  phone       String       @unique @db.VarChar(20)
+  slot        SquadSlot
+  gender      Gender?
+  paymentMode PaymentMode? @map("payment_mode")
+  comments    String?      @db.Text
+  status      String       @default("pending") @db.VarChar(50)
+  adminNotes  String?      @map("admin_notes") @db.Text
+  ip          String?      @db.VarChar(45)
+  createdAt   DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt   DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([slot])
   @@index([status])

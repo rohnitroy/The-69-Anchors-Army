@@ -51,13 +51,11 @@ export default function CustomSelect({
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 rounded text-left flex items-center justify-between hover:border-gray-400 transition-colors"
+        className="w-full px-4 py-3 bg-[#080808] text-text-primary border border-[#242424] font-sans text-sm outline-none focus:border-gold-primary focus:shadow-[0_0_0_1px_rgba(200,150,12,0.2)] rounded text-left flex items-center justify-between hover:border-[#383838] transition-all duration-200"
       >
         <span className="truncate">{selectedLabel}</span>
         <svg
-          className={`w-4 h-4 transition-transform duration-200 flex-shrink-0 ml-2 ${
-            isOpen ? 'rotate-180' : ''
-          }`}
+          className={`w-4 h-4 transition-transform duration-200 flex-shrink-0 ml-2 text-text-secondary`}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
@@ -67,16 +65,23 @@ export default function CustomSelect({
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-300 rounded shadow-lg z-50 overflow-hidden min-w-max">
-          <div className="max-h-60 overflow-y-auto">
+        <div
+          className="absolute top-full left-0 mt-2 bg-[#0A0A0A] border border-[#242424] rounded shadow-xl z-50 overflow-hidden"
+          style={{
+            width: 'auto',
+            minWidth: '100%',
+            maxWidth: '320px',
+          }}
+        >
+          <div className="max-h-64 overflow-y-auto">
             {options.map((option) => (
               <button
                 key={option.value}
                 onClick={() => handleSelect(option.value)}
-                className={`w-full px-3 sm:px-4 py-2.5 sm:py-3 text-left font-sans text-xs sm:text-sm transition-colors ${
+                className={`w-full px-4 py-3 text-left font-sans text-sm transition-all duration-150 whitespace-nowrap ${
                   value === option.value
-                    ? 'bg-[#C8960C] text-black font-semibold'
-                    : 'text-gray-900 hover:bg-gray-100'
+                    ? 'bg-[rgba(200,150,12,0.15)] text-gold-primary font-semibold border-l-2 border-gold-primary'
+                    : 'text-text-secondary hover:text-text-primary hover:bg-[rgba(200,150,12,0.08)]'
                 }`}
               >
                 {option.label}

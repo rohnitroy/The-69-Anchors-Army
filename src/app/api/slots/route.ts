@@ -11,10 +11,11 @@ export async function GET() {
     })
 
     const counts: Record<string, number> = {
-      squad1: 0,
-      squad2: 0,
-      squad3: 0,
-      squad4: 0,
+      squadA: 0,
+      squadB: 0,
+      squadC: 0,
+      squadD: 0,
+      squadE: 0,
     }
 
     for (const row of rows) {
@@ -24,6 +25,6 @@ export async function GET() {
     return NextResponse.json(counts)
   } catch (err) {
     console.error('[Slots API Error]', err)
-    return NextResponse.json({ squad1: 0, squad2: 0, squad3: 0, squad4: 0 })
+    return NextResponse.json({ squadA: 0, squadB: 0, squadC: 0, squadD: 0, squadE: 0 })
   }
 }

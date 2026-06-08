@@ -3,11 +3,9 @@
 import { useEffect, useState } from 'react'
 import BolBBBolLogo from '@/components/logos/BolBBBolLogo'
 import Button from '@/components/ui/Button'
-import { useModal } from '@/context/ModalContext'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
-  const { openModal } = useModal()
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60)
@@ -40,15 +38,15 @@ export default function Navbar() {
           <NavLink href="#mentor">About BB</NavLink>
           <NavLink href="#program">The Program</NavLink>
           <NavLink href="#investment">Investment</NavLink>
-          <Button onClick={openModal} variant="primary" size="sm" className="ml-2">
-            Apply Now →
+          <Button href="/secure-your-slot" variant="primary" size="sm" className="ml-2">
+            Secure Your Slot →
           </Button>
         </div>
 
         {/* Mobile CTA */}
         <div className="md:hidden">
-          <Button onClick={openModal} variant="primary" size="sm">
-            Apply →
+          <Button href="/secure-your-slot" variant="primary" size="sm">
+            Secure Slot →
           </Button>
         </div>
       </div>

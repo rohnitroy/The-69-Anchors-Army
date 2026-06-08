@@ -8,9 +8,8 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import Button from '@/components/ui/Button'
 import GoldDivider from '@/components/ui/GoldDivider'
+import SlotChips from '@/components/ui/SlotChips'
 import { HERO } from '@/lib/content'
-import { useModal } from '@/context/ModalContext'
-
 gsap.registerPlugin(ScrollTrigger)
 
 const container = {
@@ -28,7 +27,6 @@ const item = {
 export default function HeroSection() {
   const sectionRef = useRef<HTMLElement>(null)
   const imgRef = useRef<HTMLDivElement>(null)
-  const { openModal } = useModal()
 
   useEffect(() => {
     const section = sectionRef.current
@@ -126,12 +124,17 @@ export default function HeroSection() {
           </motion.p>
 
           <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 mt-1 sm:mt-2">
-            <Button onClick={openModal} variant="primary" size="lg">
+            <Button href="/secure-your-slot" variant="primary" size="lg">
               {HERO.cta} →
             </Button>
             <Button href="#program" variant="ghost" size="lg">
               {HERO.ctaSecondary} ↓
             </Button>
+          </motion.div>
+
+          <motion.div variants={item} className="mt-8 sm:mt-10">
+            <p className="font-label text-text-secondary text-xs uppercase tracking-widest mb-4">Available Slots</p>
+            <SlotChips />
           </motion.div>
         </motion.div>
       </div>

@@ -7,9 +7,11 @@ import { checkRateLimit, getClientIp } from '@/lib/rateLimit'
 import ConfirmationEmail from '@/emails/ConfirmationEmail'
 import AdminNotificationEmail from '@/emails/AdminNotificationEmail'
 
-const VALID_SLOTS = ['squad1', 'squad2', 'squad3', 'squad4'] as const
+const VALID_SLOTS = ['squadA', 'squadB', 'squadC', 'squadD', 'squadE'] as const
 type SquadSlot = (typeof VALID_SLOTS)[number]
-const SEAT_LIMIT = 24
+const VALID_GENDERS = ['male', 'female', 'other', 'prefer_not_to_say'] as const
+const VALID_PAYMENT_MODES = ['cash', 'upi', 'neft'] as const
+const SEAT_LIMIT = 25
 
 // Strip HTML tags from user input
 function sanitize(val: string, maxLen = 500): string {
@@ -31,7 +33,7 @@ export async function POST(req: NextRequest) {
     // ── Parse + basic presence check ──────────────────────────────────────
     const body = await req.json()
 
-    const required = ['fullName', 'phone', 'email', 'slot']
+    const required = ['fullName', 'phone', 'email', 'gender', 'paymentMode', 'slot']
     for (const field of required) {
       if (!body[field]?.toString().trim()) {
         return NextResponse.json({ error: `Missing required field: ${field}` }, { status: 400 })
@@ -42,6 +44,8 @@ export async function POST(req: NextRequest) {
     const fullName = sanitize(body.fullName, 255)
     const email    = sanitize(body.email,    255).toLowerCase()
     const phone    = sanitize(body.phone,     30)
+    const gender   = sanitize(body.gender,    50).toLowerCase()
+    const paymentMode = sanitize(body.paymentMode, 50).toLowerCase()
     const comments = body.comments ? sanitize(body.comments, 1000) : null
     const slot     = sanitize(body.slot, 20)
 
@@ -56,6 +60,14 @@ export async function POST(req: NextRequest) {
     // Phone: allow digits, spaces, +, -, (, ) — min 7 digits
     if (!/^[\d\s+\-()\[\]]{7,25}$/.test(phone)) {
       return NextResponse.json({ error: 'Invalid mobile number format.' }, { status: 400 })
+    }
+
+    if (!VALID_GENDERS.includes(gender as any)) {
+      return NextResponse.json({ error: 'Invalid gender selection.' }, { status: 400 })
+    }
+
+    if (!VALID_PAYMENT_MODES.includes(paymentMode as any)) {
+      return NextResponse.json({ error: 'Invalid payment mode selection.' }, { status: 400 })
     }
 
     if (!VALID_SLOTS.includes(slot as SquadSlot)) {
@@ -90,9 +102,11 @@ export async function POST(req: NextRequest) {
         fullName,
         email,
         phone,
-        slot:     slot as SquadSlot,
-        comments: comments || null,
-        ip:       ip !== 'unknown' ? ip : null,
+        gender:       gender as any,
+        paymentMode:  paymentMode as any,
+        slot:         slot as SquadSlot,
+        comments:     comments || null,
+        ip:           ip !== 'unknown' ? ip : null,
       },
     })
 

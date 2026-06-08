@@ -7,13 +7,11 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import SectionReveal from '@/components/ui/SectionReveal'
 import GoldDivider from '@/components/ui/GoldDivider'
 import Button from '@/components/ui/Button'
-import { useModal } from '@/context/ModalContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
 export default function PromoSection() {
   const bgRef = useRef<HTMLDivElement>(null)
-  const { openModal } = useModal()
 
   useEffect(() => {
     const el = bgRef.current
@@ -87,8 +85,8 @@ export default function PromoSection() {
         </SectionReveal>
 
         <SectionReveal delay={240}>
-          <Button onClick={openModal} variant="primary" size="lg">
-            Request Admission →
+          <Button href="/secure-your-slot" variant="primary" size="lg">
+            Secure Your Slot →
           </Button>
         </SectionReveal>
       </div>

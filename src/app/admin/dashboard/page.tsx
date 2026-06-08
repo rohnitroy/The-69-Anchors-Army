@@ -12,6 +12,8 @@ type Registration = {
   fullName: string
   email: string
   phone: string
+  gender?: string
+  paymentMode?: string
   slot: string
   status: string
   comments?: string
@@ -28,6 +30,7 @@ export default function AdminDashboard() {
   const [counts, setCounts] = useState<Record<string, number>>({})
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [bulkStatus, setBulkStatus] = useState('')
+  const [bulkSlot, setBulkSlot] = useState('')
   const [bulkLoading, setBulkLoading] = useState(false)
 
   useEffect(() => {
@@ -107,12 +110,39 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleBulkSlotMove = async () => {
+    if (selected.size === 0 || !bulkSlot) return
+    if (!confirm(`Move ${selected.size} registration(s) to ${bulkSlot}?`)) return
+
+    setBulkLoading(true)
+    try {
+      await Promise.all(
+        Array.from(selected).map(id =>
+          fetch(`/api/admin/registration/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ slot: bulkSlot }),
+          })
+        )
+      )
+      setSelected(new Set())
+      setBulkSlot('')
+      fetchRegistrations()
+    } catch (error) {
+      console.error('Bulk move error:', error)
+    } finally {
+      setBulkLoading(false)
+    }
+  }
+
   const handleExportCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Squad', 'Status', 'Comments', 'Date Registered']
+    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Payment Mode', 'Squad', 'Status', 'Comments', 'Date Registered']
     const rows = registrations.map(r => [
       r.fullName,
       r.email,
       r.phone,
+      r.gender || '—',
+      r.paymentMode || '—',
       r.slot.toUpperCase(),
       r.status,
       r.comments || '',
@@ -153,10 +183,11 @@ export default function AdminDashboard() {
   }
 
   const squadDates: Record<string, string> = {
-    squad1: 'Aug 8-9',
-    squad2: 'Aug 10-11',
-    squad3: 'Aug 17-18',
-    squad4: 'Aug 19-20',
+    squadA: 'Aug 8-9',
+    squadB: 'Aug 10-11',
+    squadC: 'Aug 17-18',
+    squadD: 'Aug 19-20',
+    squadE: 'Any',
   }
 
   const statusColor: Record<string, string> = {
@@ -212,10 +243,11 @@ export default function AdminDashboard() {
               placeholder="All Squads"
               options={[
                 { value: '', label: 'All Squads' },
-                { value: 'squad1', label: 'Squad 1 (Aug 8-9)' },
-                { value: 'squad2', label: 'Squad 2 (Aug 10-11)' },
-                { value: 'squad3', label: 'Squad 3 (Aug 17-18)' },
-                { value: 'squad4', label: 'Squad 4 (Aug 19-20)' },
+                { value: 'squadA', label: 'Squad A (Aug 8-9)' },
+                { value: 'squadB', label: 'Squad B (Aug 10-11)' },
+                { value: 'squadC', label: 'Squad C (Aug 17-18)' },
+                { value: 'squadD', label: 'Squad D (Aug 19-20)' },
+                { value: 'squadE', label: 'Any of the Above' },
               ]}
             />
 
@@ -236,53 +268,85 @@ export default function AdminDashboard() {
         </div>
 
         {/* Stats */}
-        <div className="mb-6 sm:mb-8 grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-          {['squad1', 'squad2', 'squad3', 'squad4'].map(squad => (
-            <div key={squad} className="p-3 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-              <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-tight mb-2">
-                {squad.charAt(0).toUpperCase() + squad.slice(1)}
-              </p>
-              <p className="font-display text-xl sm:text-2xl font-semibold text-[#C8960C]">
-                {counts[squad] || 0}
-              </p>
-            </div>
-          ))}
+        <div className="mb-6 sm:mb-8 grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
+          {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => {
+            const labels = { squadA: 'Squad A', squadB: 'Squad B', squadC: 'Squad C', squadD: 'Squad D', squadE: 'Any' }
+            return (
+              <div key={squad} className="p-3 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
+                <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-tight mb-2">
+                  {labels[squad as keyof typeof labels]}
+                </p>
+                <p className="font-display text-lg sm:text-2xl font-semibold text-[#C8960C]">
+                  {counts[squad] || 0} / 25
+                </p>
+              </div>
+            )
+          })}
         </div>
 
         <GoldDivider className="w-16 mb-8" />
 
         {/* Bulk Actions */}
         {selected.size > 0 && (
-          <div className="mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
             <div className="flex flex-col sm:flex-row sm:items-center gap-3">
               <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
                 {selected.size} selected
               </span>
-              <CustomSelect
-                value={bulkStatus}
-                onChange={setBulkStatus}
-                placeholder="Change status to..."
-                options={[
-                  { value: '', label: 'Change status to...' },
-                  { value: 'approved', label: 'Approved' },
-                  { value: 'rejected', label: 'Rejected' },
-                  { value: 'pending', label: 'Pending' },
-                  { value: 'waitlisted', label: 'Waitlisted' },
-                ]}
-              />
-              <button
-                onClick={handleBulkStatusUpdate}
-                disabled={!bulkStatus || bulkLoading}
-                className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
-              >
-                {bulkLoading ? 'Updating...' : 'Update'}
-              </button>
+              <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                <CustomSelect
+                  value={bulkStatus}
+                  onChange={setBulkStatus}
+                  placeholder="Change status to..."
+                  options={[
+                    { value: '', label: 'Change status to...' },
+                    { value: 'approved', label: 'Approved' },
+                    { value: 'rejected', label: 'Rejected' },
+                    { value: 'pending', label: 'Pending' },
+                    { value: 'waitlisted', label: 'Waitlisted' },
+                  ]}
+                />
+                <button
+                  onClick={handleBulkStatusUpdate}
+                  disabled={!bulkStatus || bulkLoading}
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
+                >
+                  {bulkLoading ? 'Updating...' : 'Update Status'}
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-blue-200">
+              <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
+                Or move to squad:
+              </span>
+              <div className="flex flex-col sm:flex-row gap-2 flex-1">
+                <CustomSelect
+                  value={bulkSlot}
+                  onChange={setBulkSlot}
+                  placeholder="Move to squad..."
+                  options={[
+                    { value: '', label: 'Move to squad...' },
+                    { value: 'squadA', label: 'Squad A' },
+                    { value: 'squadB', label: 'Squad B' },
+                    { value: 'squadC', label: 'Squad C' },
+                    { value: 'squadD', label: 'Squad D' },
+                    { value: 'squadE', label: 'Any of the Above' },
+                  ]}
+                />
+                <button
+                  onClick={handleBulkSlotMove}
+                  disabled={!bulkSlot || bulkLoading}
+                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 text-white font-semibold text-xs sm:text-sm rounded hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+                >
+                  {bulkLoading ? 'Moving...' : 'Move'}
+                </button>
+              </div>
             </div>
             <button
-              onClick={() => setSelected(new Set())}
+              onClick={() => { setSelected(new Set()); setBulkStatus(''); setBulkSlot('') }}
               className="px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-semibold"
             >
-              Clear
+              Clear Selection
             </button>
           </div>
         )}
@@ -329,6 +393,12 @@ export default function AdminDashboard() {
                   <th className="hidden lg:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Phone
                   </th>
+                  <th className="hidden md:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                    Gender
+                  </th>
+                  <th className="hidden md:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
+                    Payment
+                  </th>
                   <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
                     Squad
                   </th>
@@ -365,6 +435,12 @@ export default function AdminDashboard() {
                     </td>
                     <td className="hidden lg:table-cell px-6 py-4 font-sans text-sm text-gray-600">
                       {reg.phone}
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4 font-sans text-xs text-gray-600 capitalize">
+                      {reg.gender || '—'}
+                    </td>
+                    <td className="hidden md:table-cell px-6 py-4 font-sans text-xs text-gray-600 uppercase">
+                      {reg.paymentMode || '—'}
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-xs sm:text-sm text-gray-900">
                       {squadDates[reg.slot] || reg.slot}
