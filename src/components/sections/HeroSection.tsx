@@ -82,13 +82,14 @@ export default function HeroSection() {
         />
       </div>
 
-      {/* ── Content — positioned upper-left to avoid speaker face ──────────── */}
+      {/* ── Content — positioned upper-left on desktop, lower on mobile ──────────── */}
       <div
-        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex items-start justify-start pt-16 sm:pt-20 md:pt-0 md:items-center"
+        className="relative z-10 mx-auto w-full px-4 sm:px-6 md:px-12 flex justify-start"
         style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
-          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6"
+          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6 absolute md:relative md:pt-0 bottom-0 pb-20 md:pb-0"
+          style={{ top: 0 }}
           variants={container}
           initial="hidden"
           animate="visible"

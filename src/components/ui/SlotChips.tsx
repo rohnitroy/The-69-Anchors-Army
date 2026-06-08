@@ -49,9 +49,9 @@ export default function SlotChips() {
                 {slot.name}
               </div>
 
-              {/* Hover Info Container */}
+              {/* Hover Info Container - Desktop */}
               <div
-                className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 rounded-lg bg-black border border-gold-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 ${
+                className={`hidden sm:block absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-4 py-3 rounded-lg bg-black border border-gold-primary opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-20 ${
                   isFull ? 'hidden' : ''
                 }`}
               >
@@ -64,6 +64,14 @@ export default function SlotChips() {
                 {/* Arrow */}
                 <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gold-primary transform rotate-45" />
               </div>
+
+              {/* Mobile Info - Always Show Below Chip */}
+              {!isFull && (
+                <div className="sm:hidden text-center mt-2 text-xs">
+                  <div className="text-gold-primary font-semibold">{slot.date}</div>
+                  <div className="text-text-secondary">{available} available</div>
+                </div>
+              )}
 
               {/* Seat Info Badge */}
               <div className="text-xs text-gold-muted mt-1">
