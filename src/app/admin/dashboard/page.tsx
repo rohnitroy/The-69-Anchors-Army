@@ -1,13 +1,13 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { motion } from 'framer-motion'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import NotificationCenter from '@/components/admin/NotificationCenter'
 import RegistrationDetailModal from '@/components/admin/RegistrationDetailModal'
 import CustomSelect from '@/components/ui/CustomSelect'
+import { useToast } from '@/components/ui/Toast'
 import { wsClient } from '@/lib/wsClient'
 
 type Registration = {
@@ -41,6 +41,7 @@ const SQUAD_LIMITS: Record<string, number> = {
 
 export default function AdminDashboard() {
   const router = useRouter()
+  const { toast, confirm } = useToast()
   const [registrations, setRegistrations] = useState<Registration[]>([])
   const [loading, setLoading] = useState(true)
   const [search, setSearch] = useState('')
@@ -54,7 +55,6 @@ export default function AdminDashboard() {
   const [detailId, setDetailId] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Responsive detection
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768)
     checkMobile()
@@ -62,7 +62,6 @@ export default function AdminDashboard() {
     return () => window.removeEventListener('resize', checkMobile)
   }, [])
 
-  // WebSocket connection
   useEffect(() => {
     wsClient.connect()
     wsClient.on('activity', () => {
@@ -77,7 +76,6 @@ export default function AdminDashboard() {
 
   const fetchRegistrations = async () => {
     try {
-      setLoading(true)
       const params = new URLSearchParams()
       if (search) params.append('search', search)
       if (slotFilter) params.append('slot', slotFilter)
@@ -94,6 +92,7 @@ export default function AdminDashboard() {
       setCounts(data.counts || {})
     } catch (error) {
       console.error('Fetch error:', error)
+      toast('error', 'Error', 'Failed to fetch registrations')
     } finally {
       setLoading(false)
     }
@@ -122,74 +121,108 @@ export default function AdminDashboard() {
     }
   }
 
-  const handleBulkStatusUpdate = async () => {
+  const handleBulkStatusUpdate = () => {
     if (selected.size === 0 || !bulkStatus) return
-    if (!confirm(`Update ${selected.size} registration(s) to ${bulkStatus}?`)) return
 
-    setBulkLoading(true)
-    try {
-      await Promise.all(
-        Array.from(selected).map(id =>
-          fetch(`/api/admin/registration/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status: bulkStatus }),
-          })
-        )
-      )
-      setSelected(new Set())
-      setBulkStatus('')
-      fetchRegistrations()
-    } catch (error) {
-      console.error('Bulk update error:', error)
-    } finally {
-      setBulkLoading(false)
-    }
-  }
+    const selectedNames = registrations
+      .filter(r => selected.has(r.id))
+      .map(r => r.fullName)
+      .join(', ')
 
-  const handleBulkSlotMove = async () => {
-    if (selected.size === 0 || !bulkSlot) return
-    if (!confirm(`Move ${selected.size} registration(s) to ${SQUAD_NAMES[bulkSlot]}?`)) return
-
-    setBulkLoading(true)
-    try {
-      await Promise.all(
-        Array.from(selected).map(id =>
-          fetch(`/api/admin/registration/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ slot: bulkSlot }),
-          })
-        )
-      )
-      setSelected(new Set())
-      setBulkSlot('')
-      fetchRegistrations()
-    } catch (error) {
-      console.error('Bulk move error:', error)
-    } finally {
-      setBulkLoading(false)
-    }
-  }
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this registration?')) return
-
-    try {
-      const res = await fetch(`/api/admin/registration/${id}`, {
-        method: 'DELETE',
-      })
-
-      if (res.ok) {
-        setRegistrations(registrations.filter(r => r.id !== id))
-        const newSelected = new Set(selected)
-        newSelected.delete(id)
-        setSelected(newSelected)
-        fetchRegistrations()
+    confirm(
+      `Update Status for ${selected.size} Registration${selected.size !== 1 ? 's' : ''}`,
+      `${selectedNames}\n\nUpdate to: ${bulkStatus}`,
+      async () => {
+        setBulkLoading(true)
+        try {
+          await Promise.all(
+            Array.from(selected).map(id =>
+              fetch(`/api/admin/registration/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: bulkStatus }),
+              })
+            )
+          )
+          setSelected(new Set())
+          setBulkStatus('')
+          await fetchRegistrations()
+          toast('success', 'Success', `Updated ${selected.size} registration${selected.size !== 1 ? 's' : ''}`)
+        } catch (error) {
+          console.error('Error:', error)
+          toast('error', 'Error', 'Failed to update registrations')
+        } finally {
+          setBulkLoading(false)
+        }
       }
-    } catch (error) {
-      console.error('Delete error:', error)
-    }
+    )
+  }
+
+  const handleBulkSlotMove = () => {
+    if (selected.size === 0 || !bulkSlot) return
+
+    const selectedNames = registrations
+      .filter(r => selected.has(r.id))
+      .map(r => r.fullName)
+      .join(', ')
+
+    confirm(
+      `Move ${selected.size} Registration${selected.size !== 1 ? 's' : ''} to ${SQUAD_NAMES[bulkSlot]}`,
+      `${selectedNames}`,
+      async () => {
+        setBulkLoading(true)
+        try {
+          await Promise.all(
+            Array.from(selected).map(id =>
+              fetch(`/api/admin/registration/${id}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ slot: bulkSlot }),
+              })
+            )
+          )
+          setSelected(new Set())
+          setBulkSlot('')
+          await fetchRegistrations()
+          toast('success', 'Success', `Moved ${selected.size} registration${selected.size !== 1 ? 's' : ''} to ${SQUAD_NAMES[bulkSlot]}`)
+        } catch (error) {
+          console.error('Error:', error)
+          toast('error', 'Error', 'Failed to move registrations')
+        } finally {
+          setBulkLoading(false)
+        }
+      }
+    )
+  }
+
+  const handleDelete = (id: string) => {
+    const reg = registrations.find(r => r.id === id)
+    if (!reg) return
+
+    confirm(
+      `Delete Registration: ${reg.fullName}?`,
+      `Email: ${reg.email}\nPhone: ${reg.phone}\n\nThis action cannot be undone.`,
+      async () => {
+        try {
+          const res = await fetch(`/api/admin/registration/${id}`, {
+            method: 'DELETE',
+          })
+
+          if (res.ok) {
+            setRegistrations(registrations.filter(r => r.id !== id))
+            const newSelected = new Set(selected)
+            newSelected.delete(id)
+            setSelected(newSelected)
+            toast('success', 'Deleted', `${reg.fullName} has been deleted`)
+          } else {
+            toast('error', 'Error', 'Failed to delete registration')
+          }
+        } catch (error) {
+          console.error('Delete error:', error)
+          toast('error', 'Error', 'Failed to delete registration')
+        }
+      }
+    )
   }
 
   const handleExportCSV = () => {
@@ -217,13 +250,84 @@ export default function AdminDashboard() {
     a.download = `registrations-${new Date().toISOString().split('T')[0]}.csv`
     a.click()
     window.URL.revokeObjectURL(url)
+    toast('success', 'Exported', 'CSV file downloaded successfully')
   }
 
-  // MOBILE CARD VIEW
+  const handleExportPDF = () => {
+    try {
+      const doc = `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="UTF-8">
+            <title>69 Anchors Army - Registrations</title>
+            <style>
+              * { margin: 0; padding: 0; }
+              body { font-family: Arial, sans-serif; color: #333; padding: 20px; }
+              h1 { margin-bottom: 10px; text-align: center; }
+              .info { text-align: center; margin-bottom: 20px; color: #666; font-size: 12px; }
+              table { width: 100%; border-collapse: collapse; }
+              th { background-color: #C8960C; color: white; padding: 10px; text-align: left; font-weight: bold; }
+              td { padding: 8px; border-bottom: 1px solid #ddd; }
+              tr:nth-child(even) { background-color: #f9f9f9; }
+              .footer { margin-top: 30px; text-align: center; color: #666; font-size: 12px; }
+            </style>
+          </head>
+          <body>
+            <h1>69 Anchors Army - Registration Report</h1>
+            <div class="info">Generated on ${new Date().toLocaleString()}</div>
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Phone</th>
+                  <th>Gender</th>
+                  <th>Payment</th>
+                  <th>Squad</th>
+                  <th>Status</th>
+                  <th>Date</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${registrations.map(r => `
+                  <tr>
+                    <td>${r.fullName}</td>
+                    <td>${r.email}</td>
+                    <td>${r.phone}</td>
+                    <td>${r.gender || '—'}</td>
+                    <td>${r.paymentMode?.toUpperCase() || '—'}</td>
+                    <td>${SQUAD_NAMES[r.slot] || r.slot}</td>
+                    <td>${r.status}</td>
+                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            <div class="footer">
+              <p>Total Registrations: ${registrations.length}</p>
+              <p>© 2026 69 Anchors Army - Powered by Bol BB Bol</p>
+            </div>
+          </body>
+        </html>
+      `
+
+      const printWindow = window.open('', '', 'height=600,width=800')
+      if (printWindow) {
+        printWindow.document.write(doc)
+        printWindow.document.close()
+        printWindow.print()
+        toast('success', 'Exported', 'PDF export initiated')
+      }
+    } catch (error) {
+      console.error('PDF export error:', error)
+      toast('error', 'Error', 'Failed to export PDF')
+    }
+  }
+
   if (isMobile) {
     return (
       <div className="min-h-screen bg-[#0a0a0a]">
-        {/* Header */}
         <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -241,7 +345,6 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          {/* Notification Center */}
           <div className="px-4 py-2 border-t border-[#333] flex gap-2">
             <NotificationCenter />
             <button
@@ -251,10 +354,16 @@ export default function AdminDashboard() {
             >
               📥 CSV
             </button>
+            <button
+              onClick={handleExportPDF}
+              disabled={registrations.length === 0}
+              className="text-xs px-2 py-1 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
+              📄 PDF
+            </button>
           </div>
         </div>
 
-        {/* Filters */}
         <div className="p-4 space-y-3 border-b border-[#333]">
           <input
             type="text"
@@ -277,7 +386,6 @@ export default function AdminDashboard() {
           />
         </div>
 
-        {/* Squad Stats */}
         <div className="p-4 grid grid-cols-2 gap-2">
           {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => (
             <motion.button
@@ -298,7 +406,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Cards */}
         <div className="p-4 space-y-3">
           {loading ? (
             <div className="text-center py-8 text-gray-400">Loading...</div>
@@ -357,7 +464,6 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Detail Modal */}
         <RegistrationDetailModal
           registrationId={detailId || ''}
           isOpen={!!detailId}
@@ -367,10 +473,8 @@ export default function AdminDashboard() {
     )
   }
 
-  // DESKTOP TABLE VIEW
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
-      {/* Navbar */}
       <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -392,9 +496,7 @@ export default function AdminDashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
       <div className="max-w-7xl mx-auto px-6 py-10">
-        {/* Filters */}
         <div className="mb-8 space-y-4">
           <div className="grid grid-cols-3 gap-4">
             <input
@@ -429,7 +531,6 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        {/* Squad Stats */}
         <div className="mb-8 grid grid-cols-5 gap-4">
           {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => (
             <motion.button
@@ -450,7 +551,6 @@ export default function AdminDashboard() {
           ))}
         </div>
 
-        {/* Bulk Actions */}
         {selected.size > 0 && (
           <div className="mb-6 p-4 bg-[#222] border border-[#333] rounded-lg space-y-3">
             <div className="flex items-center justify-between">
@@ -507,8 +607,7 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Export */}
-        <div className="mb-6">
+        <div className="mb-6 flex gap-3">
           <button
             onClick={handleExportCSV}
             disabled={registrations.length === 0}
@@ -516,9 +615,15 @@ export default function AdminDashboard() {
           >
             📥 Export CSV
           </button>
+          <button
+            onClick={handleExportPDF}
+            disabled={registrations.length === 0}
+            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+          >
+            📄 Export PDF
+          </button>
         </div>
 
-        {/* Table */}
         {loading ? (
           <div className="text-center py-12 text-gray-400">Loading...</div>
         ) : registrations.length === 0 ? (
@@ -605,7 +710,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Detail Modal */}
         <RegistrationDetailModal
           registrationId={detailId || ''}
           isOpen={!!detailId}
