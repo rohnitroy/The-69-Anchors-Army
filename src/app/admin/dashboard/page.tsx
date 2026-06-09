@@ -129,13 +129,14 @@ export default function AdminDashboard() {
       .map(r => r.fullName)
       .join(', ')
 
+    const count = selected.size
+
     confirm(
-      `Update Status for ${selected.size} Registration${selected.size !== 1 ? 's' : ''}`,
+      `Update Status for ${count} Registration${count !== 1 ? 's' : ''}`,
       `${selectedNames}\n\nUpdate to: ${bulkStatus}`,
       async () => {
-        setBulkLoading(true)
         try {
-          await Promise.all(
+          const results = await Promise.all(
             Array.from(selected).map(id =>
               fetch(`/api/admin/registration/${id}`, {
                 method: 'PATCH',
@@ -144,15 +145,25 @@ export default function AdminDashboard() {
               })
             )
           )
-          setSelected(new Set())
-          setBulkStatus('')
-          await fetchRegistrations()
-          toast('success', 'Success', `Updated ${selected.size} registration${selected.size !== 1 ? 's' : ''}`)
+
+          const allSuccess = results.every(res => res.ok)
+
+          if (allSuccess) {
+            // Update local state
+            setRegistrations(regs =>
+              regs.map(reg =>
+                selected.has(reg.id) ? { ...reg, status: bulkStatus } : reg
+              )
+            )
+            setSelected(new Set())
+            setBulkStatus('')
+            toast('success', 'Updated', `${count} registration${count !== 1 ? 's' : ''} updated to ${bulkStatus}`)
+          } else {
+            throw new Error('Some updates failed')
+          }
         } catch (error) {
           console.error('Error:', error)
           toast('error', 'Error', 'Failed to update registrations')
-        } finally {
-          setBulkLoading(false)
         }
       }
     )
@@ -166,13 +177,15 @@ export default function AdminDashboard() {
       .map(r => r.fullName)
       .join(', ')
 
+    const count = selected.size
+    const targetSquad = SQUAD_NAMES[bulkSlot]
+
     confirm(
-      `Move ${selected.size} Registration${selected.size !== 1 ? 's' : ''} to ${SQUAD_NAMES[bulkSlot]}`,
+      `Move ${count} Registration${count !== 1 ? 's' : ''} to ${targetSquad}`,
       `${selectedNames}`,
       async () => {
-        setBulkLoading(true)
         try {
-          await Promise.all(
+          const results = await Promise.all(
             Array.from(selected).map(id =>
               fetch(`/api/admin/registration/${id}`, {
                 method: 'PATCH',
@@ -181,15 +194,30 @@ export default function AdminDashboard() {
               })
             )
           )
-          setSelected(new Set())
-          setBulkSlot('')
-          await fetchRegistrations()
-          toast('success', 'Success', `Moved ${selected.size} registration${selected.size !== 1 ? 's' : ''} to ${SQUAD_NAMES[bulkSlot]}`)
+
+          const allSuccess = results.every(res => res.ok)
+
+          if (allSuccess) {
+            // Update local state
+            setRegistrations(regs =>
+              regs.map(reg =>
+                selected.has(reg.id) ? { ...reg, slot: bulkSlot } : reg
+              )
+            )
+            // Update counts
+            setCounts(c => ({
+              ...c,
+              [bulkSlot]: (c[bulkSlot] || 0) + count,
+            }))
+            setSelected(new Set())
+            setBulkSlot('')
+            toast('success', 'Moved', `${count} registration${count !== 1 ? 's' : ''} moved to ${targetSquad}`)
+          } else {
+            throw new Error('Some moves failed')
+          }
         } catch (error) {
           console.error('Error:', error)
           toast('error', 'Error', 'Failed to move registrations')
-        } finally {
-          setBulkLoading(false)
         }
       }
     )

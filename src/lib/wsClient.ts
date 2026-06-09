@@ -13,7 +13,13 @@ class ActivityWSClient {
     if (typeof window === 'undefined') return
 
     try {
-      this.ws = new WebSocket(this.url)
+      // Skip WebSocket in development/localhost without server
+      if (!this.url.includes('localhost')) {
+        this.ws = new WebSocket(this.url)
+      } else {
+        console.log('[WS] Skipped (no server on localhost)')
+        return
+      }
 
       this.ws.onopen = () => {
         console.log('[WS] Connected')
