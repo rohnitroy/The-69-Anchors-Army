@@ -1,11 +1,14 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { motion } from 'framer-motion'
 import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
-import GoldDivider from '@/components/ui/GoldDivider'
+import NotificationCenter from '@/components/admin/NotificationCenter'
+import RegistrationDetailModal from '@/components/admin/RegistrationDetailModal'
 import CustomSelect from '@/components/ui/CustomSelect'
+import { wsClient } from '@/lib/wsClient'
 
 type Registration = {
   id: string
@@ -20,6 +23,22 @@ type Registration = {
   createdAt: string
 }
 
+const SQUAD_NAMES: Record<string, string> = {
+  squadA: 'Squad A',
+  squadB: 'Squad B',
+  squadC: 'Squad C',
+  squadD: 'Squad D',
+  squadE: 'Any of Above',
+}
+
+const SQUAD_LIMITS: Record<string, number> = {
+  squadA: 22,
+  squadB: 24,
+  squadC: 24,
+  squadD: 24,
+  squadE: Infinity,
+}
+
 export default function AdminDashboard() {
   const router = useRouter()
   const [registrations, setRegistrations] = useState<Registration[]>([])
@@ -32,6 +51,25 @@ export default function AdminDashboard() {
   const [bulkStatus, setBulkStatus] = useState('')
   const [bulkSlot, setBulkSlot] = useState('')
   const [bulkLoading, setBulkLoading] = useState(false)
+  const [detailId, setDetailId] = useState<string | null>(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  // Responsive detection
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  // WebSocket connection
+  useEffect(() => {
+    wsClient.connect()
+    wsClient.on('activity', () => {
+      fetchRegistrations()
+    })
+    return () => wsClient.disconnect()
+  }, [])
 
   useEffect(() => {
     fetchRegistrations()
@@ -46,7 +84,6 @@ export default function AdminDashboard() {
       if (statusFilter) params.append('status', statusFilter)
 
       const res = await fetch(`/api/admin/registrations?${params}`)
-
       if (res.status === 401) {
         router.push('/admin/login')
         return
@@ -112,7 +149,7 @@ export default function AdminDashboard() {
 
   const handleBulkSlotMove = async () => {
     if (selected.size === 0 || !bulkSlot) return
-    if (!confirm(`Move ${selected.size} registration(s) to ${bulkSlot}?`)) return
+    if (!confirm(`Move ${selected.size} registration(s) to ${SQUAD_NAMES[bulkSlot]}?`)) return
 
     setBulkLoading(true)
     try {
@@ -135,17 +172,36 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleDelete = async (id: string) => {
+    if (!confirm('Are you sure you want to delete this registration?')) return
+
+    try {
+      const res = await fetch(`/api/admin/registration/${id}`, {
+        method: 'DELETE',
+      })
+
+      if (res.ok) {
+        setRegistrations(registrations.filter(r => r.id !== id))
+        const newSelected = new Set(selected)
+        newSelected.delete(id)
+        setSelected(newSelected)
+        fetchRegistrations()
+      }
+    } catch (error) {
+      console.error('Delete error:', error)
+    }
+  }
+
   const handleExportCSV = () => {
-    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Payment Mode', 'Squad', 'Status', 'Comments', 'Date Registered']
+    const headers = ['Name', 'Email', 'Phone', 'Gender', 'Payment Mode', 'Squad', 'Status', 'Date']
     const rows = registrations.map(r => [
       r.fullName,
       r.email,
       r.phone,
       r.gender || '—',
       r.paymentMode || '—',
-      r.slot.toUpperCase(),
+      SQUAD_NAMES[r.slot] || r.slot,
       r.status,
-      r.comments || '',
       new Date(r.createdAt).toLocaleString(),
     ])
 
@@ -163,315 +219,382 @@ export default function AdminDashboard() {
     window.URL.revokeObjectURL(url)
   }
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this registration?')) return
+  // MOBILE CARD VIEW
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a]">
+        {/* Header */}
+        <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
+          <div className="p-4 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <AnchorsArmyLogo className="w-10 flex-shrink-0" />
+              <div>
+                <h1 className="font-semibold text-white text-sm">Registration Manager</h1>
+                <p className="text-xs text-gray-400">{registrations.length} registrations</p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="px-3 py-1.5 text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors"
+            >
+              Logout →
+            </button>
+          </div>
 
-    try {
-      const res = await fetch(`/api/admin/registration/${id}`, {
-        method: 'DELETE',
-      })
+          {/* Notification Center */}
+          <div className="px-4 py-2 border-t border-[#333] flex gap-2">
+            <NotificationCenter />
+            <button
+              onClick={handleExportCSV}
+              disabled={registrations.length === 0}
+              className="text-xs px-2 py-1 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
+            >
+              📥 CSV
+            </button>
+          </div>
+        </div>
 
-      if (res.ok) {
-        setRegistrations(registrations.filter(r => r.id !== id))
-        const newSelected = new Set(selected)
-        newSelected.delete(id)
-        setSelected(newSelected)
-      }
-    } catch (error) {
-      console.error('Delete error:', error)
-    }
+        {/* Filters */}
+        <div className="p-4 space-y-3 border-b border-[#333]">
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full px-3 py-2 bg-[#1a1a1a] text-white border border-[#333] rounded text-xs focus:border-[#C8960C] outline-none"
+          />
+          <CustomSelect
+            value={slotFilter}
+            onChange={setSlotFilter}
+            options={[
+              { value: '', label: 'All Squads' },
+              { value: 'squadA', label: 'Squad A' },
+              { value: 'squadB', label: 'Squad B' },
+              { value: 'squadC', label: 'Squad C' },
+              { value: 'squadD', label: 'Squad D' },
+              { value: 'squadE', label: 'Any of Above' },
+            ]}
+          />
+        </div>
+
+        {/* Squad Stats */}
+        <div className="p-4 grid grid-cols-2 gap-2">
+          {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => (
+            <motion.button
+              key={squad}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSlotFilter(slotFilter === squad ? '' : squad)}
+              className={`p-3 rounded border transition-all ${
+                slotFilter === squad
+                  ? 'border-[#C8960C] bg-[rgba(200,150,12,0.1)]'
+                  : 'border-[#333] hover:border-[#444]'
+              }`}
+            >
+              <div className="text-xs font-semibold text-white">{SQUAD_NAMES[squad]}</div>
+              <div className="text-lg font-bold text-[#C8960C]">
+                {counts[squad] || 0}/{SQUAD_LIMITS[squad] === Infinity ? '∞' : SQUAD_LIMITS[squad]}
+              </div>
+            </motion.button>
+          ))}
+        </div>
+
+        {/* Cards */}
+        <div className="p-4 space-y-3">
+          {loading ? (
+            <div className="text-center py-8 text-gray-400">Loading...</div>
+          ) : registrations.length === 0 ? (
+            <div className="text-center py-8 text-gray-400">No registrations</div>
+          ) : (
+            registrations.map((reg) => (
+              <motion.div
+                key={reg.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="p-4 bg-[#1a1a1a] border border-[#333] rounded-lg space-y-2"
+              >
+                <div className="flex justify-between items-start">
+                  <div>
+                    <p className="font-semibold text-white text-sm">{reg.fullName}</p>
+                    <p className="text-xs text-gray-400">{reg.email}</p>
+                  </div>
+                  <span
+                    className="text-xs font-semibold px-2 py-1 rounded"
+                    style={{
+                      color: '#C8960C',
+                      border: '1px solid #C8960C',
+                      backgroundColor: 'rgba(200,150,12,0.1)',
+                    }}
+                  >
+                    {reg.status}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2 text-xs text-gray-300">
+                  <div>
+                    <span className="text-gray-500">Squad:</span> {SQUAD_NAMES[reg.slot]}
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Gender:</span> {reg.gender || '—'}
+                  </div>
+                </div>
+
+                <div className="flex gap-2 pt-2">
+                  <button
+                    onClick={() => setDetailId(reg.id)}
+                    className="flex-1 px-2 py-1.5 text-xs font-semibold text-[#C8960C] border border-[#C8960C] rounded hover:bg-[rgba(200,150,12,0.1)] transition-colors"
+                  >
+                    View
+                  </button>
+                  <button
+                    onClick={() => handleDelete(reg.id)}
+                    className="flex-1 px-2 py-1.5 text-xs font-semibold text-red-400 border border-red-900 rounded hover:bg-red-950 transition-colors"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
+
+        {/* Detail Modal */}
+        <RegistrationDetailModal
+          registrationId={detailId || ''}
+          isOpen={!!detailId}
+          onClose={() => setDetailId(null)}
+        />
+      </div>
+    )
   }
 
-  const squadDates: Record<string, string> = {
-    squadA: 'Aug 8-9',
-    squadB: 'Aug 10-11',
-    squadC: 'Aug 17-18',
-    squadD: 'Aug 19-20',
-    squadE: 'Any',
-  }
-
-  const statusColor: Record<string, string> = {
-    pending: '#C8960C',
-    approved: '#22c55e',
-    rejected: '#dc2626',
-    waitlisted: '#f59e0b',
-  }
-
+  // DESKTOP TABLE VIEW
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#0a0a0a]">
       {/* Navbar */}
-      <div className="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <AnchorsArmyLogo className="w-16 sm:w-20 flex-shrink-0" />
-            <div className="min-w-0">
-              <h1 className="font-display font-semibold text-gray-900 text-sm sm:text-lg line-clamp-1">
-                Registration Manager
-              </h1>
-              <p className="font-sans text-gray-600 text-xs sm:text-sm">
-                {registrations.length} registrations
-              </p>
+      <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
+        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <AnchorsArmyLogo className="w-12" />
+            <div>
+              <h1 className="font-semibold text-white">Registration Manager</h1>
+              <p className="text-sm text-gray-400">{registrations.length} registrations</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="px-3 sm:px-4 py-1.5 sm:py-2 text-gray-600 hover:text-[#C8960C] transition-colors text-xs sm:text-sm font-semibold whitespace-nowrap"
-          >
-            Logout →
-          </button>
+          <div className="flex items-center gap-4">
+            <NotificationCenter />
+            <button
+              onClick={handleLogout}
+              className="px-4 py-2 text-gray-400 hover:text-[#C8960C] transition-colors font-semibold"
+            >
+              Logout →
+            </button>
+          </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+      <div className="max-w-7xl mx-auto px-6 py-10">
         {/* Filters */}
-        <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-            {/* Search */}
+        <div className="mb-8 space-y-4">
+          <div className="grid grid-cols-3 gap-4">
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-3 sm:px-4 py-2.5 sm:py-3 bg-white text-gray-900 border border-gray-300 font-sans text-xs sm:text-sm outline-none focus:border-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20 placeholder:text-gray-400 rounded"
+              className="px-4 py-3 bg-[#1a1a1a] text-white border border-[#333] rounded text-sm focus:border-[#C8960C] outline-none"
             />
-
-            {/* Slot Filter */}
             <CustomSelect
               value={slotFilter}
               onChange={setSlotFilter}
-              placeholder="All Squads"
               options={[
                 { value: '', label: 'All Squads' },
-                { value: 'squadA', label: 'Squad A (Aug 8-9)' },
-                { value: 'squadB', label: 'Squad B (Aug 10-11)' },
-                { value: 'squadC', label: 'Squad C (Aug 17-18)' },
-                { value: 'squadD', label: 'Squad D (Aug 19-20)' },
-                { value: 'squadE', label: 'Any of the Above' },
+                { value: 'squadA', label: 'Squad A (22)' },
+                { value: 'squadB', label: 'Squad B (24)' },
+                { value: 'squadC', label: 'Squad C (24)' },
+                { value: 'squadD', label: 'Squad D (24)' },
+                { value: 'squadE', label: 'Any of Above' },
               ]}
             />
-
-            {/* Status Filter */}
             <CustomSelect
               value={statusFilter}
               onChange={setStatusFilter}
-              placeholder="All Statuses"
               options={[
                 { value: '', label: 'All Statuses' },
                 { value: 'pending', label: 'Pending' },
                 { value: 'approved', label: 'Approved' },
                 { value: 'rejected', label: 'Rejected' },
-                { value: 'waitlisted', label: 'Waitlisted' },
               ]}
             />
           </div>
         </div>
 
-        {/* Stats */}
-        <div className="mb-6 sm:mb-8 grid grid-cols-2 sm:grid-cols-5 gap-3 sm:gap-4">
-          {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => {
-            const labels = { squadA: 'Squad A', squadB: 'Squad B', squadC: 'Squad C', squadD: 'Squad D', squadE: 'Any' }
-            return (
-              <div key={squad} className="p-3 sm:p-4 bg-white border border-gray-200 rounded-lg shadow-sm">
-                <p className="font-sans text-xs font-semibold text-gray-600 uppercase tracking-tight mb-2">
-                  {labels[squad as keyof typeof labels]}
-                </p>
-                <p className="font-display text-lg sm:text-2xl font-semibold text-[#C8960C]">
-                  {counts[squad] || 0} / 25
-                </p>
-              </div>
-            )
-          })}
+        {/* Squad Stats */}
+        <div className="mb-8 grid grid-cols-5 gap-4">
+          {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => (
+            <motion.button
+              key={squad}
+              whileHover={{ scale: 1.02 }}
+              onClick={() => setSlotFilter(slotFilter === squad ? '' : squad)}
+              className={`p-4 rounded border transition-all ${
+                slotFilter === squad
+                  ? 'border-[#C8960C] bg-[rgba(200,150,12,0.1)]'
+                  : 'border-[#333] hover:border-[#444] bg-[#1a1a1a]'
+              }`}
+            >
+              <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{SQUAD_NAMES[squad]}</p>
+              <p className="text-2xl font-bold text-[#C8960C]">
+                {counts[squad] || 0}/{SQUAD_LIMITS[squad] === Infinity ? '∞' : SQUAD_LIMITS[squad]}
+              </p>
+            </motion.button>
+          ))}
         </div>
-
-        <GoldDivider className="w-16 mb-8" />
 
         {/* Bulk Actions */}
         {selected.size > 0 && (
-          <div className="mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-lg space-y-3">
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
-              <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
-                {selected.size} selected
-              </span>
-              <div className="flex flex-col sm:flex-row gap-2 flex-1">
+          <div className="mb-6 p-4 bg-[#222] border border-[#333] rounded-lg space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-white">{selected.size} selected</span>
+              <button
+                onClick={() => { setSelected(new Set()); setBulkStatus(''); setBulkSlot('') }}
+                className="text-xs text-gray-400 hover:text-white"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="flex gap-2">
                 <CustomSelect
                   value={bulkStatus}
                   onChange={setBulkStatus}
-                  placeholder="Change status to..."
                   options={[
-                    { value: '', label: 'Change status to...' },
+                    { value: '', label: 'Update status...' },
                     { value: 'approved', label: 'Approved' },
                     { value: 'rejected', label: 'Rejected' },
                     { value: 'pending', label: 'Pending' },
-                    { value: 'waitlisted', label: 'Waitlisted' },
                   ]}
                 />
                 <button
                   onClick={handleBulkStatusUpdate}
                   disabled={!bulkStatus || bulkLoading}
-                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
+                  className="px-4 py-3 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
                 >
-                  {bulkLoading ? 'Updating...' : 'Update Status'}
+                  Update
                 </button>
               </div>
-            </div>
-            <div className="flex flex-col sm:flex-row sm:items-center gap-3 pt-2 border-t border-blue-200">
-              <span className="font-sans text-xs sm:text-sm font-semibold text-gray-900">
-                Or move to squad:
-              </span>
-              <div className="flex flex-col sm:flex-row gap-2 flex-1">
+              <div className="flex gap-2">
                 <CustomSelect
                   value={bulkSlot}
                   onChange={setBulkSlot}
-                  placeholder="Move to squad..."
                   options={[
                     { value: '', label: 'Move to squad...' },
                     { value: 'squadA', label: 'Squad A' },
                     { value: 'squadB', label: 'Squad B' },
                     { value: 'squadC', label: 'Squad C' },
                     { value: 'squadD', label: 'Squad D' },
-                    { value: 'squadE', label: 'Any of the Above' },
+                    { value: 'squadE', label: 'Any of Above' },
                   ]}
                 />
                 <button
                   onClick={handleBulkSlotMove}
                   disabled={!bulkSlot || bulkLoading}
-                  className="px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 text-white font-semibold text-xs sm:text-sm rounded hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+                  className="px-4 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors disabled:opacity-50"
                 >
-                  {bulkLoading ? 'Moving...' : 'Move'}
+                  Move
                 </button>
               </div>
             </div>
-            <button
-              onClick={() => { setSelected(new Set()); setBulkStatus(''); setBulkSlot('') }}
-              className="px-3 py-1.5 sm:py-2 text-gray-600 hover:text-gray-900 text-xs sm:text-sm font-semibold"
-            >
-              Clear Selection
-            </button>
           </div>
         )}
 
-        {/* Export & Actions Bar */}
-        <div className="mb-6 flex gap-2">
+        {/* Export */}
+        <div className="mb-6">
           <button
             onClick={handleExportCSV}
             disabled={registrations.length === 0}
-            className="px-3 sm:px-4 py-2 sm:py-2.5 bg-[#C8960C] text-black font-semibold text-xs sm:text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
+            className="px-4 py-2 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
           >
             📥 Export CSV
           </button>
         </div>
 
-        {/* Registrations Table */}
+        {/* Table */}
         {loading ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">Loading registrations...</p>
-          </div>
+          <div className="text-center py-12 text-gray-400">Loading...</div>
         ) : registrations.length === 0 ? (
-          <div className="text-center py-12">
-            <p className="text-gray-600">No registrations found</p>
-          </div>
+          <div className="text-center py-12 text-gray-400">No registrations found</div>
         ) : (
-          <div className="overflow-x-auto bg-white border border-gray-200 rounded-lg shadow-sm">
-            <table className="w-full text-sm sm:text-base">
+          <div className="overflow-x-auto bg-[#1a1a1a] border border-[#333] rounded-lg">
+            <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left">
+                <tr className="border-b border-[#333] bg-[#222]">
+                  <th className="px-6 py-4 text-left">
                     <input
                       type="checkbox"
                       checked={selected.size === registrations.length && registrations.length > 0}
                       onChange={toggleSelectAll}
-                      className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
+                      className="w-4 h-4 accent-[#C8960C]"
                     />
                   </th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Name
-                  </th>
-                  <th className="hidden sm:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Email
-                  </th>
-                  <th className="hidden lg:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Phone
-                  </th>
-                  <th className="hidden md:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Gender
-                  </th>
-                  <th className="hidden md:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Payment
-                  </th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Squad
-                  </th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Status
-                  </th>
-                  <th className="hidden sm:table-cell px-6 py-4 text-left font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Date
-                  </th>
-                  <th className="px-3 sm:px-6 py-3 sm:py-4 text-right font-sans text-xs font-semibold text-gray-700 uppercase tracking-wide">
-                    Actions
-                  </th>
+                  <th className="px-6 py-4 text-left text-gray-300">Name</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Email</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Phone</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Gender</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Payment</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Squad</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Status</th>
+                  <th className="px-6 py-4 text-left text-gray-300">Date</th>
+                  <th className="px-6 py-4 text-right text-gray-300">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {registrations.map((reg) => (
                   <tr
                     key={reg.id}
-                    className="border-b border-gray-200 hover:bg-gray-50 transition-colors"
+                    className="border-b border-[#333] hover:bg-[#222] transition-colors"
                   >
-                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <td className="px-6 py-4">
                       <input
                         type="checkbox"
                         checked={selected.has(reg.id)}
                         onChange={() => toggleSelect(reg.id)}
-                        className="w-4 h-4 rounded border-gray-300 text-[#C8960C] focus:ring-2 focus:ring-[#C8960C]/20"
+                        className="w-4 h-4 accent-[#C8960C]"
                       />
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-xs sm:text-sm text-gray-900 font-medium">
-                      {reg.fullName}
-                    </td>
-                    <td className="hidden sm:table-cell px-6 py-4 font-sans text-sm text-gray-600">
-                      {reg.email}
-                    </td>
-                    <td className="hidden lg:table-cell px-6 py-4 font-sans text-sm text-gray-600">
-                      {reg.phone}
-                    </td>
-                    <td className="hidden md:table-cell px-6 py-4 font-sans text-xs text-gray-600 capitalize">
-                      {reg.gender || '—'}
-                    </td>
-                    <td className="hidden md:table-cell px-6 py-4 font-sans text-xs text-gray-600 uppercase">
-                      {reg.paymentMode || '—'}
-                    </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4 font-sans text-xs sm:text-sm text-gray-900">
-                      {squadDates[reg.slot] || reg.slot}
-                    </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4">
+                    <td className="px-6 py-4 font-semibold text-white">{reg.fullName}</td>
+                    <td className="px-6 py-4 text-gray-300">{reg.email}</td>
+                    <td className="px-6 py-4 text-gray-300">{reg.phone}</td>
+                    <td className="px-6 py-4 text-gray-400 capitalize">{reg.gender || '—'}</td>
+                    <td className="px-6 py-4 text-gray-400 uppercase">{reg.paymentMode || '—'}</td>
+                    <td className="px-6 py-4 font-semibold text-[#C8960C]">{SQUAD_NAMES[reg.slot]}</td>
+                    <td className="px-6 py-4">
                       <span
-                        className="px-2 sm:px-3 py-1 rounded text-xs font-semibold"
+                        className="text-xs font-semibold px-3 py-1 rounded"
                         style={{
-                          color: statusColor[reg.status] || '#666',
-                          border: `1px solid ${statusColor[reg.status] || '#ddd'}`,
-                          background: `${statusColor[reg.status]}15` || '#f5f5f5',
+                          color: '#C8960C',
+                          border: '1px solid #C8960C',
+                          backgroundColor: 'rgba(200,150,12,0.1)',
                         }}
                       >
                         {reg.status}
                       </span>
                     </td>
-                    <td className="hidden sm:table-cell px-6 py-4 font-sans text-xs text-gray-600">
+                    <td className="px-6 py-4 text-gray-400 text-xs">
                       {new Date(reg.createdAt).toLocaleDateString()}
                     </td>
-                    <td className="px-3 sm:px-6 py-3 sm:py-4">
-                      <div className="flex gap-1 sm:gap-2 justify-end">
-                        <Link href={`/admin/registration/${reg.id}`}>
-                          <button className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold text-[#C8960C] border border-[#C8960C] hover:bg-[#C8960C]/10 transition-colors rounded">
-                            View
-                          </button>
-                        </Link>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex gap-2 justify-end">
+                        <button
+                          onClick={() => setDetailId(reg.id)}
+                          className="px-3 py-1 text-xs font-semibold text-[#C8960C] border border-[#C8960C] rounded hover:bg-[rgba(200,150,12,0.1)] transition-colors"
+                        >
+                          View
+                        </button>
                         <button
                           onClick={() => handleDelete(reg.id)}
-                          className="px-2 sm:px-3 py-1 sm:py-1.5 text-xs font-semibold text-red-600 border border-red-300 hover:bg-red-50 transition-colors rounded"
+                          className="px-3 py-1 text-xs font-semibold text-red-400 border border-red-900 rounded hover:bg-red-950 transition-colors"
                         >
-                          Del
+                          Delete
                         </button>
                       </div>
                     </td>
@@ -481,6 +604,13 @@ export default function AdminDashboard() {
             </table>
           </div>
         )}
+
+        {/* Detail Modal */}
+        <RegistrationDetailModal
+          registrationId={detailId || ''}
+          isOpen={!!detailId}
+          onClose={() => setDetailId(null)}
+        />
       </div>
     </div>
   )
