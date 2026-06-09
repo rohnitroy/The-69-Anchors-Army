@@ -72,13 +72,13 @@ export default function MentorSection() {
 
             {/* Mobile image */}
             <SectionReveal delay={80} className="md:hidden mb-8">
-              <div className="relative w-full h-72 overflow-hidden">
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-lg">
                 <Image
                   src="/images/bb-studio.jpg"
                   alt="Anchor BB"
                   fill
                   quality={90}
-                  className="object-cover object-[60%_20%]"
+                  className="object-cover object-center"
                   sizes="100vw"
                 />
               </div>

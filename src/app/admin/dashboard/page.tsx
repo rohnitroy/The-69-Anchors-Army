@@ -388,15 +388,16 @@ export default function AdminDashboard() {
               }
 
               thead {
-                background-color: #C8960C;
-                color: white;
+                background-color: #f0f0f0;
+                color: #1a1a1a;
               }
 
               th {
                 padding: 12px;
                 text-align: left;
                 font-weight: 600;
-                border: 1px solid #C8960C;
+                border: 1px solid #ddd;
+                color: #1a1a1a;
               }
 
               td {
@@ -464,7 +465,7 @@ export default function AdminDashboard() {
           <body>
             <!-- Header with Logo -->
             <div class="header">
-              <div class="logo">🎤 69 ANCHORS ARMY</div>
+              <div class="logo">69 ANCHORS ARMY</div>
               <div class="subtitle">Powered by Bol BB Bol</div>
               <div class="report-title">Registration Report</div>
             </div>
@@ -481,7 +482,7 @@ export default function AdminDashboard() {
 
             <!-- Summary Section -->
             <div class="summary">
-              <strong>📊 Summary</strong>
+              <strong>Summary</strong>
               <div class="summary-grid">
                 <div class="summary-item">
                   <strong>Total Registrations</strong>
@@ -493,11 +494,11 @@ export default function AdminDashboard() {
                 </div>
                 <div class="summary-item">
                   <strong>Status: Approved</strong>
-                  <span>${statusCounts.approved} (${((statusCounts.approved / registrations.length) * 100).toFixed(1)}%)</span>
+                  <span>${statusCounts.approved}</span>
                 </div>
                 <div class="summary-item">
                   <strong>Status: Pending</strong>
-                  <span>${statusCounts.pending} (${((statusCounts.pending / registrations.length) * 100).toFixed(1)}%)</span>
+                  <span>${statusCounts.pending}</span>
                 </div>
               </div>
             </div>
@@ -707,7 +708,7 @@ export default function AdminDashboard() {
                   disabled={!bulkSlot}
                   className="px-3 py-2 bg-green-600 text-white font-semibold text-sm rounded hover:bg-green-700 transition-colors disabled:opacity-50 w-full"
                 >
-                  🔄 Move Squad
+                  Move Squad
                 </button>
               </div>
             </div>
@@ -816,7 +817,7 @@ export default function AdminDashboard() {
       <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <AnchorsArmyLogo className="w-12" />
+            <AnchorsArmyLogo className="w-16 sm:w-20" />
             <div>
               <h1 className="font-semibold text-white">Registration Manager</h1>
               <p className="text-sm text-gray-400">{registrations.length} registrations</p>
