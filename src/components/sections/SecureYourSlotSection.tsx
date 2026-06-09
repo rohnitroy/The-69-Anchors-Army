@@ -172,7 +172,7 @@ export default function SecureYourSlotSection() {
                     onChange={(value) => setForm(prev => ({ ...prev, countryCode: value }))}
                     options={COUNTRY_CODES.map(c => ({
                       value: c.code,
-                      label: `${c.flag} ${c.code}`,
+                      label: c.code,
                       flag: c.flag,
                     }))}
                     isCountryCode
