@@ -86,20 +86,20 @@ export default function NotificationCenter() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Activity Log Modal - All Screens */}
+            {/* Activity Log Modal - Mobile & Desktop */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-[#333] rounded-t-lg shadow-xl z-50"
+              className="fixed bottom-0 left-4 right-4 md:left-auto md:right-auto md:bottom-auto md:top-1/2 md:transform md:-translate-x-1/2 md:-translate-y-1/2 md:w-96 bg-[#1a1a1a] border-t md:border border-[#333] rounded-t-lg md:rounded-lg shadow-xl z-50"
               style={{
-                maxHeight: 'min(60vh, calc(100vh - 100px))',
+                maxHeight: 'min(60vh, calc(100vh - 120px))',
                 display: 'flex',
                 flexDirection: 'column',
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Mobile Header */}
+              {/* Header */}
               <div className="border-b border-[#333] px-4 py-3 bg-[#222] flex items-center justify-between flex-shrink-0">
                 <h3 className="text-sm font-semibold text-white">Activity Log</h3>
                 <button
@@ -110,7 +110,7 @@ export default function NotificationCenter() {
                 </button>
               </div>
 
-              {/* Mobile Content */}
+              {/* Content */}
               <div className="overflow-y-auto flex-1 min-h-0">
                 {activities.length === 0 ? (
                   <div className="px-4 py-8 text-center text-gray-400 text-sm">
@@ -122,12 +122,12 @@ export default function NotificationCenter() {
                       key={activity.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="border-b border-[#2a2a2a] px-3 py-2 hover:bg-[#222] transition-colors"
+                      className="border-b border-[#2a2a2a] px-3 sm:px-4 py-2 sm:py-3 hover:bg-[#222] transition-colors"
                     >
-                      <div className="flex gap-2">
-                        <div className="text-lg flex-shrink-0 mt-0.5">{getActionIcon(activity.actionType)}</div>
+                      <div className="flex gap-2 sm:gap-3">
+                        <div className="text-lg sm:text-xl flex-shrink-0 mt-0.5">{getActionIcon(activity.actionType)}</div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-white truncate">
+                          <p className="text-xs sm:text-sm font-medium text-white truncate">
                             {activity.actionDescription}
                           </p>
                           {activity.targetName && (
