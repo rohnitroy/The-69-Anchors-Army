@@ -39,6 +39,17 @@ const COUNTRY_CODES = [
   { code: '+64', label: '+64', flag: '🇳🇿', country: 'New Zealand' },
 ]
 
+// SVG flag icons for all platforms
+const FLAG_ICONS: Record<string, string> = {
+  '+91': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#FF9933" x="0" y="0" width="36" height="12"/><rect fill="white" x="0" y="12" width="36" height="12"/><rect fill="#138808" x="0" y="24" width="36" height="12"/><circle fill="#000080" cx="18" cy="18" r="4.5"/></svg>`,
+  '+1': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#B22234" x="0" y="0" width="36" height="36"/><rect fill="white" x="0" y="2.77" width="36" height="2.77"/><rect fill="white" x="0" y="8.31" width="36" height="2.77"/></svg>`,
+  '+44': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#012169" x="0" y="0" width="36" height="36"/><path fill="white" d="M0 0L36 36M36 0L0 36" stroke-width="6"/></svg>`,
+  '+61': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#00008B" x="0" y="0" width="36" height="36"/><path fill="gold" d="M18 6L21 15H31L23 20L26 29L18 24L10 29L13 20L5 15H15Z"/></svg>`,
+  '+971': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#CE1126" x="0" y="0" width="36" height="12"/><rect fill="white" x="0" y="12" width="36" height="12"/><rect fill="#007A5E" x="0" y="24" width="36" height="12"/><rect fill="black" x="0" y="0" width="6" height="36"/></svg>`,
+  '+65': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#DD0000" x="0" y="0" width="36" height="36"/><rect fill="white" x="0" y="0" width="36" height="18"/><circle fill="white" cx="9" cy="9" r="3"/><path fill="white" d="M14 9L16 15L22 15L17 19L19 25L14 21L9 25L11 19L6 15L12 15Z"/></svg>`,
+  '+64': `<svg viewBox="0 0 36 36" class="w-5 h-5"><rect fill="#002B7F" x="0" y="0" width="36" height="36"/><rect fill="#CE1126" x="0" y="0" width="36" height="36" opacity="0.3"/></svg>`,
+}
+
 type FormState = {
   fullName: string
   countryCode: string

@@ -68,12 +68,7 @@ export default function NotificationCenter() {
         onClick={() => setIsOpen(!isOpen)}
         className="relative p-2 text-gray-400 hover:text-white transition-colors"
       >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -88,29 +83,34 @@ export default function NotificationCenter() {
         )}
       </button>
 
-      {/* Dropdown */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Mobile dropdown */}
+            {/* Mobile Modal */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border border-[#333] rounded-t-lg shadow-xl z-50"
+              className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-[#333] rounded-t-lg shadow-xl z-50"
               style={{
-                maxHeight: 'min(400px, 70vh)',
+                maxHeight: 'min(60vh, calc(100vh - 100px))',
                 display: 'flex',
                 flexDirection: 'column',
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="border-b border-[#333] px-4 py-3 bg-[#222]">
+              {/* Mobile Header */}
+              <div className="border-b border-[#333] px-4 py-3 bg-[#222] flex items-center justify-between flex-shrink-0">
                 <h3 className="text-sm font-semibold text-white">Activity Log</h3>
+                <button
+                  onClick={() => setIsOpen(false)}
+                  className="text-gray-400 hover:text-white text-xl leading-none"
+                >
+                  ✕
+                </button>
               </div>
 
-              {/* Content */}
+              {/* Mobile Content */}
               <div className="overflow-y-auto flex-1 min-h-0">
                 {activities.length === 0 ? (
                   <div className="px-4 py-8 text-center text-gray-400 text-sm">
@@ -122,21 +122,21 @@ export default function NotificationCenter() {
                       key={activity.id}
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
-                      className="border-b border-[#2a2a2a] px-4 py-3 hover:bg-[#222] transition-colors"
+                      className="border-b border-[#2a2a2a] px-3 py-2 hover:bg-[#222] transition-colors"
                     >
-                      <div className="flex gap-3">
-                        <div className="text-xl">{getActionIcon(activity.actionType)}</div>
+                      <div className="flex gap-2">
+                        <div className="text-lg flex-shrink-0 mt-0.5">{getActionIcon(activity.actionType)}</div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">
+                          <p className="text-xs font-medium text-white truncate">
                             {activity.actionDescription}
                           </p>
                           {activity.targetName && (
                             <p className="text-xs text-gray-400 truncate">
-                              {activity.targetName} ({activity.targetEmail})
+                              {activity.targetName}
                             </p>
                           )}
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(activity.createdAt).toLocaleString()}
+                          <p className="text-xs text-gray-500 mt-0.5">
+                            {new Date(activity.createdAt).toLocaleTimeString()}
                           </p>
                         </div>
                       </div>
@@ -146,7 +146,7 @@ export default function NotificationCenter() {
               </div>
             </motion.div>
 
-            {/* Desktop dropdown */}
+            {/* Desktop Dropdown */}
             <motion.div
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -161,12 +161,12 @@ export default function NotificationCenter() {
               }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Header */}
-              <div className="border-b border-[#333] px-4 py-3 bg-[#222]">
+              {/* Desktop Header */}
+              <div className="border-b border-[#333] px-4 py-3 bg-[#222] flex-shrink-0">
                 <h3 className="text-sm font-semibold text-white">Activity Log</h3>
               </div>
 
-              {/* Content */}
+              {/* Desktop Content */}
               <div className="overflow-y-auto flex-1 min-h-0">
                 {activities.length === 0 ? (
                   <div className="px-4 py-8 text-center text-gray-400 text-sm">
@@ -181,7 +181,7 @@ export default function NotificationCenter() {
                       className="border-b border-[#2a2a2a] px-4 py-3 hover:bg-[#222] transition-colors"
                     >
                       <div className="flex gap-3">
-                        <div className="text-xl">{getActionIcon(activity.actionType)}</div>
+                        <div className="text-xl flex-shrink-0">{getActionIcon(activity.actionType)}</div>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-white truncate">
                             {activity.actionDescription}
@@ -207,4 +207,3 @@ export default function NotificationCenter() {
     </div>
   )
 }
-
