@@ -86,12 +86,12 @@ export default function NotificationCenter() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Mobile Modal */}
+            {/* Activity Log Modal - All Screens */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
-              className="md:hidden fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-[#333] rounded-t-lg shadow-xl z-50"
+              className="fixed bottom-0 left-0 right-0 bg-[#1a1a1a] border-t border-[#333] rounded-t-lg shadow-xl z-50"
               style={{
                 maxHeight: 'min(60vh, calc(100vh - 100px))',
                 display: 'flex',
@@ -137,62 +137,6 @@ export default function NotificationCenter() {
                           )}
                           <p className="text-xs text-gray-500 mt-0.5">
                             {new Date(activity.createdAt).toLocaleTimeString()}
-                          </p>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))
-                )}
-              </div>
-            </motion.div>
-
-            {/* Desktop Dropdown */}
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="hidden md:block absolute top-full mt-2 w-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl z-50"
-              style={{
-                left: '50%',
-                transform: 'translateX(-50%)',
-                maxHeight: 'min(500px, calc(100vh - 120px))',
-                display: 'flex',
-                flexDirection: 'column',
-              }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Desktop Header */}
-              <div className="border-b border-[#333] px-4 py-3 bg-[#222] flex-shrink-0">
-                <h3 className="text-sm font-semibold text-white">Activity Log</h3>
-              </div>
-
-              {/* Desktop Content */}
-              <div className="overflow-y-auto flex-1 min-h-0">
-                {activities.length === 0 ? (
-                  <div className="px-4 py-8 text-center text-gray-400 text-sm">
-                    No recent activities
-                  </div>
-                ) : (
-                  activities.map((activity) => (
-                    <motion.div
-                      key={activity.id}
-                      initial={{ opacity: 0, x: -10 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      className="border-b border-[#2a2a2a] px-4 py-3 hover:bg-[#222] transition-colors"
-                    >
-                      <div className="flex gap-3">
-                        <div className="text-xl flex-shrink-0">{getActionIcon(activity.actionType)}</div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-white truncate">
-                            {activity.actionDescription}
-                          </p>
-                          {activity.targetName && (
-                            <p className="text-xs text-gray-400 truncate">
-                              {activity.targetName} ({activity.targetEmail})
-                            </p>
-                          )}
-                          <p className="text-xs text-gray-500 mt-1">
-                            {new Date(activity.createdAt).toLocaleString()}
                           </p>
                         </div>
                       </div>
