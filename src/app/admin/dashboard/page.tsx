@@ -597,14 +597,18 @@ export default function AdminDashboard() {
                 <p className="text-xs text-gray-400">{registrations.length} registrations</p>
               </div>
             </div>
-            <div className="flex items-center gap-2 px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
-              <NotificationCenter />
-              <button
-                onClick={handleLogout}
-                className="text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
-              >
-                Logout →
-              </button>
+            <div className="flex items-center gap-2">
+              <div className="px-2 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+                <NotificationCenter />
+              </div>
+              <div className="px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+                <button
+                  onClick={handleLogout}
+                  className="text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
+                >
+                  Logout →
+                </button>
+              </div>
             </div>
           </div>
 

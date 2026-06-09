@@ -24,7 +24,6 @@ const GENDER_OPTIONS = [
 ]
 
 const PAYMENT_MODE_OPTIONS = [
-  { value: 'cash', label: 'Cash' },
   { value: 'upi', label: 'UPI' },
   { value: 'neft', label: 'NEFT' },
 ]
