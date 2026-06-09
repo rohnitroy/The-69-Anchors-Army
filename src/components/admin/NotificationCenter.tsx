@@ -95,11 +95,12 @@ export default function NotificationCenter() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl z-50 max-w-[calc(100vw-20px)] sm:max-w-none"
+            className="absolute mt-2 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl z-50"
             style={{
               right: 'auto',
               left: '50%',
               transform: 'translateX(-50%)',
+              width: 'min(384px, calc(100vw - 40px))',
               maxHeight: 'min(500px, calc(100vh - 120px))',
               display: 'flex',
               flexDirection: 'column',

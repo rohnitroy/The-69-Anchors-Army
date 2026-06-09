@@ -585,7 +585,7 @@ export default function AdminDashboard() {
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <Image
-                src="/logos/anchors-army-logo.png"
+                src="/logos/bolbbbol-logo.png"
                 alt="69 Anchors Army"
                 width={50}
                 height={50}
@@ -597,16 +597,18 @@ export default function AdminDashboard() {
                 <p className="text-xs text-gray-400">{registrations.length} registrations</p>
               </div>
             </div>
-            <button
-              onClick={handleLogout}
-              className="px-3 py-1.5 text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors"
-            >
-              Logout →
-            </button>
+            <div className="flex items-center gap-2 px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+              <NotificationCenter />
+              <button
+                onClick={handleLogout}
+                className="text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
+              >
+                Logout →
+              </button>
+            </div>
           </div>
 
-          <div className="px-4 py-2 border-t border-[#333] flex gap-1 items-center">
-            <NotificationCenter />
+          <div className="px-4 py-2 border-t border-[#333] flex gap-1 items-center justify-end">
             <button
               onClick={handleExportCSV}
               disabled={registrations.length === 0}
@@ -825,7 +827,7 @@ export default function AdminDashboard() {
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Image
-              src="/logos/anchors-army-logo.png"
+              src="/logos/bolbbbol-logo.png"
               alt="69 Anchors Army"
               width={100}
               height={100}
