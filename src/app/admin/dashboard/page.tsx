@@ -587,9 +587,10 @@ export default function AdminDashboard() {
               <Image
                 src="/logos/anchors-army-logo.png"
                 alt="69 Anchors Army"
-                width={40}
-                height={40}
-                className="w-10 h-auto flex-shrink-0"
+                width={50}
+                height={50}
+                className="w-10 h-auto flex-shrink-0 object-contain"
+                priority
               />
               <div>
                 <h1 className="font-semibold text-white text-sm">Registration Manager</h1>
@@ -604,21 +605,21 @@ export default function AdminDashboard() {
             </button>
           </div>
 
-          <div className="px-4 py-2 border-t border-[#333] flex gap-2">
+          <div className="px-4 py-2 border-t border-[#333] flex gap-1 items-center">
             <NotificationCenter />
             <button
               onClick={handleExportCSV}
               disabled={registrations.length === 0}
-              className="text-xs px-2 py-1 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
+              className="text-xs px-2 py-1.5 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
             >
-              📥 CSV
+              CSV
             </button>
             <button
               onClick={handleExportPDF}
               disabled={registrations.length === 0}
-              className="text-xs px-2 py-1 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
+              className="text-xs px-2 py-1.5 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
             >
-              📄 PDF
+              PDF
             </button>
           </div>
         </div>
@@ -826,9 +827,10 @@ export default function AdminDashboard() {
             <Image
               src="/logos/anchors-army-logo.png"
               alt="69 Anchors Army"
-              width={80}
-              height={80}
-              className="w-16 sm:w-20 h-auto"
+              width={100}
+              height={100}
+              className="w-16 sm:w-20 h-auto object-contain"
+              priority
             />
             <div>
               <h1 className="font-semibold text-white">Registration Manager</h1>
@@ -951,27 +953,27 @@ export default function AdminDashboard() {
                   disabled={!bulkSlot}
                   className="px-4 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap min-h-12"
                 >
-                  🔄 Move
+                  Move
                 </button>
               </div>
             </div>
           </div>
         )}
 
-        <div className="mb-6 flex flex-col sm:flex-row gap-3">
+        <div className="mb-6 flex flex-row gap-2 sm:gap-3">
           <button
             onClick={handleExportCSV}
             disabled={registrations.length === 0}
-            className="px-4 py-3 sm:py-2 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 min-h-12 sm:min-h-fit whitespace-nowrap"
+            className="flex-1 sm:flex-none px-3 py-2 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
           >
-            📥 Export CSV
+            CSV
           </button>
           <button
             onClick={handleExportPDF}
             disabled={registrations.length === 0}
-            className="px-4 py-3 sm:py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 min-h-12 sm:min-h-fit whitespace-nowrap"
+            className="flex-1 sm:flex-none px-3 py-2 bg-blue-600 text-white font-semibold text-sm rounded hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
           >
-            📄 Export PDF
+            PDF
           </button>
         </div>
 

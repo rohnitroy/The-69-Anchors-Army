@@ -35,13 +35,13 @@ export default function InclusionsSection() {
           <div className="flex flex-col justify-center py-24 md:py-32 px-6 md:pl-16 md:pr-12">
 
             {/* Mobile image */}
-            <div className="relative md:hidden w-full h-64 mb-10 overflow-hidden bg-[#0a0a0a]">
+            <div className="relative md:hidden w-full aspect-[4/5] mb-10 overflow-hidden bg-[#0a0a0a] rounded-lg">
               <Image
                 src="/images/bb-pavilion.jpg"
                 alt="Anchor BB"
                 fill
                 quality={90}
-                className="object-cover object-[65%_15%]"
+                className="object-cover object-center"
                 sizes="100vw"
               />
             </div>
