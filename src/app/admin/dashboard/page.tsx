@@ -102,33 +102,6 @@ export default function AdminDashboard() {
     router.push('/admin/login')
   }
 
-  const handleBackup = async () => {
-    try {
-      const res = await fetch('/api/admin/backup')
-      if (res.ok) {
-        const data = await res.json()
-
-        // Create a blob and download
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-        const url = window.URL.createObjectURL(blob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = `backup-${new Date().toISOString().split('T')[0]}.json`
-        document.body.appendChild(a)
-        a.click()
-        window.URL.revokeObjectURL(url)
-        document.body.removeChild(a)
-
-        toast('success', 'Backup Created', `Downloaded backup with ${data.totalRecords} registrations`)
-      } else {
-        toast('error', 'Error', 'Failed to create backup')
-      }
-    } catch (error) {
-      console.error('Backup error:', error)
-      toast('error', 'Error', 'Failed to create backup')
-    }
-  }
-
   const toggleSelect = (id: string) => {
     const newSelected = new Set(selected)
     if (newSelected.has(id)) {
@@ -612,14 +585,6 @@ export default function AdminDashboard() {
 
           <div className="px-4 py-2 border-t border-[#333] flex gap-1 items-center justify-end">
             <button
-              onClick={handleBackup}
-              disabled={registrations.length === 0}
-              className="text-xs px-2 py-1.5 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 whitespace-nowrap"
-              title="Download backup"
-            >
-              ⬇ Backup
-            </button>
-            <button
               onClick={handleExportCSV}
               disabled={registrations.length === 0}
               className="text-xs px-2 py-1.5 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap"
@@ -851,13 +816,6 @@ export default function AdminDashboard() {
             <div className="px-1.5 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
               <NotificationCenter />
             </div>
-            <button
-              onClick={handleBackup}
-              className="hidden sm:block px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a] text-xs font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
-              title="Download backup of all registrations"
-            >
-              ⬇ Backup
-            </button>
             <div className="hidden sm:block px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
               <button
                 onClick={handleLogout}
