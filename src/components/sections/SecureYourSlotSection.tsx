@@ -97,14 +97,6 @@ export default function SecureYourSlotSection() {
             <p className="font-sans text-text-secondary text-sm leading-relaxed max-w-md">
               Choose your squad dates and lock in your place in the 69 Anchors Army.
             </p>
-            <div className="flex gap-3 flex-wrap justify-center">
-              <span className="micro-label px-4 py-2 border border-gold-muted text-gold-primary">
-                Batch 1
-              </span>
-              <span className="micro-label px-4 py-2 border border-gold-muted text-gold-primary">
-                25 Seats Per Squad
-              </span>
-            </div>
           </div>
         </SectionReveal>
 

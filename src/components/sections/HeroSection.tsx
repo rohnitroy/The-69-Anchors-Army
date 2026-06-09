@@ -88,11 +88,18 @@ export default function HeroSection() {
         style={{ maxWidth: 1200, height: 'calc(100svh - 72px)', marginTop: 72 }}
       >
         <motion.div
-          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-3 sm:gap-4 md:gap-6"
+          className="max-w-sm sm:max-w-xl md:max-w-2xl flex flex-col items-start gap-4 sm:gap-5 md:gap-8"
           variants={container}
           initial="hidden"
           animate="visible"
         >
+          {/* Chips - First */}
+          <motion.div variants={item}>
+            <p className="font-label text-text-secondary text-xs uppercase tracking-widest mb-3">Available Slots</p>
+            <SlotChips />
+          </motion.div>
+
+          {/* Buttons - Second */}
           <motion.div variants={item} className="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4">
             <Button href="/secure-your-slot" variant="primary" size="lg">
               {HERO.cta} →
@@ -102,9 +109,11 @@ export default function HeroSection() {
             </Button>
           </motion.div>
 
-          <motion.div variants={item} className="mt-4 sm:mt-6">
-            <p className="font-label text-text-secondary text-xs uppercase tracking-widest mb-3">Available Slots</p>
-            <SlotChips />
+          {/* Tagline - Third */}
+          <motion.div variants={item} className="mt-2 sm:mt-4">
+            <p className="font-display italic text-text-secondary leading-snug" style={{ fontSize: 'clamp(14px, 2vw, 20px)' }}>
+              &ldquo;baat karne se baat banti hai&rdquo;
+            </p>
           </motion.div>
         </motion.div>
       </div>
