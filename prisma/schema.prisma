@@ -149,6 +149,29 @@ model AdminLog {
   @@map("admin_logs")
 }
 
+// ─────────────────────────────────────────
+// Activity Log (for tracking all admin actions)
+// ─────────────────────────────────────────
+
+model ActivityLog {
+  id                    String    @id @default(uuid()) @db.Uuid
+  actionType            String    @map("action_type") @db.VarChar(50)
+  actionDescription     String    @map("action_description") @db.Text
+  targetRegistrationId  String?   @map("target_registration_id") @db.VarChar(255)
+  targetEmail           String?   @map("target_email") @db.VarChar(255)
+  targetName            String?   @map("target_name") @db.VarChar(255)
+  fromValue             String?   @map("from_value") @db.VarChar(255)
+  toValue               String?   @map("to_value") @db.VarChar(255)
+  ipAddress             String?   @map("ip_address") @db.VarChar(45)
+  userAgent             String?   @map("user_agent") @db.Text
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+
+  @@index([actionType])
+  @@index([targetRegistrationId])
+  @@index([createdAt])
+  @@map("activity_logs")
+}
+
 // ─────────────────────────────────────────────
 // File Uploads
 // ─────────────────────────────────────────────
