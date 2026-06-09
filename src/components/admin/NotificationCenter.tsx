@@ -95,7 +95,13 @@ export default function NotificationCenter() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-96 max-h-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl overflow-hidden z-50"
+            className="absolute right-0 mt-2 w-80 sm:w-96 max-h-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl overflow-hidden z-50 max-w-[calc(100vw-20px)] sm:max-w-none"
+            style={{
+              right: 'auto',
+              left: '50%',
+              transform: 'translateX(-50%)',
+            }}
+            onClick={(e) => e.stopPropagation()}
           >
             {/* Header */}
             <div className="border-b border-[#333] px-4 py-3 bg-[#222]">

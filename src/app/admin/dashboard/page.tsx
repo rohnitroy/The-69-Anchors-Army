@@ -658,6 +658,62 @@ export default function AdminDashboard() {
           ))}
         </div>
 
+        {selected.size > 0 && (
+          <div className="p-4 bg-[#222] border border-[#333] rounded-lg space-y-3 mx-4">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-white text-sm">{selected.size} selected</span>
+              <button
+                onClick={() => { setSelected(new Set()); setBulkStatus(''); setBulkSlot('') }}
+                className="text-xs text-gray-400 hover:text-white"
+              >
+                Clear
+              </button>
+            </div>
+            <div className="space-y-2">
+              <div className="flex flex-col gap-2">
+                <CustomSelect
+                  value={bulkStatus}
+                  onChange={setBulkStatus}
+                  options={[
+                    { value: '', label: 'Update status...' },
+                    { value: 'approved', label: 'Approved' },
+                    { value: 'rejected', label: 'Rejected' },
+                    { value: 'pending', label: 'Pending' },
+                  ]}
+                />
+                <button
+                  onClick={handleBulkStatusUpdate}
+                  disabled={!bulkStatus}
+                  className="px-3 py-2 bg-[#C8960C] text-black font-semibold text-sm rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 w-full"
+                >
+                  ✓ Update Status
+                </button>
+              </div>
+              <div className="flex flex-col gap-2">
+                <CustomSelect
+                  value={bulkSlot}
+                  onChange={setBulkSlot}
+                  options={[
+                    { value: '', label: 'Move to squad...' },
+                    { value: 'squadA', label: 'Squad A' },
+                    { value: 'squadB', label: 'Squad B' },
+                    { value: 'squadC', label: 'Squad C' },
+                    { value: 'squadD', label: 'Squad D' },
+                    { value: 'squadE', label: 'Any of Above' },
+                  ]}
+                />
+                <button
+                  onClick={handleBulkSlotMove}
+                  disabled={!bulkSlot}
+                  className="px-3 py-2 bg-green-600 text-white font-semibold text-sm rounded hover:bg-green-700 transition-colors disabled:opacity-50 w-full"
+                >
+                  🔄 Move Squad
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         <div className="p-4 space-y-3">
           {loading ? (
             <div className="text-center py-8 text-gray-400">Loading...</div>
@@ -671,21 +727,51 @@ export default function AdminDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 className="p-4 bg-[#1a1a1a] border border-[#333] rounded-lg space-y-2"
               >
-                <div className="flex justify-between items-start">
-                  <div>
+                <div className="flex justify-between items-start gap-2">
+                  <div className="flex-1">
                     <p className="font-semibold text-white text-sm">{reg.fullName}</p>
                     <p className="text-xs text-gray-400">{reg.email}</p>
                   </div>
-                  <span
-                    className="text-xs font-semibold px-2 py-1 rounded"
-                    style={{
-                      color: '#C8960C',
-                      border: '1px solid #C8960C',
-                      backgroundColor: 'rgba(200,150,12,0.1)',
-                    }}
-                  >
-                    {reg.status}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    <input
+                      type="checkbox"
+                      checked={selected.has(reg.id)}
+                      onChange={() => toggleSelect(reg.id)}
+                      className="w-4 h-4 accent-[#C8960C] cursor-pointer"
+                    />
+                    <span
+                      className="text-xs font-semibold px-2 py-1 rounded shrink-0"
+                      style={{
+                        color:
+                          reg.status === 'approved'
+                            ? '#10b981'
+                            : reg.status === 'pending'
+                            ? '#f59e0b'
+                            : reg.status === 'rejected'
+                            ? '#ef4444'
+                            : '#6b7280',
+                        border:
+                          reg.status === 'approved'
+                            ? '1px solid #10b981'
+                            : reg.status === 'pending'
+                            ? '1px solid #f59e0b'
+                            : reg.status === 'rejected'
+                            ? '1px solid #ef4444'
+                            : '1px solid #6b7280',
+                        backgroundColor:
+                          reg.status === 'approved'
+                            ? 'rgba(16,185,129,0.1)'
+                            : reg.status === 'pending'
+                            ? 'rgba(245,158,11,0.1)'
+                            : reg.status === 'rejected'
+                            ? 'rgba(239,68,68,0.1)'
+                            : 'rgba(107,114,128,0.1)',
+                        textTransform: 'capitalize',
+                      }}
+                    >
+                      {reg.status}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2 text-xs text-gray-300">

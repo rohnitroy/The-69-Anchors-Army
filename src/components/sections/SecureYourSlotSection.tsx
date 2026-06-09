@@ -157,8 +157,12 @@ export default function SecureYourSlotSection() {
                   <select
                     value={form.countryCode}
                     onChange={set('countryCode')}
-                    className={`${input} shrink-0 sm:w-28`}
+                    className={`${input} shrink-0 sm:w-28 sm:max-w-none max-w-[280px]`}
                     required
+                    style={{
+                      position: 'relative',
+                      zIndex: 10,
+                    }}
                   >
                     {COUNTRY_CODES.map(c => (
                       <option key={c.code} value={c.code}>
