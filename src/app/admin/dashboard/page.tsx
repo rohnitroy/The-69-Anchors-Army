@@ -833,45 +833,51 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-[#0a0a0a]">
       <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             <Image
               src="/logos/bolbbbol-logo.png"
               alt="69 Anchors Army"
               width={100}
               height={100}
-              className="w-16 sm:w-20 h-auto object-contain"
+              className="w-10 sm:w-16 md:w-20 h-auto object-contain"
               priority
             />
-            <div>
-              <h1 className="font-semibold text-white">Registration Manager</h1>
-              <p className="text-sm text-gray-400">{registrations.length} registrations</p>
+            <div className="min-w-0">
+              <h1 className="font-semibold text-white text-sm sm:text-base">Registration Manager</h1>
+              <p className="text-xs sm:text-sm text-gray-400">{registrations.length} registrations</p>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <div className="px-2 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="px-1.5 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
               <NotificationCenter />
             </div>
-            <div className="px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+            <div className="hidden sm:block px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
               <button
                 onClick={handleLogout}
-                className="text-sm font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
+                className="text-xs sm:text-sm font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
               >
                 Logout →
               </button>
             </div>
+            <button
+              onClick={handleLogout}
+              className="sm:hidden px-1.5 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a] text-gray-400 hover:text-[#C8960C] transition-colors text-xs font-semibold"
+            >
+              ←
+            </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-10">
-        <div className="mb-8 space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
+        <div className="mb-6 sm:mb-8 space-y-3 sm:space-y-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
             <input
               type="text"
-              placeholder="Search by name, email, or phone..."
+              placeholder="Search..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="px-4 py-3 bg-[#1a1a1a] text-white border border-[#333] rounded text-sm focus:border-[#C8960C] outline-none"
+              className="px-3 sm:px-4 py-2 sm:py-3 bg-[#1a1a1a] text-white border border-[#333] rounded text-xs sm:text-sm focus:border-[#C8960C] outline-none"
             />
             <CustomSelect
               value={slotFilter}
@@ -898,21 +904,21 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-        <div className="mb-8 grid grid-cols-5 gap-4">
+        <div className="mb-6 sm:mb-8 grid grid-cols-5 gap-2 sm:gap-4">
           {['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(squad => (
             <motion.button
               key={squad}
               whileHover={{ scale: 1.02 }}
               onClick={() => setSlotFilter(slotFilter === squad ? '' : squad)}
-              className={`p-4 rounded border transition-all ${
+              className={`p-2 sm:p-4 rounded border transition-all text-center ${
                 slotFilter === squad
                   ? 'border-[#C8960C] bg-[rgba(200,150,12,0.1)]'
                   : 'border-[#333] hover:border-[#444] bg-[#1a1a1a]'
               }`}
             >
-              <p className="text-xs font-semibold text-gray-400 uppercase mb-2">{SQUAD_NAMES[squad]}</p>
-              <p className="text-2xl font-bold text-[#C8960C]">
-                {counts[squad] || 0}/{SQUAD_LIMITS[squad] === Infinity ? '∞' : SQUAD_LIMITS[squad]}
+              <p className="text-xs font-semibold text-gray-400 uppercase mb-1 sm:mb-2 hidden sm:block">{SQUAD_NAMES[squad]}</p>
+              <p className="text-xs sm:text-2xl font-bold text-[#C8960C] truncate">
+                {counts[squad]}/{SQUAD_LIMITS[squad] === Infinity ? '∞' : SQUAD_LIMITS[squad]}
               </p>
             </motion.button>
           ))}
