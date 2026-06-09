@@ -176,28 +176,32 @@ export default function SecureYourSlotSection() {
 
             {/* Country Code + Mobile + Email */}
             <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5">
-              <Field label="Mobile Number *">
-                <div className="flex flex-col gap-2 sm:gap-3">
-                  <CustomDropdown
-                    value={form.countryCode}
-                    onChange={(value) => setForm(prev => ({ ...prev, countryCode: value }))}
-                    options={COUNTRY_CODES.map(c => ({
-                      value: c.code,
-                      label: c.code,
-                      flag: c.flag,
-                    }))}
-                    isCountryCode
-                  />
-                  <input
-                    type="tel"
-                    placeholder="98765 43210"
-                    value={form.phone}
-                    onChange={set('phone')}
-                    required
-                    className={`${input} min-h-12`}
-                  />
-                </div>
-              </Field>
+              <div>
+                <Field label="Mobile Number *">
+                  <div className="flex gap-2 items-end">
+                    <div className="w-20 sm:w-24">
+                      <CustomDropdown
+                        value={form.countryCode}
+                        onChange={(value) => setForm(prev => ({ ...prev, countryCode: value }))}
+                        options={COUNTRY_CODES.map(c => ({
+                          value: c.code,
+                          label: c.code,
+                          flag: c.flag,
+                        }))}
+                        isCountryCode
+                      />
+                    </div>
+                    <input
+                      type="tel"
+                      placeholder="98765 43210"
+                      value={form.phone}
+                      onChange={set('phone')}
+                      required
+                      className={`${input} min-h-12 flex-1`}
+                    />
+                  </div>
+                </Field>
+              </div>
               <Field label="Email ID *">
                 <input
                   type="email"
