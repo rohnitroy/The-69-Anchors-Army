@@ -120,7 +120,7 @@ export default function SecureYourSlotSection() {
   }
 
   return (
-    <section id="secure-your-slot" className="relative bg-surface py-28 md:py-36 overflow-hidden">
+    <section id="secure-your-slot" className="relative bg-surface py-16 sm:py-24 md:py-28 lg:py-36 overflow-hidden">
 
       <div
         className="absolute inset-0 pointer-events-none"
@@ -128,20 +128,20 @@ export default function SecureYourSlotSection() {
         style={{ background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(200,150,12,0.05) 0%, transparent 70%)' }}
       />
 
-      <div className="relative z-10 mx-auto px-6 md:px-12" style={{ maxWidth: 720 }}>
+      <div className="relative z-10 mx-auto px-4 sm:px-6 md:px-12" style={{ maxWidth: 720 }}>
 
         {/* Header */}
         <SectionReveal>
-          <div className="flex flex-col items-center text-center mb-14 gap-5">
-            <AnchorsArmyLogo className="w-35 md:w-45" />
-            <GoldDivider className="w-20" />
+          <div className="flex flex-col items-center text-center mb-8 sm:mb-12 md:mb-14 gap-3 sm:gap-4 md:gap-5">
+            <AnchorsArmyLogo className="w-28 sm:w-35 md:w-45" />
+            <GoldDivider className="w-16 sm:w-20" />
             <h2
               className="font-display font-semibold text-text-primary leading-tight"
-              style={{ fontSize: 'clamp(28px, 4vw, 48px)' }}
+              style={{ fontSize: 'clamp(24px, 5vw, 48px)' }}
             >
               Secure Your Slot
             </h2>
-            <p className="font-sans text-text-secondary text-sm leading-relaxed max-w-md">
+            <p className="font-sans text-text-secondary text-xs sm:text-sm leading-relaxed max-w-md">
               Choose your squad dates and lock in your place in the 69 Anchors Army.
             </p>
           </div>
@@ -149,7 +149,7 @@ export default function SecureYourSlotSection() {
 
         {/* Form */}
         <SectionReveal delay={120}>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5 md:gap-6">
 
             {/* Full Name */}
             <Field label="Full Name *">
@@ -162,22 +162,22 @@ export default function SecureYourSlotSection() {
 
             {/* Note banner — shown prominently before email/phone */}
             <div
-              className="border-l-2 px-5 py-4 rounded-sm"
+              className="border-l-2 px-3 sm:px-4 md:px-5 py-3 sm:py-4 rounded-sm"
               style={{
                 borderColor: '#C8960C',
                 background: 'rgba(200,150,12,0.06)',
               }}
             >
-              <p className="font-sans text-sm leading-relaxed" style={{ color: '#C8960C' }}>
+              <p className="font-sans text-xs sm:text-sm leading-relaxed" style={{ color: '#C8960C' }}>
                 <span className="font-semibold">Note:</span> Please use the exact same Email ID
                 and Mobile Number that you used when filling out the first registration form.
               </p>
             </div>
 
             {/* Country Code + Mobile + Email */}
-            <div className="grid sm:grid-cols-2 gap-5">
+            <div className="grid sm:grid-cols-2 gap-3 sm:gap-4 md:gap-5">
               <Field label="Mobile Number *">
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-2 sm:gap-3">
                   <CustomDropdown
                     value={form.countryCode}
                     onChange={(value) => setForm(prev => ({ ...prev, countryCode: value }))}
@@ -232,7 +232,7 @@ export default function SecureYourSlotSection() {
 
             {/* Slot Selection */}
             <Field label="Select Your Slot *">
-              <div className="flex flex-col gap-3 sm:gap-4 mt-1">
+              <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 mt-1">
                 {SLOTS.map(({ id, label, sub, limit }) => {
                   const count  = slotCounts[id] ?? 0
                   const isFull = limit !== Infinity && count >= limit
@@ -327,7 +327,7 @@ export default function SecureYourSlotSection() {
             </Field>
 
             {/* Legal Agreement */}
-            <div className="flex flex-col gap-3 pt-2">
+            <div className="flex flex-col gap-2 sm:gap-3 pt-2 sm:pt-3">
               <div className="flex items-start gap-3">
                 <p className="text-sm text-gray-300 leading-relaxed">
                   By registering, you agree to our{' '}
@@ -356,7 +356,7 @@ export default function SecureYourSlotSection() {
             )}
 
             {/* Submit */}
-            <div className="flex flex-col gap-3 pt-4 sm:pt-2">
+            <div className="flex flex-col gap-2 sm:gap-3 pt-3 sm:pt-4 md:pt-2">
               <Button
                 type="submit" variant="primary" size="lg"
                 className="w-full sm:w-auto sm:self-start min-h-12"
