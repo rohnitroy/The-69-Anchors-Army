@@ -62,11 +62,6 @@ export default function SlotChips() {
                   {available} seats available
                 </div>
               )}
-              {isAnyOfAbove && (
-                <div className="text-xs text-text-secondary mt-1">
-                  No seat limit
-                </div>
-              )}
               {/* Arrow */}
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gold-primary transform rotate-45" />
             </div>
@@ -77,9 +72,6 @@ export default function SlotChips() {
                 <div className="text-gold-primary font-semibold">{slot.date}</div>
                 {!isAnyOfAbove && available !== null && (
                   <div className="text-text-secondary">{available} available</div>
-                )}
-                {isAnyOfAbove && (
-                  <div className="text-text-secondary">No limit</div>
                 )}
               </div>
             )}
