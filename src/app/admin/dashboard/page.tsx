@@ -750,7 +750,7 @@ export default function AdminDashboard() {
 
       <div className="max-w-7xl mx-auto px-6 py-10">
         <div className="mb-8 space-y-4">
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <input
               type="text"
               placeholder="Search by name, email, or phone..."
@@ -814,8 +814,8 @@ export default function AdminDashboard() {
                 Clear
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="flex gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <CustomSelect
                   value={bulkStatus}
                   onChange={setBulkStatus}
@@ -829,12 +829,12 @@ export default function AdminDashboard() {
                 <button
                   onClick={handleBulkStatusUpdate}
                   disabled={!bulkStatus}
-                  className="px-4 py-3 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+                  className="px-4 py-3 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 whitespace-nowrap min-h-12"
                 >
                   ✓ Update
                 </button>
               </div>
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <CustomSelect
                   value={bulkSlot}
                   onChange={setBulkSlot}
@@ -850,7 +850,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={handleBulkSlotMove}
                   disabled={!bulkSlot}
-                  className="px-4 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors disabled:opacity-50"
+                  className="px-4 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors disabled:opacity-50 whitespace-nowrap min-h-12"
                 >
                   🔄 Move
                 </button>
@@ -859,18 +859,18 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        <div className="mb-6 flex gap-3">
+        <div className="mb-6 flex flex-col sm:flex-row gap-3">
           <button
             onClick={handleExportCSV}
             disabled={registrations.length === 0}
-            className="px-4 py-2 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
+            className="px-4 py-3 sm:py-2 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50 min-h-12 sm:min-h-fit whitespace-nowrap"
           >
             📥 Export CSV
           </button>
           <button
             onClick={handleExportPDF}
             disabled={registrations.length === 0}
-            className="px-4 py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50"
+            className="px-4 py-3 sm:py-2 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition-colors disabled:opacity-50 min-h-12 sm:min-h-fit whitespace-nowrap"
           >
             📄 Export PDF
           </button>

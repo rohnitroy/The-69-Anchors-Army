@@ -17,10 +17,20 @@ export default function SlotChips() {
 
   useEffect(() => {
     setMounted(true)
-    fetch('/api/slots')
-      .then(r => r.json())
-      .then(setSlotCounts)
-      .catch(() => {})
+
+    // Initial fetch
+    const fetchSlots = () => {
+      fetch('/api/slots')
+        .then(r => r.json())
+        .then(setSlotCounts)
+        .catch(() => {})
+    }
+
+    fetchSlots()
+
+    // Refetch every 5 seconds for real-time updates
+    const interval = setInterval(fetchSlots, 5000)
+    return () => clearInterval(interval)
   }, [])
 
   if (!mounted) return null

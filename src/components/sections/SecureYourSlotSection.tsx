@@ -49,10 +49,19 @@ export default function SecureYourSlotSection() {
   const [slotCounts, setSlotCounts] = useState<Record<string, number>>({})
 
   useEffect(() => {
-    fetch('/api/slots')
-      .then(r => r.json())
-      .then(data => setSlotCounts(data))
-      .catch(() => {})
+    // Initial fetch
+    const fetchSlots = () => {
+      fetch('/api/slots')
+        .then(r => r.json())
+        .then(data => setSlotCounts(data))
+        .catch(() => {})
+    }
+
+    fetchSlots()
+
+    // Refetch every 5 seconds for real-time updates
+    const interval = setInterval(fetchSlots, 5000)
+    return () => clearInterval(interval)
   }, [])
 
   const set = (k: keyof FormState) =>
@@ -144,11 +153,11 @@ export default function SecureYourSlotSection() {
             {/* Country Code + Mobile + Email */}
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="Mobile Number *">
-                <div className="flex gap-2">
+                <div className="flex flex-col sm:flex-row gap-2">
                   <select
                     value={form.countryCode}
                     onChange={set('countryCode')}
-                    className={`${input} flex-shrink-0 w-24`}
+                    className={`${input} shrink-0 sm:w-28`}
                     required
                   >
                     {COUNTRY_CODES.map(c => (
@@ -163,7 +172,7 @@ export default function SecureYourSlotSection() {
                     value={form.phone}
                     onChange={set('phone')}
                     required
-                    className={`${input} flex-1`}
+                    className={`${input} sm:flex-1 min-h-[48px]`}
                   />
                 </div>
               </Field>
@@ -174,7 +183,7 @@ export default function SecureYourSlotSection() {
                   value={form.email}
                   onChange={set('email')}
                   required
-                  className={input}
+                  className={`${input} min-h-[48px]`}
                 />
               </Field>
             </div>
@@ -215,7 +224,7 @@ export default function SecureYourSlotSection() {
 
             {/* Slot Selection */}
             <Field label="Select Your Slot *">
-              <div className="flex flex-col gap-3 mt-1">
+              <div className="flex flex-col gap-3 sm:gap-4 mt-1">
                 {SLOTS.map(({ id, label, sub, limit }) => {
                   const count  = slotCounts[id] ?? 0
                   const isFull = limit !== Infinity && count >= limit
@@ -223,7 +232,7 @@ export default function SecureYourSlotSection() {
                     <label
                       key={id}
                       className={[
-                        'flex items-center gap-4 px-5 py-4 border transition-all duration-200',
+                        'flex items-center gap-3 sm:gap-4 px-4 sm:px-5 py-4 sm:py-5 border transition-all duration-200 min-h-20 sm:min-h-fit',
                         isFull
                           ? 'cursor-not-allowed'
                           : form.slot === id
@@ -246,7 +255,7 @@ export default function SecureYourSlotSection() {
                           checked={form.slot === id}
                           onChange={set('slot')}
                           required
-                          className="accent-[#C8960C] w-4 h-4 flex-none"
+                          className="accent-[#C8960C] w-5 h-5 flex-none cursor-pointer"
                         />
                       )}
                       <div className="flex-1 min-w-0">
@@ -314,10 +323,10 @@ export default function SecureYourSlotSection() {
             )}
 
             {/* Submit */}
-            <div className="flex flex-col gap-3 pt-2">
+            <div className="flex flex-col gap-3 pt-4 sm:pt-2">
               <Button
                 type="submit" variant="primary" size="lg"
-                className="w-full sm:w-auto sm:self-start"
+                className="w-full sm:w-auto sm:self-start min-h-12"
                 disabled={submitting}
               >
                 {submitting ? (
@@ -384,7 +393,7 @@ function Spinner() {
 }
 
 const input = [
-  'w-full px-5 py-4',
+  'w-full px-4 sm:px-5 py-3 sm:py-4',
   'bg-[#080808] text-text-primary',
   'border border-[#242424]',
   'font-sans text-[15px] leading-normal',
@@ -394,4 +403,5 @@ const input = [
   'focus:border-gold-primary',
   'focus:shadow-[0_0_0_1px_rgba(200,150,12,0.2),inset_0_0_0_0px_transparent]',
   'hover:border-[#383838]',
+  'min-h-12', // 48px minimum height for touch targets
 ].join(' ')
