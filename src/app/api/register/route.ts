@@ -11,7 +11,14 @@ const VALID_SLOTS = ['squadA', 'squadB', 'squadC', 'squadD', 'squadE'] as const
 type SquadSlot = (typeof VALID_SLOTS)[number]
 const VALID_GENDERS = ['male', 'female', 'other', 'prefer_not_to_say'] as const
 const VALID_PAYMENT_MODES = ['cash', 'upi', 'neft'] as const
-const SEAT_LIMIT = 25
+
+const SEAT_LIMITS: Record<SquadSlot, number> = {
+  squadA: 22,
+  squadB: 24,
+  squadC: 24,
+  squadD: 24,
+  squadE: Infinity,
+}
 
 // Strip HTML tags from user input
 function sanitize(val: string, maxLen = 500): string {
@@ -75,10 +82,12 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Capacity check ────────────────────────────────────────────────────
+    const slotKey = slot as SquadSlot
+    const seatLimit = SEAT_LIMITS[slotKey]
     const seatCount = await prisma.slotRegistration.count({
-      where: { slot: slot as SquadSlot },
+      where: { slot: slotKey },
     })
-    if (seatCount >= SEAT_LIMIT) {
+    if (seatLimit !== Infinity && seatCount >= seatLimit) {
       return NextResponse.json(
         { error: 'This slot is fully booked. Please select another date.' },
         { status: 409 }

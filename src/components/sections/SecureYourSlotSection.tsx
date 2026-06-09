@@ -8,13 +8,12 @@ import SectionReveal from '@/components/ui/SectionReveal'
 import Button from '@/components/ui/Button'
 
 const SLOTS = [
-  { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th' },
-  { id: 'squadB', label: 'Squad B: Aug 10th & 11th', sub: 'Checkout Aug 12th' },
-  { id: 'squadC', label: 'Squad C: Aug 17th & 18th', sub: 'Checkout Aug 19th' },
-  { id: 'squadD', label: 'Squad D: Aug 19th & 20th', sub: 'Checkout Aug 21st' },
-  { id: 'squadE', label: 'Any of the Above', sub: "We'll assign your squad based on availability" },
+  { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th', limit: 22 },
+  { id: 'squadB', label: 'Squad B: Aug 10th & 11th', sub: 'Checkout Aug 12th', limit: 24 },
+  { id: 'squadC', label: 'Squad C: Aug 17th & 18th', sub: 'Checkout Aug 19th', limit: 24 },
+  { id: 'squadD', label: 'Squad D: Aug 19th & 20th', sub: 'Checkout Aug 21st', limit: 24 },
+  { id: 'squadE', label: 'Any of the Above', sub: "We'll assign your squad based on availability", limit: Infinity },
 ]
-const SEAT_LIMIT = 25
 
 const GENDER_OPTIONS = ['Male', 'Female', 'Other', 'Prefer not to say']
 const PAYMENT_MODES = ['Cash', 'UPI', 'NEFT']
@@ -217,9 +216,9 @@ export default function SecureYourSlotSection() {
             {/* Slot Selection */}
             <Field label="Select Your Slot *">
               <div className="flex flex-col gap-3 mt-1">
-                {SLOTS.map(({ id, label, sub }) => {
+                {SLOTS.map(({ id, label, sub, limit }) => {
                   const count  = slotCounts[id] ?? 0
-                  const isFull = count >= SEAT_LIMIT
+                  const isFull = limit !== Infinity && count >= limit
                   return (
                     <label
                       key={id}
@@ -278,8 +277,22 @@ export default function SecureYourSlotSection() {
                         >
                           ⊘ HOUSE FULL
                         </span>
+                      ) : limit === Infinity ? (
+                        <span
+                          className="font-label font-semibold whitespace-nowrap tabular-nums"
+                          style={{
+                            fontSize: '10px',
+                            letterSpacing: '0.1em',
+                            color: '#C8960C',
+                            border: '1px solid #C8960C',
+                            background: 'transparent',
+                            padding: '3px 9px',
+                          }}
+                        >
+                          ∞ FLEXIBLE
+                        </span>
                       ) : (
-                        <SeatBadge filled={count} total={SEAT_LIMIT} />
+                        <SeatBadge filled={count} total={limit} />
                       )}
                     </label>
                   )
@@ -317,7 +330,7 @@ export default function SecureYourSlotSection() {
                 )}
               </Button>
               <p className="micro-label text-text-secondary">
-                25 seats per squad · First-come, first-served.
+                Limited seats available · First-come, first-served.
               </p>
             </div>
 
