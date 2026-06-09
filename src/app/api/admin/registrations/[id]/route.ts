@@ -57,29 +57,6 @@ export async function PATCH(req: NextRequest, { params }: { params: Promise<{ id
   }
 }
 
-export async function DELETE(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  try {
-    const authenticated = await isAdminAuthenticated()
-    if (!authenticated) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
-
-    const { id } = await params
-    const registration = await prisma.slotRegistration.findUnique({
-      where: { id },
-    })
-
-    if (!registration) {
-      return NextResponse.json({ error: 'Registration not found' }, { status: 404 })
-    }
-
-    await prisma.slotRegistration.delete({
-      where: { id },
-    })
-
-    return NextResponse.json({ success: true })
-  } catch (error) {
-    console.error('Delete registration error:', error)
-    return NextResponse.json({ error: 'Failed to delete registration' }, { status: 500 })
-  }
-}
+// DELETE disabled - No registrations can be deleted via API
+// Data is permanent and immutable
+// Modifications only allowed via PATCH (Edit) endpoint
