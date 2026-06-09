@@ -51,7 +51,6 @@ export default function AdminDashboard() {
   const [selected, setSelected] = useState<Set<string>>(new Set())
   const [bulkStatus, setBulkStatus] = useState('')
   const [bulkSlot, setBulkSlot] = useState('')
-  const [bulkLoading, setBulkLoading] = useState(false)
   const [detailId, setDetailId] = useState<string | null>(null)
   const [isMobile, setIsMobile] = useState(false)
 
@@ -283,69 +282,294 @@ export default function AdminDashboard() {
 
   const handleExportPDF = () => {
     try {
+      const currentDate = new Date().toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+
+      const squadCounts = ['squadA', 'squadB', 'squadC', 'squadD', 'squadE'].map(
+        squad => `${SQUAD_NAMES[squad]}: ${counts[squad] || 0}`
+      )
+
+      const statusCounts = {
+        approved: registrations.filter(r => r.status === 'approved').length,
+        pending: registrations.filter(r => r.status === 'pending').length,
+        rejected: registrations.filter(r => r.status === 'rejected').length,
+      }
+
       const doc = `
         <!DOCTYPE html>
         <html>
           <head>
             <meta charset="UTF-8">
-            <title>69 Anchors Army - Registrations</title>
+            <title>69 Anchors Army - Registration Report</title>
             <style>
-              * { margin: 0; padding: 0; }
-              body { font-family: Arial, sans-serif; color: #333; padding: 20px; }
-              h1 { margin-bottom: 10px; text-align: center; }
-              .info { text-align: center; margin-bottom: 20px; color: #666; font-size: 12px; }
-              table { width: 100%; border-collapse: collapse; }
-              th { background-color: #C8960C; color: white; padding: 10px; text-align: left; font-weight: bold; }
-              td { padding: 8px; border-bottom: 1px solid #ddd; }
-              tr:nth-child(even) { background-color: #f9f9f9; }
-              .footer { margin-top: 30px; text-align: center; color: #666; font-size: 12px; }
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                color: #1a1a1a;
+                background: white;
+                padding: 40px;
+                line-height: 1.6;
+              }
+
+              .header {
+                text-align: center;
+                margin-bottom: 40px;
+                border-bottom: 3px solid #C8960C;
+                padding-bottom: 20px;
+              }
+
+              .logo {
+                font-size: 28px;
+                font-weight: bold;
+                color: #C8960C;
+                margin-bottom: 10px;
+              }
+
+              .subtitle {
+                color: #666;
+                font-size: 14px;
+                margin-bottom: 5px;
+              }
+
+              .report-title {
+                font-size: 20px;
+                font-weight: 600;
+                color: #333;
+                margin-top: 15px;
+              }
+
+              .report-info {
+                display: flex;
+                justify-content: space-between;
+                margin-bottom: 30px;
+                font-size: 12px;
+                color: #666;
+              }
+
+              .summary {
+                background: #f8f8f8;
+                padding: 20px;
+                margin-bottom: 30px;
+                border-left: 4px solid #C8960C;
+                border-radius: 4px;
+              }
+
+              .summary-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+                margin-top: 15px;
+              }
+
+              .summary-item {
+                font-size: 12px;
+              }
+
+              .summary-item strong {
+                display: block;
+                color: #333;
+                margin-bottom: 5px;
+              }
+
+              .summary-item span {
+                color: #666;
+              }
+
+              table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 30px;
+                font-size: 11px;
+              }
+
+              thead {
+                background-color: #C8960C;
+                color: white;
+              }
+
+              th {
+                padding: 12px;
+                text-align: left;
+                font-weight: 600;
+                border: 1px solid #C8960C;
+              }
+
+              td {
+                padding: 10px 12px;
+                border: 1px solid #ddd;
+              }
+
+              tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+              }
+
+              tbody tr:hover {
+                background-color: #f0f0f0;
+              }
+
+              .status-approved {
+                color: #10b981;
+                font-weight: 600;
+              }
+
+              .status-pending {
+                color: #f59e0b;
+                font-weight: 600;
+              }
+
+              .status-rejected {
+                color: #ef4444;
+                font-weight: 600;
+              }
+
+              .footer {
+                border-top: 2px solid #C8960C;
+                padding-top: 20px;
+                margin-top: 40px;
+                text-align: center;
+                font-size: 11px;
+                color: #666;
+              }
+
+              .footer-content {
+                margin-bottom: 10px;
+              }
+
+              .copyright {
+                color: #999;
+                font-size: 10px;
+                margin-top: 15px;
+              }
+
+              .divider {
+                text-align: center;
+                color: #ddd;
+                margin: 10px 0;
+                font-weight: bold;
+              }
+
+              .page-number {
+                text-align: right;
+                color: #999;
+                font-size: 10px;
+                margin-top: 20px;
+              }
             </style>
           </head>
           <body>
-            <h1>69 Anchors Army - Registration Report</h1>
-            <div class="info">Generated on ${new Date().toLocaleString()}</div>
+            <!-- Header with Logo -->
+            <div class="header">
+              <div class="logo">🎤 69 ANCHORS ARMY</div>
+              <div class="subtitle">Powered by Bol BB Bol</div>
+              <div class="report-title">Registration Report</div>
+            </div>
+
+            <!-- Report Info -->
+            <div class="report-info">
+              <div>
+                <strong>Generated:</strong> ${currentDate}
+              </div>
+              <div>
+                <strong>Report ID:</strong> REG-${new Date().getTime()}
+              </div>
+            </div>
+
+            <!-- Summary Section -->
+            <div class="summary">
+              <strong>📊 Summary</strong>
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <strong>Total Registrations</strong>
+                  <span>${registrations.length}</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Squad Distribution</strong>
+                  <span>${squadCounts.join(' • ')}</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Status: Approved</strong>
+                  <span>${statusCounts.approved} (${((statusCounts.approved / registrations.length) * 100).toFixed(1)}%)</span>
+                </div>
+                <div class="summary-item">
+                  <strong>Status: Pending</strong>
+                  <span>${statusCounts.pending} (${((statusCounts.pending / registrations.length) * 100).toFixed(1)}%)</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+            <!-- Data Table -->
             <table>
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
-                  <th>Phone</th>
-                  <th>Gender</th>
-                  <th>Payment</th>
-                  <th>Squad</th>
-                  <th>Status</th>
-                  <th>Date</th>
+                  <th style="width: 15%">Name</th>
+                  <th style="width: 18%">Email</th>
+                  <th style="width: 12%">Phone</th>
+                  <th style="width: 8%">Gender</th>
+                  <th style="width: 10%">Payment</th>
+                  <th style="width: 12%">Squad</th>
+                  <th style="width: 12%">Status</th>
+                  <th style="width: 13%">Date</th>
                 </tr>
               </thead>
               <tbody>
-                ${registrations.map(r => `
+                ${registrations
+                  .map(
+                    r => `
                   <tr>
-                    <td>${r.fullName}</td>
+                    <td><strong>${r.fullName}</strong></td>
                     <td>${r.email}</td>
                     <td>${r.phone}</td>
-                    <td>${r.gender || '—'}</td>
+                    <td>${r.gender ? r.gender.charAt(0).toUpperCase() + r.gender.slice(1) : '—'}</td>
                     <td>${r.paymentMode?.toUpperCase() || '—'}</td>
                     <td>${SQUAD_NAMES[r.slot] || r.slot}</td>
-                    <td>${r.status}</td>
-                    <td>${new Date(r.createdAt).toLocaleDateString()}</td>
+                    <td class="status-${r.status}">${r.status.toUpperCase()}</td>
+                    <td>${new Date(r.createdAt).toLocaleDateString('en-US', {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                    })}</td>
                   </tr>
-                `).join('')}
+                `
+                  )
+                  .join('')}
               </tbody>
             </table>
+
+            <div class="divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
+
+            <!-- Footer -->
             <div class="footer">
-              <p>Total Registrations: ${registrations.length}</p>
-              <p>© 2026 69 Anchors Army - Powered by Bol BB Bol</p>
+              <div class="footer-content">
+                <strong>69 Anchors Army - Registration Management System</strong>
+              </div>
+              <div class="footer-content">
+                This report contains confidential information about registered participants.
+              </div>
+              <div class="copyright">
+                © 2026 69 Anchors Army. All rights reserved. | Powered by Bol BB Bol
+              </div>
+              <div class="page-number">
+                Printed on ${new Date().toLocaleDateString()}
+              </div>
             </div>
           </body>
         </html>
       `
 
-      const printWindow = window.open('', '', 'height=600,width=800')
+      const printWindow = window.open('', '', 'height=800,width=1000')
       if (printWindow) {
+        printWindow.document.open()
         printWindow.document.write(doc)
         printWindow.document.close()
-        printWindow.print()
-        toast('success', 'Exported', 'PDF export initiated')
+        setTimeout(() => printWindow.print(), 250)
+        toast('success', 'Exported', 'PDF ready to print/save')
       }
     } catch (error) {
       console.error('PDF export error:', error)
@@ -604,10 +828,10 @@ export default function AdminDashboard() {
                 />
                 <button
                   onClick={handleBulkStatusUpdate}
-                  disabled={!bulkStatus || bulkLoading}
+                  disabled={!bulkStatus}
                   className="px-4 py-3 bg-[#C8960C] text-black font-semibold rounded hover:bg-[#B08608] transition-colors disabled:opacity-50"
                 >
-                  Update
+                  ✓ Update
                 </button>
               </div>
               <div className="flex gap-2">
@@ -625,10 +849,10 @@ export default function AdminDashboard() {
                 />
                 <button
                   onClick={handleBulkSlotMove}
-                  disabled={!bulkSlot || bulkLoading}
+                  disabled={!bulkSlot}
                   className="px-4 py-3 bg-green-600 text-white font-semibold rounded hover:bg-green-700 transition-colors disabled:opacity-50"
                 >
-                  Move
+                  🔄 Move
                 </button>
               </div>
             </div>
@@ -704,9 +928,31 @@ export default function AdminDashboard() {
                       <span
                         className="text-xs font-semibold px-3 py-1 rounded"
                         style={{
-                          color: '#C8960C',
-                          border: '1px solid #C8960C',
-                          backgroundColor: 'rgba(200,150,12,0.1)',
+                          color:
+                            reg.status === 'approved'
+                              ? '#10b981'
+                              : reg.status === 'pending'
+                              ? '#f59e0b'
+                              : reg.status === 'rejected'
+                              ? '#ef4444'
+                              : '#6b7280',
+                          border:
+                            reg.status === 'approved'
+                              ? '2px solid #10b981'
+                              : reg.status === 'pending'
+                              ? '2px solid #f59e0b'
+                              : reg.status === 'rejected'
+                              ? '2px solid #ef4444'
+                              : '2px solid #6b7280',
+                          backgroundColor:
+                            reg.status === 'approved'
+                              ? 'rgba(16,185,129,0.1)'
+                              : reg.status === 'pending'
+                              ? 'rgba(245,158,11,0.1)'
+                              : reg.status === 'rejected'
+                              ? 'rgba(239,68,68,0.1)'
+                              : 'rgba(107,114,128,0.1)',
+                          textTransform: 'capitalize',
                         }}
                       >
                         {reg.status}
