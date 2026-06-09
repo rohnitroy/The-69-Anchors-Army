@@ -95,11 +95,14 @@ export default function NotificationCenter() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute right-0 mt-2 w-80 sm:w-96 max-h-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl overflow-hidden z-50 max-w-[calc(100vw-20px)] sm:max-w-none"
+            className="absolute right-0 mt-2 w-80 sm:w-96 bg-[#1a1a1a] border border-[#333] rounded-lg shadow-xl z-50 max-w-[calc(100vw-20px)] sm:max-w-none"
             style={{
               right: 'auto',
               left: '50%',
               transform: 'translateX(-50%)',
+              maxHeight: 'min(500px, calc(100vh - 120px))',
+              display: 'flex',
+              flexDirection: 'column',
             }}
             onClick={(e) => e.stopPropagation()}
           >
@@ -109,7 +112,7 @@ export default function NotificationCenter() {
             </div>
 
             {/* Content */}
-            <div className="overflow-y-auto max-h-80">
+            <div className="overflow-y-auto flex-1 min-h-0">
               {activities.length === 0 ? (
                 <div className="px-4 py-8 text-center text-gray-400 text-sm">
                   No recent activities
