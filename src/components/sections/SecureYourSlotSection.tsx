@@ -7,6 +7,7 @@ import GoldDivider from '@/components/ui/GoldDivider'
 import SectionReveal from '@/components/ui/SectionReveal'
 import Button from '@/components/ui/Button'
 import CustomDropdown from '@/components/ui/CustomDropdown'
+import LegalModal from '@/components/ui/LegalModal'
 
 const SLOTS = [
   { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th', limit: 22 },
@@ -57,6 +58,8 @@ export default function SecureYourSlotSection() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError]       = useState('')
   const [slotCounts, setSlotCounts] = useState<Record<string, number>>({})
+  const [showPrivacy, setShowPrivacy] = useState(false)
+  const [showTerms, setShowTerms] = useState(false)
 
   useEffect(() => {
     // Initial fetch
@@ -312,6 +315,31 @@ export default function SecureYourSlotSection() {
               />
             </Field>
 
+            {/* Legal Agreement */}
+            <div className="flex flex-col gap-3 pt-2">
+              <div className="flex items-start gap-3">
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  By registering, you agree to our{' '}
+                  <button
+                    type="button"
+                    onClick={() => setShowPrivacy(true)}
+                    className="text-[#C8960C] hover:text-[#B08608] font-semibold underline"
+                  >
+                    Privacy Policy
+                  </button>
+                  {' '}and{' '}
+                  <button
+                    type="button"
+                    onClick={() => setShowTerms(true)}
+                    className="text-[#C8960C] hover:text-[#B08608] font-semibold underline"
+                  >
+                    Terms & Conditions
+                  </button>
+                  .
+                </p>
+              </div>
+            </div>
+
             {error && (
               <p className="font-sans text-sm text-red-400 -mt-2">{error}</p>
             )}
@@ -339,6 +367,10 @@ export default function SecureYourSlotSection() {
 
           </form>
         </SectionReveal>
+
+        {/* Legal Modals */}
+        <LegalModal type="privacy" isOpen={showPrivacy} onClose={() => setShowPrivacy(false)} />
+        <LegalModal type="terms" isOpen={showTerms} onClose={() => setShowTerms(false)} />
       </div>
     </section>
   )

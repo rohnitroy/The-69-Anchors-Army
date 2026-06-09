@@ -195,9 +195,9 @@ export const FOOTER = {
   tagline: 'baat karne se baat banti hai',
   copyright: '© 2026 Anchor Bol BB Bol. All rights reserved.',
   links: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms & Conditions', href: '#' },
-    { label: 'Contact', href: 'mailto:info@bolbbbol.com' },
+    { label: 'Privacy Policy', href: '/privacy' },
+    { label: 'Terms & Conditions', href: '/terms' },
+    { label: 'Contact', href: 'mailto:vinodsharma@dynamicentertainment.co' },
   ],
   socials: [
     { label: 'Instagram', href: 'https://www.instagram.com/anchorbolbbbol?igsh=MXdndzlodG5lNDNqNg==' },

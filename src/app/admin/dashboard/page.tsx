@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
 import NotificationCenter from '@/components/admin/NotificationCenter'
-import RegistrationDetailModal from '@/components/admin/RegistrationDetailModal'
+import EditableRegistrationModal from '@/components/admin/EditableRegistrationModal'
 import CustomSelect from '@/components/ui/CustomSelect'
 import { useToast } from '@/components/ui/Toast'
 import { wsClient } from '@/lib/wsClient'
@@ -816,10 +816,14 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        <RegistrationDetailModal
-          registrationId={detailId || ''}
+        <EditableRegistrationModal
+          registration={registrations.find(r => r.id === detailId) || null}
           isOpen={!!detailId}
           onClose={() => setDetailId(null)}
+          onUpdate={(updated) => {
+            setRegistrations(regs => regs.map(r => r.id === updated.id ? updated : r))
+            setDetailId(null)
+          }}
         />
       </div>
     )
@@ -843,14 +847,18 @@ export default function AdminDashboard() {
               <p className="text-sm text-gray-400">{registrations.length} registrations</p>
             </div>
           </div>
-          <div className="flex items-center gap-4">
-            <NotificationCenter />
-            <button
-              onClick={handleLogout}
-              className="px-4 py-2 text-gray-400 hover:text-[#C8960C] transition-colors font-semibold"
-            >
-              Logout →
-            </button>
+          <div className="flex items-center gap-3">
+            <div className="px-2 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+              <NotificationCenter />
+            </div>
+            <div className="px-3 py-1.5 border border-[#333] rounded-lg bg-[#0a0a0a]">
+              <button
+                onClick={handleLogout}
+                className="text-sm font-semibold text-gray-400 hover:text-[#C8960C] transition-colors whitespace-nowrap"
+              >
+                Logout →
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -1027,7 +1035,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-6 py-4 font-semibold text-white">{reg.fullName}</td>
                     <td className="px-6 py-4 text-gray-300">{reg.email}</td>
-                    <td className="px-6 py-4 text-gray-300">{reg.phone}</td>
+                    <td className="px-6 py-4 text-gray-300 whitespace-nowrap font-mono text-sm">{reg.phone}</td>
                     <td className="px-6 py-4 text-gray-400 capitalize">{reg.gender || '—'}</td>
                     <td className="px-6 py-4 text-gray-400 uppercase">{reg.paymentMode || '—'}</td>
                     <td className="px-6 py-4 font-semibold text-[#C8960C]">{SQUAD_NAMES[reg.slot]}</td>
@@ -1091,10 +1099,14 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        <RegistrationDetailModal
-          registrationId={detailId || ''}
+        <EditableRegistrationModal
+          registration={registrations.find(r => r.id === detailId) || null}
           isOpen={!!detailId}
           onClose={() => setDetailId(null)}
+          onUpdate={(updated) => {
+            setRegistrations(regs => regs.map(r => r.id === updated.id ? updated : r))
+            setDetailId(null)
+          }}
         />
       </div>
     </div>
