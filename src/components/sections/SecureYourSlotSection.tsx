@@ -19,8 +19,19 @@ const SEAT_LIMIT = 25
 const GENDER_OPTIONS = ['Male', 'Female', 'Other', 'Prefer not to say']
 const PAYMENT_MODES = ['Cash', 'UPI', 'NEFT']
 
+const COUNTRY_CODES = [
+  { code: '+91', label: '+91 (India)', country: 'India' },
+  { code: '+1', label: '+1 (USA/Canada)', country: 'USA/Canada' },
+  { code: '+44', label: '+44 (UK)', country: 'UK' },
+  { code: '+61', label: '+61 (Australia)', country: 'Australia' },
+  { code: '+971', label: '+971 (UAE)', country: 'UAE' },
+  { code: '+65', label: '+65 (Singapore)', country: 'Singapore' },
+  { code: '+64', label: '+64 (New Zealand)', country: 'New Zealand' },
+]
+
 type FormState = {
   fullName: string
+  countryCode: string
   phone:    string
   email:    string
   gender:   string
@@ -29,7 +40,7 @@ type FormState = {
   comments: string
 }
 
-const EMPTY: FormState = { fullName: '', phone: '', email: '', gender: '', paymentMode: '', slot: '', comments: '' }
+const EMPTY: FormState = { fullName: '', countryCode: '+91', phone: '', email: '', gender: '', paymentMode: '', slot: '', comments: '' }
 
 export default function SecureYourSlotSection() {
   const router = useRouter()
@@ -54,10 +65,14 @@ export default function SecureYourSlotSection() {
     setSubmitting(true)
     setError('')
     try {
+      const payload = {
+        ...form,
+        phone: `${form.countryCode} ${form.phone}`.trim(),
+      }
       const res = await fetch('/api/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       })
       const data = await res.json()
       if (!res.ok) {
@@ -127,19 +142,39 @@ export default function SecureYourSlotSection() {
               </p>
             </div>
 
-            {/* Mobile + Email */}
+            {/* Country Code + Mobile + Email */}
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="Mobile Number *">
-                <input
-                  type="tel" placeholder="+91 98765 43210"
-                  value={form.phone} onChange={set('phone')} required
-                  className={input}
-                />
+                <div className="flex gap-2">
+                  <select
+                    value={form.countryCode}
+                    onChange={set('countryCode')}
+                    className={`${input} flex-shrink-0 w-24`}
+                    required
+                  >
+                    {COUNTRY_CODES.map(c => (
+                      <option key={c.code} value={c.code}>
+                        {c.code}
+                      </option>
+                    ))}
+                  </select>
+                  <input
+                    type="tel"
+                    placeholder="98765 43210"
+                    value={form.phone}
+                    onChange={set('phone')}
+                    required
+                    className={`${input} flex-1`}
+                  />
+                </div>
               </Field>
               <Field label="Email ID *">
                 <input
-                  type="email" placeholder="you@example.com"
-                  value={form.email} onChange={set('email')} required
+                  type="email"
+                  placeholder="you@example.com"
+                  value={form.email}
+                  onChange={set('email')}
+                  required
                   className={input}
                 />
               </Field>
