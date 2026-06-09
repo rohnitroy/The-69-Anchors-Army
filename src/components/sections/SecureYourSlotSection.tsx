@@ -6,6 +6,7 @@ import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
 import GoldDivider from '@/components/ui/GoldDivider'
 import SectionReveal from '@/components/ui/SectionReveal'
 import Button from '@/components/ui/Button'
+import CustomDropdown from '@/components/ui/CustomDropdown'
 
 const SLOTS = [
   { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th', limit: 22 },
@@ -15,17 +16,27 @@ const SLOTS = [
   { id: 'squadE', label: 'Any of the Above', sub: "We'll assign your squad based on availability", limit: Infinity },
 ]
 
-const GENDER_OPTIONS = ['Male', 'Female', 'Other', 'Prefer not to say']
-const PAYMENT_MODES = ['Cash', 'UPI', 'NEFT']
+const GENDER_OPTIONS = [
+  { value: 'male', label: 'Male' },
+  { value: 'female', label: 'Female' },
+  { value: 'other', label: 'Other' },
+  { value: 'prefer_not_to_say', label: 'Prefer not to say' },
+]
+
+const PAYMENT_MODE_OPTIONS = [
+  { value: 'cash', label: 'Cash' },
+  { value: 'upi', label: 'UPI' },
+  { value: 'neft', label: 'NEFT' },
+]
 
 const COUNTRY_CODES = [
-  { code: '+91', label: '+91 (India)', country: 'India' },
-  { code: '+1', label: '+1 (USA/Canada)', country: 'USA/Canada' },
-  { code: '+44', label: '+44 (UK)', country: 'UK' },
-  { code: '+61', label: '+61 (Australia)', country: 'Australia' },
-  { code: '+971', label: '+971 (UAE)', country: 'UAE' },
-  { code: '+65', label: '+65 (Singapore)', country: 'Singapore' },
-  { code: '+64', label: '+64 (New Zealand)', country: 'New Zealand' },
+  { code: '+91', label: '+91', flag: '🇮🇳', country: 'India' },
+  { code: '+1', label: '+1', flag: '🇺🇸', country: 'USA/Canada' },
+  { code: '+44', label: '+44', flag: '🇬🇧', country: 'UK' },
+  { code: '+61', label: '+61', flag: '🇦🇺', country: 'Australia' },
+  { code: '+971', label: '+971', flag: '🇦🇪', country: 'UAE' },
+  { code: '+65', label: '+65', flag: '🇸🇬', country: 'Singapore' },
+  { code: '+64', label: '+64', flag: '🇳🇿', country: 'New Zealand' },
 ]
 
 type FormState = {
@@ -153,30 +164,24 @@ export default function SecureYourSlotSection() {
             {/* Country Code + Mobile + Email */}
             <div className="grid sm:grid-cols-2 gap-5">
               <Field label="Mobile Number *">
-                <div className="flex flex-col sm:flex-row gap-2">
-                  <select
+                <div className="flex flex-col gap-3">
+                  <CustomDropdown
                     value={form.countryCode}
-                    onChange={set('countryCode')}
-                    className={`${input} shrink-0 sm:w-28 sm:max-w-none max-w-[280px]`}
-                    required
-                    style={{
-                      position: 'relative',
-                      zIndex: 10,
-                    }}
-                  >
-                    {COUNTRY_CODES.map(c => (
-                      <option key={c.code} value={c.code}>
-                        {c.code}
-                      </option>
-                    ))}
-                  </select>
+                    onChange={(value) => setForm(prev => ({ ...prev, countryCode: value }))}
+                    options={COUNTRY_CODES.map(c => ({
+                      value: c.code,
+                      label: `${c.flag} ${c.code}`,
+                      flag: c.flag,
+                    }))}
+                    isCountryCode
+                  />
                   <input
                     type="tel"
                     placeholder="98765 43210"
                     value={form.phone}
                     onChange={set('phone')}
                     required
-                    className={`${input} sm:flex-1 min-h-[48px]`}
+                    className={`${input} min-h-12`}
                   />
                 </div>
               </Field>
@@ -187,43 +192,29 @@ export default function SecureYourSlotSection() {
                   value={form.email}
                   onChange={set('email')}
                   required
-                  className={`${input} min-h-[48px]`}
+                  className={`${input} min-h-12`}
                 />
               </Field>
             </div>
 
             {/* Gender Selection */}
             <Field label="Gender *">
-              <select
+              <CustomDropdown
                 value={form.gender}
-                onChange={set('gender')}
-                required
-                className={input}
-              >
-                <option value="">Select your gender</option>
-                {GENDER_OPTIONS.map(option => (
-                  <option key={option} value={option.toLowerCase()}>
-                    {option}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm(prev => ({ ...prev, gender: value }))}
+                options={GENDER_OPTIONS}
+                placeholder="Select your gender"
+              />
             </Field>
 
             {/* Payment Mode Selection */}
             <Field label="Preferred Payment Mode *">
-              <select
+              <CustomDropdown
                 value={form.paymentMode}
-                onChange={set('paymentMode')}
-                required
-                className={input}
-              >
-                <option value="">Select payment mode</option>
-                {PAYMENT_MODES.map(mode => (
-                  <option key={mode} value={mode.toLowerCase()}>
-                    {mode}
-                  </option>
-                ))}
-              </select>
+                onChange={(value) => setForm(prev => ({ ...prev, paymentMode: value }))}
+                options={PAYMENT_MODE_OPTIONS}
+                placeholder="Select payment mode"
+              />
             </Field>
 
             {/* Slot Selection */}

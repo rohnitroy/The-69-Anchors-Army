@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion } from 'framer-motion'
-import AnchorsArmyLogo from '@/components/logos/AnchorsArmyLogo'
+import Image from 'next/image'
 import NotificationCenter from '@/components/admin/NotificationCenter'
 import RegistrationDetailModal from '@/components/admin/RegistrationDetailModal'
 import CustomSelect from '@/components/ui/CustomSelect'
@@ -584,7 +584,13 @@ export default function AdminDashboard() {
         <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
           <div className="p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AnchorsArmyLogo className="w-10 flex-shrink-0" />
+              <Image
+                src="/logos/anchors-army-logo.png"
+                alt="69 Anchors Army"
+                width={40}
+                height={40}
+                className="w-10 h-auto flex-shrink-0"
+              />
               <div>
                 <h1 className="font-semibold text-white text-sm">Registration Manager</h1>
                 <p className="text-xs text-gray-400">{registrations.length} registrations</p>
@@ -817,7 +823,13 @@ export default function AdminDashboard() {
       <div className="sticky top-0 z-40 border-b border-[#333] bg-[#1a1a1a] shadow-lg">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <AnchorsArmyLogo className="w-16 sm:w-20" />
+            <Image
+              src="/logos/anchors-army-logo.png"
+              alt="69 Anchors Army"
+              width={80}
+              height={80}
+              className="w-16 sm:w-20 h-auto"
+            />
             <div>
               <h1 className="font-semibold text-white">Registration Manager</h1>
               <p className="text-sm text-gray-400">{registrations.length} registrations</p>

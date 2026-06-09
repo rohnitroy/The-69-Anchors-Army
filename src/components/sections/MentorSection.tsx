@@ -30,7 +30,7 @@ export default function MentorSection() {
   return (
     <section id="mentor" className="relative bg-surface overflow-hidden">
       <div className="mx-auto px-6 md:px-12" style={{ maxWidth: 1200 }}>
-        <div className="grid md:grid-cols-[480px_1fr] gap-0 items-stretch" style={{ minHeight: 700 }}>
+        <div className="grid grid-cols-1 md:grid-cols-[480px_1fr] gap-0 items-stretch md:min-h-[700px]">
 
           {/* ── Left: portrait ───────────────────────────────────────────── */}
           <SectionReveal direction="left" className="relative hidden md:block overflow-hidden">
@@ -51,7 +51,7 @@ export default function MentorSection() {
           </SectionReveal>
 
           {/* ── Right: copy ──────────────────────────────────────────── */}
-          <div className="flex flex-col justify-center py-24 md:py-32 pl-0 md:pl-20">
+          <div className="flex flex-col justify-center py-8 md:py-32 pl-0 md:pl-20">
 
             <SectionReveal>
               <div className="micro-label mb-4">{MENTOR.micro}</div>
