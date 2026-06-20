@@ -4,11 +4,11 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 
 const SLOTS = [
-  { id: 'squadA', name: 'Squad A', date: 'Aug 8th & 9th', seats: 22 },
-  { id: 'squadB', name: 'Squad B', date: 'Aug 10th & 11th', seats: 24 },
-  { id: 'squadC', name: 'Squad C', date: 'Aug 17th & 18th', seats: 24 },
-  { id: 'squadD', name: 'Squad D', date: 'Aug 19th & 20th', seats: 24 },
-  { id: 'squadE', name: 'Any of the Above', date: 'Flexible', seats: null },
+  { id: 'squadA', name: 'Squad A', date: 'Aug 8th & 9th', seats: 22, hidden: false },
+  { id: 'squadB', name: 'Squad B', date: 'Aug 10th & 11th', seats: 24, hidden: false },
+  { id: 'squadC', name: 'Squad C', date: 'Aug 17th & 18th', seats: 24, hidden: true },
+  { id: 'squadD', name: 'Squad D', date: 'Aug 19th & 20th', seats: 24, hidden: true },
+  { id: 'squadE', name: 'Any of the Above', date: 'Flexible', seats: null, hidden: false },
 ]
 
 export default function SlotChips() {
@@ -37,7 +37,7 @@ export default function SlotChips() {
 
   return (
     <div className="flex flex-wrap gap-3 justify-start">
-      {SLOTS.map(slot => {
+      {SLOTS.filter(slot => !slot.hidden).map(slot => {
         const filled = slotCounts[slot.id] ?? 0
         const isAnyOfAbove = slot.seats === null
         const available = isAnyOfAbove ? null : (slot.seats as number) - filled

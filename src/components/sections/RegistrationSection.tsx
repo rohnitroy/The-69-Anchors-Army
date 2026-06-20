@@ -8,10 +8,10 @@ import SectionReveal from '@/components/ui/SectionReveal'
 import Button from '@/components/ui/Button'
 
 const SLOTS = [
-  { id: 'squad1', label: 'Squad 1: Aug 8th & 9th',  sub: 'Checkout Aug 10th' },
-  { id: 'squad2', label: 'Squad 2: Aug 10th & 11th', sub: 'Checkout Aug 12th' },
-  { id: 'squad3', label: 'Squad 3: Aug 17th & 18th', sub: 'Checkout Aug 19th' },
-  { id: 'squad4', label: 'Squad 4: Aug 19th & 20th', sub: 'Checkout Aug 21st' },
+  { id: 'squad1', label: 'Squad 1: Aug 8th & 9th',  sub: 'Checkout Aug 10th', hidden: false },
+  { id: 'squad2', label: 'Squad 2: Aug 10th & 11th', sub: 'Checkout Aug 12th', hidden: false },
+  { id: 'squad3', label: 'Squad 3: Aug 17th & 18th', sub: 'Checkout Aug 19th', hidden: true },
+  { id: 'squad4', label: 'Squad 4: Aug 19th & 20th', sub: 'Checkout Aug 21st', hidden: true },
 ]
 const SEAT_LIMIT = 24
 
@@ -150,7 +150,7 @@ export default function RegistrationSection() {
             {/* Slot Selection */}
             <Field label="Select Your Slot *">
               <div className="flex flex-col gap-3 mt-1">
-                {SLOTS.map(({ id, label, sub }) => {
+                {SLOTS.filter(s => !s.hidden).map(({ id, label, sub }) => {
                   const count  = slotCounts[id] ?? 0
                   const isFull = count >= SEAT_LIMIT
                   return (

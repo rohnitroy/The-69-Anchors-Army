@@ -12,10 +12,10 @@ import { useModal } from '@/context/ModalContext'
 // ─── Slot config ────────────────────────────────────────────────────────────
 
 const SLOTS = [
-  { id: 'squad1', name: 'Squad 1', date: 'Aug 8th & 9th',   checkout: 'Checkout Aug 10th'  },
-  { id: 'squad2', name: 'Squad 2', date: 'Aug 10th & 11th', checkout: 'Checkout Aug 12th'  },
-  { id: 'squad3', name: 'Squad 3', date: 'Aug 17th & 18th', checkout: 'Checkout Aug 19th'  },
-  { id: 'squad4', name: 'Squad 4', date: 'Aug 19th & 20th', checkout: 'Checkout Aug 21st'  },
+  { id: 'squad1', name: 'Squad 1', date: 'Aug 8th & 9th',   checkout: 'Checkout Aug 10th', hidden: false  },
+  { id: 'squad2', name: 'Squad 2', date: 'Aug 10th & 11th', checkout: 'Checkout Aug 12th', hidden: false  },
+  { id: 'squad3', name: 'Squad 3', date: 'Aug 17th & 18th', checkout: 'Checkout Aug 19th', hidden: true  },
+  { id: 'squad4', name: 'Squad 4', date: 'Aug 19th & 20th', checkout: 'Checkout Aug 21st', hidden: true  },
 ]
 const SEAT_LIMIT = 24
 
@@ -297,7 +297,7 @@ function ModalForm({ onSuccess }: { onSuccess: () => void }) {
         {/* Slot Selection */}
         <Field label="Select Your Slot *">
           <div className="flex flex-col gap-2.5 mt-1">
-            {SLOTS.map(({ id, name, date, checkout }) => {
+            {SLOTS.filter(s => !s.hidden).map(({ id, name, date, checkout }) => {
               const count  = slotCounts[id] ?? 0
               const isFull = count >= SEAT_LIMIT
               const isExpanded = expandedSlots[id] || false

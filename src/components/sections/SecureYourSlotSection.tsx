@@ -10,11 +10,11 @@ import CustomDropdown from '@/components/ui/CustomDropdown'
 import LegalModal from '@/components/ui/LegalModal'
 
 const SLOTS = [
-  { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th', limit: 22 },
-  { id: 'squadB', label: 'Squad B: Aug 10th & 11th', sub: 'Checkout Aug 12th', limit: 24 },
-  { id: 'squadC', label: 'Squad C: Aug 17th & 18th', sub: 'Checkout Aug 19th', limit: 24 },
-  { id: 'squadD', label: 'Squad D: Aug 19th & 20th', sub: 'Checkout Aug 21st', limit: 24 },
-  { id: 'squadE', label: 'Any of the Above', sub: "We'll assign your squad based on availability", limit: Infinity },
+  { id: 'squadA', label: 'Squad A: Aug 8th & 9th',  sub: 'Checkout Aug 10th', limit: 22, hidden: false },
+  { id: 'squadB', label: 'Squad B: Aug 10th & 11th', sub: 'Checkout Aug 12th', limit: 24, hidden: false },
+  { id: 'squadC', label: 'Squad C: Aug 17th & 18th', sub: 'Checkout Aug 19th', limit: 24, hidden: true },
+  { id: 'squadD', label: 'Squad D: Aug 19th & 20th', sub: 'Checkout Aug 21st', limit: 24, hidden: true },
+  { id: 'squadE', label: 'Any of the Above', sub: "We'll assign your squad based on availability", limit: Infinity, hidden: false },
 ]
 
 const GENDER_OPTIONS = [
@@ -237,7 +237,7 @@ export default function SecureYourSlotSection() {
             {/* Slot Selection */}
             <Field label="Select Your Slot *">
               <div className="flex flex-col gap-2 sm:gap-3 md:gap-4 mt-1">
-                {SLOTS.map(({ id, label, sub, limit }) => {
+                {SLOTS.filter(s => !s.hidden).map(({ id, label, sub, limit }) => {
                   const count  = slotCounts[id] ?? 0
                   const isFull = limit !== Infinity && count >= limit
                   return (
