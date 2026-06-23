@@ -330,6 +330,16 @@ export default function SecureYourSlotSection() {
               />
             </Field>
 
+            {/* Pricing */}
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-gold-muted bg-[rgba(200,150,12,0.08)] px-4 py-3 sm:px-5 sm:py-4">
+              <span className="font-sans text-sm text-text-secondary uppercase tracking-wider">
+                Investment
+              </span>
+              <span className="font-sans text-lg sm:text-xl font-semibold text-gold-primary">
+                Rs. 69,000/-
+              </span>
+            </div>
+
             {/* Legal Agreement */}
             <div className="flex flex-col gap-2 sm:gap-3 pt-2 sm:pt-3">
               <div className="flex items-start gap-3">

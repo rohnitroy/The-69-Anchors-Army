@@ -193,7 +193,7 @@ export const MARQUEE_TEXT =
 
 export const FOOTER = {
   tagline: 'baat karne se baat banti hai',
-  copyright: '© 2026 Anchor Bol BB Bol. All rights reserved.',
+  copyright: '© 2026 69 Anchors Army. All rights reserved.',
   links: [
     { label: 'Privacy Policy', href: '/privacy' },
     { label: 'Terms & Conditions', href: '/terms' },
