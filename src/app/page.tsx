@@ -8,11 +8,13 @@ import ProgramSection from '@/components/sections/ProgramSection'
 import DeliverablesSection from '@/components/sections/DeliverablesSection'
 import InclusionsSection from '@/components/sections/InclusionsSection'
 import PromoSection from '@/components/sections/PromoSection'
+import GuidelinesModal from '@/components/ui/GuidelinesModal'
 
 export default function HomePage() {
   return (
     <>
       <Navbar />
+      <GuidelinesModal />
 
       <main>
         <HeroSection />
