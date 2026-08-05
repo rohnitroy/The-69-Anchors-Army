@@ -25,6 +25,8 @@ export default function Footer() {
             <a
               key={link.label}
               href={link.href}
+              target={link.target}
+              rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
               className="micro-label text-text-secondary hover:text-gold-primary transition-colors duration-200"
             >
               {link.label}

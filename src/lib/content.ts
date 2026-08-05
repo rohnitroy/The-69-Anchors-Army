@@ -195,8 +195,9 @@ export const FOOTER = {
   tagline: 'baat karne se baat banti hai',
   copyright: '© 2026 69 Anchors Army. All rights reserved.',
   links: [
+    { label: "Do's & Don'ts", href: '/pdf/The 69 Anchors Army_6 Do’s & 9 Don’ts.pdf', target: '_blank' },
+    { label: 'Terms & Conditions', href: '/pdf/The 69 Anchors Army_Terms & Conditions.pdf', target: '_blank' },
     { label: 'Privacy Policy', href: '/privacy' },
-    { label: 'Terms & Conditions', href: '/terms' },
     { label: 'Contact', href: 'mailto:vinodsharma@dynamicentertainment.co' },
   ],
   socials: [
