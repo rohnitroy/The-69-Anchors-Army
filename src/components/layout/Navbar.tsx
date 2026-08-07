@@ -38,6 +38,7 @@ export default function Navbar() {
           <NavLink href="#mentor">About BB</NavLink>
           <NavLink href="#program">The Program</NavLink>
           <NavLink href="#investment">Investment</NavLink>
+          <NavLink href="/pdf/The 69 Anchors Army_ITINERARY Squad A.pdf" target="_blank">Squad A Itinerary</NavLink>
           <Button href="/secure-your-slot" variant="primary" size="sm" className="ml-2">
             Secure Your Slot →
           </Button>
@@ -54,10 +55,11 @@ export default function Navbar() {
   )
 }
 
-function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+function NavLink({ href, children, target }: { href: string; children: React.ReactNode; target?: string }) {
   return (
     <a
       href={href}
+      target={target}
       className="font-label text-[11px] font-semibold tracking-[0.18em] uppercase text-text-secondary hover:text-gold-primary transition-colors duration-200"
     >
       {children}
