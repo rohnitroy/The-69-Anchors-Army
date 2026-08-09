@@ -41,7 +41,6 @@ export default function Navbar() {
           <NavLink href="#mentor">About BB</NavLink>
           <NavLink href="#program">The Program</NavLink>
           <NavLink href="#investment">Investment</NavLink>
-          <NavLink href="/pdf/The%2069%20Anchors%20Army_ITINERARY%20Squad%20A.pdf" target="_blank">Squad A Itinerary</NavLink>
           <NavLink href="/pdf/The%2069%20Anchors%20Army_ITINERARY%20Squad%20B.pdf" target="_blank">Squad B Itinerary</NavLink>
           <Button href="/secure-your-slot" variant="primary" size="sm" className="ml-2">
             Secure Your Slot →
@@ -78,9 +77,6 @@ export default function Navbar() {
             </MobileNavLink>
             <MobileNavLink href="#investment" onClick={closeMobileMenu}>
               Investment
-            </MobileNavLink>
-            <MobileNavLink href="/pdf/The%2069%20Anchors%20Army_ITINERARY%20Squad%20A.pdf" target="_blank" onClick={closeMobileMenu}>
-              Squad A Itinerary
             </MobileNavLink>
             <MobileNavLink href="/pdf/The%2069%20Anchors%20Army_ITINERARY%20Squad%20B.pdf" target="_blank" onClick={closeMobileMenu}>
               Squad B Itinerary
