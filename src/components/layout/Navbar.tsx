@@ -6,12 +6,15 @@ import Button from '@/components/ui/Button'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 60)
     window.addEventListener('scroll', handler, { passive: true })
     return () => window.removeEventListener('scroll', handler)
   }, [])
+
+  const closeMobileMenu = () => setMobileMenuOpen(false)
 
   return (
     <nav
@@ -39,18 +42,57 @@ export default function Navbar() {
           <NavLink href="#program">The Program</NavLink>
           <NavLink href="#investment">Investment</NavLink>
           <NavLink href="/pdf/The 69 Anchors Army_ITINERARY Squad A.pdf" target="_blank">Squad A Itinerary</NavLink>
+          <NavLink href="/pdf/The 69 Anchors Army_ITINERARY Squad B.pdf" target="_blank">Squad B Itinerary</NavLink>
           <Button href="/secure-your-slot" variant="primary" size="sm" className="ml-2">
             Secure Your Slot →
           </Button>
         </div>
 
-        {/* Mobile CTA */}
-        <div className="md:hidden">
-          <Button href="/secure-your-slot" variant="primary" size="sm">
-            Secure Slot →
-          </Button>
+        {/* Mobile menu button */}
+        <div className="md:hidden flex items-center gap-4">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 text-gold-primary hover:text-gold-secondary transition-colors"
+            aria-label="Toggle menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              {mobileMenuOpen ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+
+      {/* Mobile menu overlay */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-x-0 top-[72px] z-40 bg-black/98 border-b border-gold-primary/15 backdrop-blur-lg max-h-[calc(100vh-72px)] overflow-y-auto">
+          <div className="px-6 py-6 space-y-1">
+            <MobileNavLink href="#mentor" onClick={closeMobileMenu}>
+              About BB
+            </MobileNavLink>
+            <MobileNavLink href="#program" onClick={closeMobileMenu}>
+              The Program
+            </MobileNavLink>
+            <MobileNavLink href="#investment" onClick={closeMobileMenu}>
+              Investment
+            </MobileNavLink>
+            <MobileNavLink href="/pdf/The 69 Anchors Army_ITINERARY Squad A.pdf" target="_blank" onClick={closeMobileMenu}>
+              Squad A Itinerary
+            </MobileNavLink>
+            <MobileNavLink href="/pdf/The 69 Anchors Army_ITINERARY Squad B.pdf" target="_blank" onClick={closeMobileMenu}>
+              Squad B Itinerary
+            </MobileNavLink>
+            <div className="pt-4 mt-4 border-t border-gold-primary/15">
+              <Button href="/secure-your-slot" variant="primary" size="sm" className="w-full" onClick={closeMobileMenu}>
+                Secure Your Slot →
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   )
 }
@@ -61,6 +103,29 @@ function NavLink({ href, children, target }: { href: string; children: React.Rea
       href={href}
       target={target}
       className="font-label text-[11px] font-semibold tracking-[0.18em] uppercase text-text-secondary hover:text-gold-primary transition-colors duration-200"
+    >
+      {children}
+    </a>
+  )
+}
+
+function MobileNavLink({
+  href,
+  children,
+  target,
+  onClick
+}: {
+  href: string
+  children: React.ReactNode
+  target?: string
+  onClick?: () => void
+}) {
+  return (
+    <a
+      href={href}
+      target={target}
+      onClick={onClick}
+      className="block font-label text-sm font-semibold tracking-[0.18em] uppercase text-text-secondary hover:text-gold-primary transition-colors duration-200 py-2"
     >
       {children}
     </a>
